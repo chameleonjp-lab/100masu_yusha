@@ -1,0 +1,80 @@
+{
+  "tuningVersion": "tuning-stub-1",
+  "_STUB": "FALLBACK STUB written by game-implementation so the engine and tests can run before data/tuning.json exists. Every number below is an ASSUMPTION for play-testing, not an adopted value. The loader prefers data/tuning.json (same schema) when present.",
+  "normalEnemies": {
+    "EN01": { "maxHp": 12, "baseAttack": 9, "baseDefense": 2, "actions": [
+      { "order": 1, "name": "ちょい斬り", "attack": 9, "defense": 2, "kind": "通常攻撃", "tell": "小さな剣をゆらゆら振っている。" },
+      { "order": 2, "name": "踏み込み斬り", "attack": 14, "defense": 2, "kind": "大技", "tell": "剣先を後ろに隠し、深く踏み込む構え。" },
+      { "order": 3, "name": "息をつく", "attack": 0, "defense": 1, "kind": "反撃の隙", "tell": "肩で息をしている。攻撃は来ない。" } ] },
+    "EN02": { "maxHp": 20, "baseAttack": 12, "baseDefense": 4, "actions": [
+      { "order": 1, "name": "鼻先の体当たり", "attack": 12, "defense": 4, "kind": "通常攻撃", "tell": "土を蹴って頭から突っ込んでくる。" },
+      { "order": 2, "name": "鎧を丸める", "attack": 0, "defense": 9, "kind": "守り", "tell": "鼻を土に埋め、背の鎧を丸める。この手は攻撃しない。" },
+      { "order": 3, "name": "鎧が開く", "attack": 0, "defense": 1, "kind": "反撃の隙", "tell": "丸めた鎧が開き、柔らかい腹が見える。攻撃は来ない。" } ] },
+    "EN03": { "maxHp": 26, "baseAttack": 15, "baseDefense": 5, "actions": [
+      { "order": 1, "name": "横歩きのはさみ", "attack": 15, "defense": 5, "kind": "通常攻撃", "tell": "横歩きで近づき、はさみを開く。" },
+      { "order": 2, "name": "重い挟み打ち", "attack": 22, "defense": 5, "kind": "大技", "tell": "泡が片方のはさみに集まっていく。" },
+      { "order": 3, "name": "はさみが下がる", "attack": 0, "defense": 2, "kind": "反撃の隙", "tell": "両ばさみが下がる。攻撃は来ない。" } ] },
+    "EN04": { "maxHp": 24, "baseAttack": 16, "baseDefense": 5, "actions": [
+      { "order": 1, "name": "かすめ飛び", "attack": 16, "defense": 5, "kind": "通常攻撃", "tell": "しっぽの光をゆらしてかすめ飛ぶ。" },
+      { "order": 2, "name": "急降下", "attack": 23, "defense": 5, "kind": "大技", "tell": "しっぽの光が細い輪を描いて閉じていく。" },
+      { "order": 3, "name": "低く飛ぶ", "attack": 0, "defense": 2, "kind": "反撃の隙", "tell": "低く飛んで息を整える。攻撃は来ない。" } ] },
+    "EN05": { "maxHp": 36, "baseAttack": 23, "baseDefense": 9, "actions": [
+      { "order": 1, "name": "鉄の腕払い", "attack": 23, "defense": 9, "kind": "通常攻撃", "tell": "鉄の腕を横にゆっくり振る。" },
+      { "order": 2, "name": "鉄粉の振り下ろし", "attack": 30, "defense": 9, "kind": "大技", "tell": "両腕に鉄粉が積もり、重く持ち上がる。" },
+      { "order": 3, "name": "鉄粉が落ちる", "attack": 0, "defense": 4, "kind": "反撃の隙", "tell": "鉄粉がざらざら落ちる。攻撃は来ない。" } ] },
+    "EN06": { "maxHp": 42, "baseAttack": 28, "baseDefense": 10, "actions": [
+      { "order": 1, "name": "かみつき", "attack": 28, "defense": 10, "kind": "通常攻撃", "tell": "低く構えて飛びつく。" },
+      { "order": 2, "name": "残像を散らす", "attack": 0, "defense": 16, "kind": "守り", "tell": "尻尾をほどき、左右に残像を散らす。この手は攻撃しない。" },
+      { "order": 3, "name": "輪郭が戻る", "attack": 0, "defense": 5, "kind": "反撃の隙", "tell": "残像が消え、輪郭が戻る。攻撃は来ない。" } ] },
+    "EN07": { "maxHp": 48, "baseAttack": 31, "baseDefense": 11, "actions": [
+      { "order": 1, "name": "茨の爪", "attack": 31, "defense": 11, "kind": "通常攻撃", "tell": "茨の生えた前脚を振り上げる。" },
+      { "order": 2, "name": "糸の突進", "attack": 40, "defense": 11, "kind": "大技", "tell": "前脚を寄せて糸を張り、突進に備える。" },
+      { "order": 3, "name": "糸が切れる", "attack": 0, "defense": 5, "kind": "反撃の隙", "tell": "張った糸が切れて絡まる。攻撃は来ない。" } ] },
+    "EN08": { "maxHp": 60, "baseAttack": 35, "baseDefense": 14, "actions": [
+      { "order": 1, "name": "石の爪", "attack": 35, "defense": 14, "kind": "通常攻撃", "tell": "石の爪で壁をひっかく。" },
+      { "order": 2, "name": "翼を閉じる", "attack": 0, "defense": 20, "kind": "守り", "tell": "翼が石の板のように閉じる。この手は攻撃しない。" },
+      { "order": 3, "name": "高台から飛び込む", "attack": 45, "defense": 14, "kind": "大技", "tell": "高台の縁から身を乗り出し、飛び込む構え。" },
+      { "order": 4, "name": "翼を広げ直す", "attack": 0, "defense": 7, "kind": "反撃の隙", "tell": "着地して翼を広げ直している。攻撃は来ない。" } ] }
+  },
+  "enemyTraits": {
+    "MB03": { "decoys": 3 }
+  },
+  "spells": {
+    "SP01": { "mpCost": 3, "kind": "attack", "power": 10, "text": "火花を飛ばして敵に10ダメージ。防御は無視する。" },
+    "SP02": { "mpCost": 6, "kind": "heal", "power": 16, "text": "一行の体力を16回復する。" },
+    "SP03": { "mpCost": 5, "kind": "guard", "power": 10, "text": "この手の敵の直撃を10軽くする。" },
+    "SP04": { "mpCost": 8, "kind": "finisher", "power": 36, "text": "大技を構えた敵に36ダメージ。ほかの構えには半分。" }
+  },
+  "spellRules": {
+    "_note": "ASSUMPTION: attack spells deal fixed `power` damage ignoring defense; finisher deals `power` vs a 大技 telegraph, ceil(power/2) otherwise; guard reduces this round's enemy hit by `power` (stage shield); heal restores `power` hp.",
+    "preparedSlots": 2
+  },
+  "dieBonus": {
+    "_note": "ASSUMPTION (not in adopted data): landing die 1-3 reduces the first positive damage taken by `soften`; 4-6 adds `boost` to the first direct damage hit (attack / attack spell / AT01).",
+    "soften": { "range": [1, 3], "amount": 3 },
+    "boost": { "range": [4, 6], "amount": 4 }
+  },
+  "jobs": {
+    "JB00": { "name": "旅人", "text": "特別な力はない。" },
+    "JB01": { "name": "戦士", "guardThenAttackBonus": 4, "text": "防御した次の手の通常攻撃が4強くなる。" },
+    "JB02": { "name": "魔法使い", "attackSpellMpDiscount": 1, "text": "攻撃呪文の消費魔力が1減る（最低1）。" },
+    "JB03": { "name": "旅芸人", "chestChoices": 3, "text": "宝箱で3品から選べる。" }
+  },
+  "companions": {
+    "CP01": { "name": "盾持ちの見習い", "role": "shield", "trigger": "大技の被弾直前", "effect": { "reduce": 6 }, "text": "大技が当たる直前に、受けるダメージを6軽くする。" },
+    "CP02": { "name": "旅の薬師", "role": "medic", "trigger": "体力が半分以下で生きている時（1戦1回）", "effect": { "heal": 14 }, "text": "体力が半分以下なら、手の終わりに14回復する。" },
+    "CP03": { "name": "駆け出しの剣士", "role": "rules", "trigger": "最初の直接攻撃（1戦1回）", "effect": { "rules": [
+      { "id": "first-strike", "hook": "heroAttackDamage", "limit": { "perBattle": 1 }, "effects": [ { "op": "addDamage", "amount": 3 } ] } ] },
+      "text": "最初に与える直接ダメージが3増える。" },
+    "CP04": { "name": "見張りの笛吹き", "role": "rules", "trigger": "大技を無傷でしのいだ後（1戦1回）", "effect": { "rules": [
+      { "id": "calm-whistle", "hook": "afterEnemyAction", "when": { "and": [ { "eq": [ { "ref": "battle.enemyKind" }, "大技" ] }, { "eq": [ { "ref": "battle.hpLost" }, 0 ] } ] }, "limit": { "perBattle": 1 }, "effects": [ { "op": "mp", "delta": 3 } ] } ] },
+      "text": "大技をダメージ0でしのぐと、魔力が3回復する。" }
+  },
+  "taverns": {
+    "1": ["CP01", "CP02"],
+    "2": ["CP03", "CP04"],
+    "3": ["CP02", "CP03"],
+    "4": ["CP01", "CP04"],
+    "5": ["CP01", "CP02"]
+  }
+}
