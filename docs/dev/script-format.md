@@ -52,7 +52,9 @@
 - 戦闘（戦闘中のルール・効果）: `battle.round` `battle.isKing` `battle.isOptional` `battle.enemyId` `battle.enemyHp` `battle.enemyMaxHp` `battle.startHp` `battle.startMp` ✓
 - 手の履歴（`offset`＝今のラウンドからの相対、`abs`＝絶対番号）: `battle.heroAction`（`attack|guard|spell|item|extra|null`）`battle.hpLost`（勇者が失った体力）`battle.attackHit`（通常攻撃が本体に当たったか）`battle.guarded` `battle.enemyKind`（その手に予告された行動の種類）`battle.enemyHealed` ✓
 - フックの中: `battle.damage`（計算中の被害／与ダメージ／回復量）`battle.dealt`（実際に減らした敵体力）`battle.attackKind`（`attack|spell|item`）`battle.spellCost` `battle.spellMpAfter` ✓
-- `battle.count{what}`（`attackHits` `attacks` `guards` `spells` `items` `attackSpells` `healSpells` `enemyActions` `hitsTaken`）✓
+- `battle.count{what}`（`attackHits` `attacks` `guards` `spells` `items` `attackSpells` `healSpells` `enemyActions` `hitsTaken` `distinctItems`。今のラウンドの行動も数える）✓
+- 前の手の記録（`offset`/`abs`）: `battle.reduced`（防御・盾役などで軽くした量）`battle.spellCostPaid`（呪文で払った魔力）`battle.companionsActed`（自動支援した仲間の人数）✓
+- そのほか: `itemCategory{id:式}`（品の分類。`id` に `{ref:"var.x"}` を書ける）、`sinceInn`（最後に訪れた宿場からの距離）✓
 
 未知の参照・未知の演算子は検査で `script-ref` / `script-expr` エラー。
 
@@ -72,7 +74,7 @@
 | `giveItem` | `id`, `onFull?` | 消耗品を袋へ。6個で満杯なら**交換か辞退**の選択（`bagFull` 段階）。`onFull:"skip"` なら黙って見送る |
 | `giveGear` | `id`, `paidGold?` | 装備を入手。**現金で払った額は必ず `paidGold` に書く**（売値の上限になる）。すでに持っていれば何も起きない（`gearOwned`） |
 | `learnSpell` | `id` | 呪文を覚える（準備枠が空いていれば自動で準備） |
-| `loseItem` | `id` と `count?`、または `choose:true` | 品を失う。`choose:true` は袋から1個選ばせる（`pickBagItem`） |
+| `loseItem` | `id`（品の識別子、または `{ref:"var.x"}` などの式）と `count?`、または `choose:true` | 品を失う。`choose:true` は袋から1個選ばせる（`pickBagItem`）。入力で選んだ品を消費する（HE47）には式の `id` |
 | `setFlag` | `key`, `value?` | 冒険全体の印（`ref:"flag"`で読む） |
 
 ### 流れ
@@ -83,14 +85,14 @@
 | `choice` | `options`, `prompt?` | 効果の途中の追加選択（形は §4 の option と同じ） |
 | `battle` | `enemy`, `optional?`, `field?`, `rules?`, `extraActions?`, `onWin?` | 戦闘開始。**その効果列の最後に置く**。`optional:true`（または強敵 MB01〜03）は先に「挑む／見送る」（`bossOffer`）。`field.enemyHp:{delta,min}` は開始時の敵体力。`rules` はその戦闘だけの仕掛け（§6 のルール）。`extraActions:[{id,label,when?,effects}]` はその戦闘だけの追加行動。`onWin` は勝利の報酬を受け取った後に実行 |
 | `reserve` | `slot`, … | 予約。§5 |
-| `reveal` | `info`, `count?`, `withActions?` | 情報を計算して保存し、`reveals` に載せる。`info`: `nextBattleEnemy`（次の通常戦の敵）/ `nearestBattles`（近い通常戦 `count` 件。`withActions:true` で行動一覧）/ `nearestTraps`（近い罠と選べる代価） |
+| `reveal` | `info`, … | 情報を計算して保存し、`reveals` に載せる。`info`: `nextBattleEnemy`（次の通常戦の敵）/ `nearestBattles`（`count`件。`withActions:true` で行動一覧）/ `nearestTraps`（`count`件と選べる代価）/ `nextEnemyAction`（戦闘中。次の予告）/ `squaresAhead`（`from`〜`to` 先のマスの種類。`kinds` で絞る。BD08・BD15・BD47 向け）/ `sixOutcomes`（今の場所から出目1〜6の着地先と種類。BD30 向け） |
 | `custom` | `id`, `args?` | 名前付き関数（`src/engine/custom/`） |
 
 ### 戦闘の中だけ（ルール／品の効果の中で使う）
 
 | op | 意味 |
 |---|---|
-| `dealDamage {amount, times?, boostable?}` | 敵へ固定ダメージ（防御は無視）。`times` 回、1撃ずつ計算し、倒れたら終わる。`boostable:true` は出目（大）の加勢を受ける（火薬玉だけ） |
+| `dealDamage {amount, times?, boostable?, leave?}` | 敵へ固定ダメージ（防御は無視。偽物・攻撃無効には0）。`times` 回、1撃ずつ計算し、倒れたら終わる。`boostable:true` は出目（大）の加勢を受ける（火薬玉だけ）。`leave:1` は敵の体力をそれ未満にしない（AR06 の反射） |
 | `addMark {mark}` | 戦闘中だけの待機ルールを足す（§6）。`mark.unique` が同じものが既にあればエラー（重ねない） |
 | `addDamage {amount}` / `subDamage {amount,min?}` | `heroAttackDamage`：与ダメージの増減 |
 | `reduceDamage {amount,min?,max?}` / `increaseDamage {amount}` / `halveDamage {round?}` / `capDamage {amount}` / `absorbDamage {amount}` | `enemyDamage`：受ける被害の増減。`absorbDamage` は印ごとの総量（石の衣・綿毛の盾向け）。`halveDamage` は被害が0なら何もしない |
@@ -162,13 +164,15 @@
   "stage": "gear",                               // enemyDamage だけ。下の順番
   "effects": [ ... ] }
 ```
-待機効果（印 / mark）だけが持てる項目: `uses`（残り回数）、`expires:{"enemyActions":n}`（今の敵の行動を1つ目と数えてn回の行動まで）または `{"heroTurns":n}`（次からのn回の自分の手番まで）、`unique`（同じ印を重ねない）、`label`。印は戦闘が終われば必ず消える。
+待機効果（印 / mark）だけが持てる項目: `uses`（残り回数）、`expires:{"enemyActions":n}`（今の敵の行動を1つ目と数えてn回の行動まで）または `{"heroTurns":n}`（次からのn回の自分の手番まで）、`unique`（同じ印を重ねない）、`label`、`cancelWhen`（印を作ったラウンドより後に、勇者の行動が決まった時点で真なら印を消す。「防御以外を選ぶと消える」「呪文を使うと消える」用）。印は戦闘が終われば必ず消える。印が別の印を作ることもできる（「2回目の手番の初めに」は `heroTurnStart` の印が `heroTurnStart` の印を作る）。
 
 ### フック
 
 | hook | いつ | 使える ref / op |
 |---|---|---|
 | `battleStart` | 戦闘開始（再戦の開始も） | 資源の op |
+| `heroTurnStart` | 勇者の手番の初め（前のラウンドまでに作られた印だけ働く） | 資源の op |
+| `afterHeroAction` | 勇者の行動が終わった直後（仲間・敵の行動の前）。「〜を選んだ直後」「3種類とも違う行動が成立した直後」 | `battle.spellCost`＝呪文で払った魔力 |
 | `heroAttackDamage` | 勇者の直接ダメージ（通常攻撃・呪文・道具）の計算中。**当たった時だけ**（偽物・攻撃無効では呼ばない） | `battle.attackKind`, `battle.damage`; `addDamage` `subDamage` |
 | `heroHit` | 直接ダメージを与えた後 | `battle.dealt` |
 | `enemyDamage` | 敵の攻撃の被害の計算中（攻撃力0の手は呼ばない） | `battle.damage`; `reduceDamage` `increaseDamage` `halveDamage` `capDamage` `absorbDamage` |

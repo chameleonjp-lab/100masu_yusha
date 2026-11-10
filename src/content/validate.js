@@ -38,6 +38,7 @@ export function validateScripts(content, problems) {
     else if (!HOOKS[r.hook].wired) warn('script-hook-unwired', `${where}: hook "${r.hook}" is reserved but not wired in the engine yet`);
     if (r.stage && !STAGES.includes(r.stage)) err('script-stage', `${where}: unknown stage "${r.stage}"`);
     if (r.when !== undefined) expr(r.when, `${where}.when`, scopeVars);
+    if (r.cancelWhen !== undefined) expr(r.cancelWhen, `${where}.cancelWhen`, scopeVars);
     if (!Array.isArray(r.effects)) err('script-rule', `${where}: effects must be an array`);
     else effects(r.effects, `${where}.effects`, { rule: true, scopeVars });
     if (!isMark && (r.expires || r.uses !== undefined || r.unique)) err('script-rule', `${where}: expires/uses/unique are only valid on marks`);
@@ -101,7 +102,8 @@ export function validateScripts(content, problems) {
           if (!content.spells[op.id]) err('script-id', `${w}: unknown spell ${op.id}`);
           break;
         case 'loseItem':
-          if (!op.choose && !content.items[op.id]) err('script-id', `${w}: unknown item ${op.id}`);
+          if (!op.choose && typeof op.id === 'string' && !content.items[op.id]) err('script-id', `${w}: unknown item ${op.id}`);
+          if (typeof op.id === 'object') expr(op.id, w, c.scopeVars);
           break;
         case 'battle':
           if (!content.enemies[op.enemy]) err('script-id', `${w}: unknown enemy ${op.enemy}`);
@@ -134,7 +136,7 @@ export function validateScripts(content, problems) {
           if (op.pos !== undefined) expr(op.pos, w, c.scopeVars);
           break;
         case 'reveal':
-          if (!['nextBattleEnemy', 'nearestBattles', 'nearestTraps'].includes(op.info)) err('script-op', `${w}: unknown reveal info "${op.info}"`);
+          if (!['nextBattleEnemy', 'nearestBattles', 'nearestTraps', 'nextEnemyAction', 'squaresAhead', 'sixOutcomes'].includes(op.info)) err('script-op', `${w}: unknown reveal info "${op.info}"`);
           break;
         case 'custom':
           if (!CUSTOM[op.id]) err('script-custom', `${w}: no custom handler "${op.id}" in src/engine/custom/`);

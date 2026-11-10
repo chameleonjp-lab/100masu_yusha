@@ -25,11 +25,15 @@ export const REFS = {
   'battle.damage': {}, 'battle.dealt': {}, 'battle.attackKind': {}, 'battle.count': { args: ['what'] },
   'battle.enemyHealed': { args: ['offset'] },
   'battle.spellMpAfter': {}, 'battle.spellCost': {},
+  'battle.reduced': { args: ['offset', 'abs'] }, 'battle.spellCostPaid': { args: ['offset', 'abs'] }, 'battle.companionsActed': { args: ['offset', 'abs'] },
+  itemCategory: { args: ['id'] }, sinceInn: {},
 };
 export const REF_PREFIXES = ['var.'];
 
 export const HOOKS = {
   battleStart: { wired: true, doc: 'once, right after the battle is set up' },
+  heroTurnStart: { wired: true, doc: 'start of the hero turn, before the hero acts (marks created in earlier rounds only): "次の自分の手番の初めに"' },
+  afterHeroAction: { wired: true, doc: 'right after the hero action resolved, before companions and the enemy; ctx battle.spellCost = mp paid by a spell' },
   heroAttackDamage: { wired: true, doc: 'hero direct damage (attack/spell/item) is being computed; ctx battle.attackKind, battle.damage' },
   heroHit: { wired: true, doc: 'after a hero direct hit landed; ctx battle.dealt, battle.attackKind' },
   enemyDamage: { wired: true, doc: 'enemy hit on the hero is being computed (stage guard<shield<gear<die<card); ctx battle.damage' },
@@ -90,7 +94,7 @@ export const OPS = {
   showLandingOdds: { wired: true, contexts: ['item'], doc: 'BD43: ways out of 36 to land on a target' },
   swapShopSlot: { wired: true, contexts: ['item'], doc: 'BD40: replace a regional consumable slot' },
   // battle
-  dealDamage: { wired: true, contexts: ['battle'], doc: 'fixed damage to the enemy (times, boostable)' },
+  dealDamage: { wired: true, contexts: ['battle'], doc: 'fixed damage to the enemy (times, boostable, leave = enemy hp is not taken below this)' },
   addMark: { wired: true, contexts: ['battle'], doc: 'add a temporary rule to the battle' },
   addDamage: { wired: true, contexts: ['rule'], doc: 'heroAttackDamage hook: + damage' },
   subDamage: { wired: true, contexts: ['rule'], doc: 'heroAttackDamage hook: - damage (min)' },
@@ -107,6 +111,6 @@ export const OPS = {
 export const OP_NAMES = Object.keys(OPS);
 
 export const COST_KEYS = ['gold', 'hp', 'mp', 'items', 'trapLoss'];
-export const RULE_KEYS = ['id', 'hook', 'when', 'limit', 'stage', 'effects', 'expires', 'uses', 'unique', 'label'];
+export const RULE_KEYS = ['id', 'hook', 'when', 'limit', 'stage', 'effects', 'expires', 'uses', 'unique', 'label', 'cancelWhen'];
 // enemyDamage stages in order: guard (built-in halving) -> wall (石の衣) -> shield (companion, built-in) -> gear -> die (built-in small die) -> card (AT02)
 export const STAGES = ['guard', 'wall', 'shield', 'gear', 'die', 'card'];

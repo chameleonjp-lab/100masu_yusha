@@ -17,6 +17,7 @@ import {
 import { envOf, register } from './runner.js';
 import { OPS } from './formats.js';
 import { CUSTOM } from './custom/index.js';
+import { moveTarget } from './board.js';
 
 export function learnSpell(ctx, id) {
   const s = ctx.s;
@@ -126,9 +127,10 @@ register('loseItem', (ctx, op, scope) => {
     return { pause: { kind: 'pickBagItem', reason: op.reason || 'loss' } };
   }
   const n = op.count === undefined ? 1 : ev(ctx, scope, op.count);
+  const id = typeof op.id === 'object' ? ev(ctx, scope, op.id) : op.id; // an expression such as {ref:'var.partner'}
   for (let i = 0; i < n; i++) {
-    bagRemoveOne(ctx.s, op.id);
-    ctx.emit({ t: 'itemLost', id: op.id, reason: op.reason || 'effect' });
+    bagRemoveOne(ctx.s, id);
+    ctx.emit({ t: 'itemLost', id, reason: op.reason || 'effect' });
   }
 });
 
@@ -230,6 +232,34 @@ register('reveal', (ctx, op) => {
         return { ...f, enemyId, enemyName: en.name, firstActions: op.withActions ? en.phases[0].actions.map((a) => ({ order: a.order, name: a.name, kind: a.kind, tell: a.tell })) : undefined };
       }),
     };
+  } else if (op.info === 'nextEnemyAction') {
+    const b = s.battle;
+    if (!b) fail('reveal_not_in_battle');
+    const phases = statsForBattle(content, b);
+    let pi = b.phaseIdx;
+    let ci = (b.cursor + 1) % phases[pi].actions.length;
+    if (b.phaseChangePending && phases.length > 1) {
+      pi = 1;
+      ci = 0;
+    }
+    const a = phases[pi].actions[ci];
+    data = { name: a.name, kind: a.kind, tell: a.tell || '', attack: a.attack, defense: a.defense };
+  } else if (op.info === 'squaresAhead') {
+    // squares pos+from .. pos+to (<=99): kind of each, optionally only some kinds
+    const out = [];
+    for (let p = s.pos + (op.from || 1); p <= Math.min(s.pos + (op.to || 6), 99); p++) {
+      const e = content.events[s.board.squares[p - 1].contentId];
+      if (!op.kinds || op.kinds.includes(e.kind)) out.push({ pos: p, kind: e.kind, eventId: e.id, name: e.name });
+    }
+    data = { squares: out };
+  } else if (op.info === 'sixOutcomes') {
+    const out = [];
+    for (let d = 1; d <= 6; d++) {
+      const to = moveTarget(s, d);
+      const sq = to === 100 ? null : s.board.squares[to - 1];
+      out.push({ die: d, to, kind: to === 100 ? 'CASTLE' : content.events[sq.contentId].kind });
+    }
+    data = { outcomes: out };
   } else if (op.info === 'nearestTraps') {
     const found = ahead(ctx, (e) => e.kind === '罠', op.count || 1);
     data = {
@@ -244,6 +274,12 @@ register('reveal', (ctx, op) => {
   if (s.reveals.length > 20) s.reveals.shift();
   ctx.emit({ t: 'reveal', ...rec });
 });
+
+function statsForBattle(content, b) {
+  const e = content.enemies[b.enemyId];
+  const o = e.bandStats && e.bandStats[b.band];
+  return o ? o.phases : e.phases;
+}
 
 void EngineError;
 void OPS;

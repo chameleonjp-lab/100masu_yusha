@@ -43,6 +43,7 @@ function countOf(b, what) {
     else if (what === 'enemyActions' && r.enemyActed) n++;
     else if (what === 'hitsTaken' && r.hpLost > 0) n++;
   }
+  if (what === 'distinctItems') return new Set(b.rounds.filter((r) => r.action && r.action.type === 'item').map((r) => r.action.itemId)).size;
   return n;
 }
 
@@ -102,6 +103,11 @@ function resolveRef(env, node) {
     case 'battle.attackHit': { const r = roundRec(b, node); return !!(r && r.landed); }
     case 'battle.guarded': { const r = roundRec(b, node); return !!(r && r.guarded); }
     case 'battle.enemyKind': { const r = roundRec(b, node); return r && r.enemyAction ? r.enemyAction.kind : null; }
+    case 'battle.reduced': { const r = roundRec(b, node); return r ? r.reduced || 0 : 0; }
+    case 'battle.spellCostPaid': { const r = roundRec(b, node); return r && r.action && r.action.type === 'spell' ? r.action.cost : 0; }
+    case 'battle.companionsActed': { const r = roundRec(b, node); return r && r.companionActed ? new Set(r.companionActed).size : 0; }
+    case 'itemCategory': { const it = content.items[evalExpr(env, node.id)]; return it ? it.category : null; }
+    case 'sinceInn': { let last = 1; for (const p of s.board.innPositions) if (p <= s.pos && s.inns[p] && s.inns[p].visited) last = Math.max(last, p); return s.pos - last; }
     case 'battle.enemyHealed': { const r = roundRec(b, node); return r ? r.enemyHealed || 0 : 0; }
     case 'battle.damage': return hook.damage === undefined ? 0 : hook.damage;
     case 'battle.dealt': return hook.dealt === undefined ? 0 : hook.dealt;

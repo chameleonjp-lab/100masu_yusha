@@ -57,6 +57,7 @@ function newMark(ctx, b, def, owner) {
     id: def.id || null,
     hook: def.hook,
     when: def.when === undefined ? null : clone(def.when),
+    cancelWhen: def.cancelWhen === undefined ? null : clone(def.cancelWhen),
     stage: def.stage || 'gear',
     effects: clone(def.effects || []),
     limit: def.limit ? clone(def.limit) : null,
@@ -443,8 +444,9 @@ register('dealDamage', (ctx, op, scope) => {
   if (!s.battle) fail('op_outside_battle', 'dealDamage');
   const amount = evalExpr(envOf(ctx, scope), op.amount);
   const times = op.times === undefined ? 1 : op.times;
+  const leave = op.leave === undefined ? 0 : op.leave;
   const target = scope.vars && scope.vars.target !== undefined ? scope.vars.target : scope.target;
-  heroDirectHit(ctx, { kind: scope.itemId ? 'item' : 'effect', base: amount, boostable: !!op.boostable, times, target });
+  heroDirectHit(ctx, { kind: scope.itemId ? 'item' : 'effect', base: amount, boostable: !!op.boostable, times, target, leave });
 });
 
 register('addMark', (ctx, op, scope) => {
@@ -510,16 +512,17 @@ function heroDirectHit(ctx, spec) {
       ctx.emit({ t: 'dieBoost', amount: b.dieBonus.amount });
     }
     if (spec.kind === 'attack' || spec.kind === 'spell' || spec.kind === 'item') {
-      const hook = { attackKind: spec.kind, damage: dmg };
+      const hook = { attackKind: spec.kind, damage: dmg, ...(spec.hookExtra || {}) };
       runHook(ctx, 'heroAttackDamage', hook);
       dmg = Math.max(0, hook.damage);
     }
+    if (spec.leave) dmg = Math.max(0, Math.min(dmg, b.enemy.hp - spec.leave));
     const dealt = damageEnemy(ctx, dmg);
     total += dealt;
     if (spec.kind === 'attack') rec.landed = true;
     rec.dealt += dealt;
     rec.hitKinds = [...(rec.hitKinds || []), spec.kind];
-    runHook(ctx, 'heroHit', { attackKind: spec.kind, dealt });
+    runHook(ctx, 'heroHit', { attackKind: spec.kind, dealt, ...(spec.hookExtra || {}) });
   }
   return total;
 }
@@ -577,12 +580,12 @@ function heroAct(ctx, action) {
       ctx.emit({ t: 'spellCast', id, kind: sp.kind, cost });
       if (sp.kind === 'attack') {
         // fixed damage (4 + 2 x level for SP01), the enemy's defense does not matter
-        heroDirectHit(ctx, { kind: 'spell', base: spellPower(sp, s), boostable: true, target: action.target });
+        heroDirectHit(ctx, { kind: 'spell', base: spellPower(sp, s), boostable: true, target: action.target, hookExtra: { spellCost: cost, spellMpAfter: s.mp } });
       } else if (sp.kind === 'finisher') {
         // normal-attack damage x2 against an announced 大技, x1 otherwise
         const normal = Math.max(1, attackOf(content, s) - b.current.defense);
         const mult = b.current.kind === '大技' ? sp.power : sp.otherwiseMultiplier || 1;
-        heroDirectHit(ctx, { kind: 'spell', base: normal * mult, boostable: true, target: action.target });
+        heroDirectHit(ctx, { kind: 'spell', base: normal * mult, boostable: true, target: action.target, hookExtra: { spellCost: cost, spellMpAfter: s.mp } });
       } else if (sp.kind === 'heal') {
         const hook = { damage: spellPower(sp, s) };
         runHook(ctx, 'spellHeal', hook);
@@ -669,6 +672,7 @@ function enemyAct(ctx) {
     runHook(ctx, 'enemyDamage', hook, { stage: 'die' });
     runHook(ctx, 'enemyDamage', hook, { stage: 'card' });
     hook.damage = Math.max(0, hook.damage);
+    rec.reduced = hook.reduced;
     const before = s.hp;
     s.hp = Math.max(0, s.hp - hook.damage);
     rec.hpLost = before - s.hp;
@@ -741,7 +745,14 @@ export function battleAction(ctx, action) {
     endBattleNoReward(ctx, 'flee');
     return;
   }
+  runHook(ctx, 'heroTurnStart', {});
   heroAct(ctx, action);
+  const rec0 = b.rounds[b.round - 1];
+  runHook(ctx, 'afterHeroAction', { spellCost: rec0.action && rec0.action.type === 'spell' ? rec0.action.cost : 0 });
+  // marks that say "choosing something else cancels me" are checked once the hero's choice is known
+  for (const m of [...b.marks]) {
+    if (m.cancelWhen && m.createdRound < b.round && evalCond({ ctx, vars: {} }, m.cancelWhen)) removeMark(b, m);
+  }
   if (checkEnd(ctx)) return;
   companionsAfterHero(ctx);
   if (checkEnd(ctx)) return;
