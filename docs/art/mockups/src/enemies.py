@@ -606,8 +606,8 @@ def mb03(pose='idle', real=True):
         if p == 'big':
             o.append(part('shadow-run', pen.detail('<ellipse cx="60" cy="244" rx="96" ry="10" fill="rgba(42,30,22,.35)"/>')))
         if real:
-            o.append(part('footprints', ''.join(f'<use href="#i-foot" x="{x}" y="{y}" width="20" height="20" transform="rotate(-90 {x + 10} {y + 10})"/>'
-                                                 for x, y in [(14, 232), (40, 238), (66, 230)]) if not pen.cut else ''))
+            o.append(part('footprints', ''.join(f'<use href="#i-foot" x="{x}" y="{y}" width="30" height="30" transform="rotate(-90 {x + 15} {y + 15})"/>'
+                                                 for x, y in [(-30, 224), (4, 232), (38, 222)]) if not pen.cut else ''))
         o.append(part('tail', pen.path('M196 156C228 150 250 120 246 90C236 104 222 112 206 130Z', '#7F8C9A')))
         o.append(part('legs-back', pen.rect(176, 180, 18, 66, 8, '#6F7C8A') + pen.rect(198, 176, 18, 70, 8, '#6F7C8A'), sy=sy, pivot=(190, 246)))
         o.append(part('body', pen.ellipse(150, 160, 72, 40, '#7F8C9A')

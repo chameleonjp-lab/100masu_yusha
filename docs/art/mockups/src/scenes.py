@@ -180,10 +180,12 @@ def telegraph_tag(x, y, w, kind, name, tell, atk, dfn, string_top=None):
     """Returns (svg, height). Contents: header(icon+word) / action name / tell / numbers / hint."""
     t = TELL[kind]
     pad = 12
-    tl = wrap(tell, 16, w - pad * 2 - (8 if kind == '大技' else 0))
+    inner = w - pad * 2 - (8 if kind == '大技' else 0)
+    nl = wrap(name, 20, inner)
+    tl = wrap(tell, 16, inner)
     hint_l = wrap(t['hint'], 14, w - pad * 2 - (8 if kind == '大技' else 0))
     head = 40
-    body_h = 30 + len(tl) * 23 + 34 + len(hint_l) * 19 + 20
+    body_h = 30 + (len(nl) - 1) * 24 + len(tl) * 23 + 34 + len(hint_l) * 19 + 20
     h = head + body_h + (24 if kind == '守り' else 14)
     o = [f'<g class="telegraph-tag tell-{kind}">']
     if string_top is not None:
@@ -203,8 +205,9 @@ def telegraph_tag(x, y, w, kind, name, tell, atk, dfn, string_top=None):
     if kind == '大技':   # inner cream board keeps text on paper
         o.append(rect(x + 8, by - 2, w - 16, body_h - 4, 8, fill=P['paper-card'], stroke=INK, sw=2))
     ix = x + pad + (4 if kind == '大技' else 0)
-    o.append(text(ix, by + 22, name, 20, 800, INK))
-    ty = by + 30
+    for i, ln in enumerate(nl):
+        o.append(text(ix, by + 22 + i * 24, ln, 20, 800, INK))
+    ty = by + 30 + (len(nl) - 1) * 24
     for i, ln in enumerate(tl):
         o.append(text(ix, ty + 17 + i * 23, ln, 16, 400, INK))
     cy = ty + len(tl) * 23 + 6

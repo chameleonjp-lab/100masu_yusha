@@ -327,6 +327,134 @@ def option_b_board():
     return svg_doc(W, H, '\n'.join(b), 'option B board', '見本B（水彩の旅日記・不採用）: 盤面・次の6マス。', b_defs())
 
 
+# ================================================================ SHEETS
+from enemies import ENEMIES, mb02, mb03, dk01, en09, en10, en12, en13
+from pen import Pen, face as face_fn
+
+
+def sheet_title(x, y, s, sub=None):
+    o = text(x, y, s, 22, 900)
+    if sub:
+        o += text(x, y + 22, sub, 13, 700, P['ink-2'])
+    return o
+
+
+def label_plate(cx, y, s, size=13, sub=None):
+    w = max(tw(s, size), tw(sub, 12) if sub else 0) + 16
+    h = 22 if not sub else 38
+    o = rect(cx - w / 2, y, w, h, 8, fill=P['paper-card'], stroke=INK, sw=1.5) + text(cx, y + 16, s, size, 800, INK, 'middle')
+    if sub:
+        o += text(cx, y + 32, sub, 12, 700, P['ink-2'], 'middle')
+    return o
+
+
+@builder('sheet-telegraph.svg')
+def sheet_telegraph():
+    W, H = 860, 800
+    b = [rect(0, 0, W, H, fill=P['paper']), sheet_title(24, 40, '予告の4種類（見本）', '札の形・絵記号・言葉・敵の体と顔・画面の追加が同じことを言う。色と音は補助。')]
+    items = [('通常攻撃', en13, 'attack', '槍の石突きで打つ', '槍を反して柄の端を横に振る。', 34, 14, '城壁槍コボルト'),
+             ('大技', en12, 'big', '翼を広げて急降下する', '両翼が大きく開き、勇者の足元に丸い影が落ちる。', 37, 11, '霧鈴フクロウ'),
+             ('守り', en09, 'guard', '草盾を立てる', '編んだ草を盾にする。この手は攻撃しない。', 0, 5, '草盾タヌキ'),
+             ('反撃の隙', en10, 'open', '石段で息をつく', '石段に上がって呼吸を整える。攻撃は来ない。', 0, 3, '水車カワウソ')]
+    for i, (kind, fn, pose, name, tell, atk, dfn, who) in enumerate(items):
+        x = 20 + i * 210
+        tag, th = S.telegraph_tag(x, 84, 196, kind, name, tell, atk, dfn)
+        b.append(tag)
+        b.append(render(fn(pose), pose, x - 2, 340, 1.0))
+        b.append(label_plate(x + 98, 548, who, 13, f'{kind}（{pose}）'))
+    # faces
+    b.append(text(24, 628, '顔の決まり（全部の敵で同じ）', 16, 900))
+    faces = [('idle', 'ふだん', '待機'), ('attack', 'にらむ', '通常攻撃'), ('big', 'ためる', '大技'), ('guard', 'とじる', '守り'), ('open', 'へとへと', '反撃の隙')]
+    pen = Pen('main')
+    for i, (k, nm, use_) in enumerate(faces):
+        cx = 70 + i * 120
+        b.append(f'<circle cx="{cx}" cy="700" r="36" fill="#C9B79C" stroke="{INK}" stroke-width="3"/>')
+        b.append(face_fn(pen, k, [(cx - 12, 696), (cx + 12, 696)], 5, (cx, 716, 12), look=-1, sweat=(cx + 26, 668, 9), effort=(cx, 664, 30)))
+        b.append(label_plate(cx, 746, nm, 13, use_))
+    b.append(text(640, 628, '大技の「危ない影」', 16, 900))
+    b.append(S.danger_shadow(730, 704, 100, 18))
+    b.append(text(730, 750, '一行の足元に出す（斜線＋点線の縁）', 12, 700, P['ink-2'], 'middle'))
+    return svg_doc(W, H, '\n'.join(b), 'telegraph sheet', '見本: 予告の4種類の札・顔・危ない影。最終素材ではない。', icon_defs() + pattern_defs())
+
+
+@builder('sheet-characters.svg')
+def sheet_characters():
+    W, H = 900, 700
+    b = [rect(0, 0, W, H, fill=P['paper']), sheet_title(24, 40, '勇者と仲間（見本）', '勇者は職で帽子と服だけ変わる。黄色いスカーフ＝自分たち。仲間は形が重ならない4つ。')]
+    outfits = [('traveler', '旅人', 'つば広'), ('warrior', '戦士', 'とさか'), ('mage', '魔法使い', 'とんがり'), ('bard', '旅芸人', 'ふたまた')]
+    for i, (o, nm, kw) in enumerate(outfits):
+        x = 24 + i * 130
+        b.append(render(hero(o, 'idle'), 'idle', x, 72, 1.0))
+        b.append(label_plate(x + 60, 236, nm, 13, kw))
+    poses = [('walk1', '歩く'), ('attack', '攻撃'), ('guard', '防御'), ('cast', '呪文'), ('hit', '受けた'), ('victory', '勝利'), ('down', '倒れた')]
+    b.append(text(560, 84, '勇者の姿勢（旅人）', 15, 900))
+    for i, (p, nm) in enumerate(poses):
+        x = 540 + (i % 4) * 88
+        y = 96 + (i // 4) * 150
+        b.append(render(hero('traveler', p), p, x, y, .66))
+        b.append(text(x + 40, y + 126, nm, 13, 800, INK, 'middle'))
+    b.append(text(24, 404, '仲間（待機 → 支援するとき）', 15, 900))
+    roles = [('shield', '盾役', 'まるい大盾'), ('medic', '薬師', '背中の薬びん'), ('archer', '攻め役（仮）', 'ほそ長と長い弓'), ('lantern', '支え役（仮）', '頭上の角灯')]
+    for i, (r, nm, kw) in enumerate(roles):
+        x = 24 + i * 218
+        b.append(render(companion(r), 'idle', x, 424, 1.0))
+        b.append(render(companion(r, 'support'), 'support', x + 100, 424, 1.0))
+        b.append(label_plate(x + 100, 578, nm, 13, kw))
+    b.append(text(24, 664, '赤十字（白地に赤い十字）は使わない。回復の印は葉っぱ。', 13, 800, P['ink-2']))
+    return svg_doc(W, H, '\n'.join(b), 'characters sheet', '見本: 勇者4職・姿勢・仲間4人。最終素材ではない。', icon_defs() + pattern_defs())
+
+
+ENEMY_INFO = {
+    'EN01': ('野ネズミ剣士', 'まる耳と細い剣'), 'EN02': ('鎧モグラ', '背中の鎧板と大きな爪'), 'EN03': ('浅瀬ガニ', '左右の大ばさみ'),
+    'EN04': ('灯りコウモリ', '広い翼としっぽの灯'), 'EN05': ('磁石ゴーレム', 'U字磁石の頭と太い腕'), 'EN06': ('霧ギツネ', 'ふさふさの大きな尾'),
+    'EN07': ('茨グモ', '八本脚と背中のとげ'), 'EN08': ('城壁ガーゴイル', '石の翼と角'), 'EN09': ('草盾タヌキ', 'まるいおなかと草の盾'),
+    'EN10': ('水車カワウソ', '長い胴と水車'), 'EN11': ('鉱灯ヤドカリ', '鉱石の殻と灯'), 'EN12': ('霧鈴フクロウ', '丸い顔の皿と首の鈴'),
+    'EN13': ('城壁槍コボルト', 'とがり耳と長い槍')}
+
+
+@builder('sheet-enemies.svg')
+def sheet_enemies():
+    poses = [('idle', '待機'), ('attack', '通常攻撃'), ('big', '大技'), ('guard', '守り'), ('open', '反撃の隙')]
+    W, rowh = 920, 132
+    H = 96 + rowh * 13 + 20
+    b = [rect(0, 0, W, H, fill=P['paper']), sheet_title(24, 40, '通常の敵13種と4つの構え（見本）', '看板の姿勢＝予告の文（正本）に書かれた構え（指示書4.5の表の太字）。全員が4種類すべての姿勢を持つ。')]
+    for j, (p, nm) in enumerate(poses):
+        b.append(text(230 + j * 138, 86, nm, 14, 900, INK, 'middle'))
+    for i, (k, fn) in enumerate(ENEMIES.items()):
+        y = 96 + i * rowh
+        if i % 2 == 0:
+            b.append(rect(8, y, W - 16, rowh, 10, fill='#F1E6CD'))
+        nm, kw = ENEMY_INFO[k]
+        b.append(text(20, y + 52, k, 13, 900, P['ink-2']) + text(20, y + 74, nm, 15, 900) + text(20, y + 94, kw, 12, 700, P['ink-2']))
+        for j, (p, _) in enumerate(poses):
+            b.append(render(fn(p), p, 168 + j * 138, y + 6, .62))
+    return svg_doc(W, H, '\n'.join(b), 'enemies sheet', '見本: 通常の敵13種×待機・通常攻撃・大技・守り・反撃の隙。最終素材ではない。', icon_defs() + pattern_defs())
+
+
+@builder('sheet-bosses.svg')
+def sheet_bosses():
+    W, H = 940, 1010
+    b = [rect(0, 0, W, H, fill=P['paper']), sheet_title(24, 40, '強敵と魔王（見本）', '行動名は balance-draft-2。大技はいちばん大きく形が変わる。')]
+    rows = [('MB01 石門番', mb01, [('idle', '待機'), ('attack', '石腕の打撃'), ('big', '石腕の大振り（大技）'), ('open', '腕を戻す（すき）')]),
+            ('MB02 鉄甲虫', mb02, [('guard', '殻を閉じる（守り）'), ('attack', '殻を開いて打つ'), ('big', '閉殻の突進（大技）'), ('open', '殻が開く（すき）')]),
+            ('MB03 霧狼', mb03, [('idle', '待機（足跡＝本体）'), ('attack', '霧の爪'), ('big', '影走りの飛びかかり（大技）'), ('open', '足を止める（すき）')])]
+    y = 70
+    for nm, fn, ps in rows:
+        b.append(text(24, y + 20, nm, 16, 900))
+        for j, (p, lb) in enumerate(ps):
+            b.append(render(fn(p), p, 20 + j * 228, y + 26, .72))
+            b.append(text(20 + j * 228 + 94, y + 222, lb, 13, 800, INK, 'middle'))
+        y += 236
+    b.append(text(24, y + 20, 'DK01 魔王（前半 → 王冠が割れる → 後半）', 16, 900))
+    ks = [('p1-idle', '前半・待機'), ('p1-attack', '王の剣'), ('p1-big', '王の強斬（大技）'), ('p1-open', '剣を戻す（すき）'),
+          ('crack', '王冠が割れる'), ('p2-attack', '魔剣の波'), ('p2-big', '玉座の一撃（大技）'), ('p2-open', '王冠の隙（すき）')]
+    for j, (p, lb) in enumerate(ks):
+        x = 14 + j * 114
+        b.append(render(dk01(p), p, x, y + 40, .38))
+        b.append(text(x + 57, y + 172, lb, 12, 800, INK, 'middle'))
+    return svg_doc(W, H, '\n'.join(b), 'bosses sheet', '見本: 強敵3種と魔王の前半・王冠・後半。最終素材ではない。', icon_defs() + pattern_defs())
+
+
 if __name__ == '__main__':
     names = sys.argv[1:] or list(BUILDERS)
     for n in names:
