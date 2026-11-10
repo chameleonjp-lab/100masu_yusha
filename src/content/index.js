@@ -33,7 +33,7 @@ function isSampleFile(name) {
  * raw = {
  *   base, balance, tuning, patch,
  *   scripts: { events: [{name, json}], items: [{name, json}], equipment: [{name, json}] },
- *   tuningSource: 'data'|'stub'
+ *   tuningSource: 'data'
  * }
  * options = { strict: true }  (throw ContentError when any error-level problem exists)
  */
