@@ -23,7 +23,7 @@ import { FIXED_LAST, bandOfPos, forcedStopFor, minRollsForBoard, moveTarget, nex
 import { itemStatus, shopView, applyItemUse, whereOf } from './items.js';
 import { REASON_TEXT, optionStatus, reasonText } from './options.js';
 import { gearSellPrice, innServices, itemSellPrice, restHalf, serviceStatus, slotStatus } from './inn.js';
-import { battleSpellCost, enemyDef, spellPower, statsFor } from './battle.js';
+import { battleSpellCost, enemyDef, spellPower } from './battle.js';
 import { newScope } from './runner.js';
 import { chestChoiceCount } from './events.js';
 
@@ -372,7 +372,7 @@ function battleView(content, s) {
     stage: b.stage,
     kind: b.kind,
     round: b.round,
-    enemy: { id: b.enemyId, name: def.name, hp: b.enemy.hp, maxHp: b.enemy.maxHp, tell: def.tell, response: def.response, band: b.band, actionTable: statsFor(content, b.enemyId, b.band).phases.map((p) => p.actions.map((a) => ({ order: a.order, name: a.name, kind: a.kind }))) },
+    enemy: { id: b.enemyId, name: def.name, hp: b.enemy.hp, maxHp: b.enemy.maxHp, tell: def.tell, response: def.response, band: b.band },
     phase: { index: b.phaseIdx, name: cur.phaseName, changed: b.phaseChanged },
     telegraph: {
       name: cur.name,
