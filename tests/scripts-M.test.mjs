@@ -286,3 +286,99 @@ test('M1 traps: 荷運び needs 60G, 自分で押す costs 3 hp (floor 1); 綿�
   r = land('M1-50', { patch: { gold: 100, hp: 20 } });
   w = choose(r.state, 'mat').state; assert.equal(w.gold, 20); assert.equal(w.hp, 20);
 });
+
+// ---- band 2 ----
+
+test('M2 gold events pay the source amount (M2-01 220, M2-04 290, M2-11 340, M2-15 360, M2-16 330)', () => {
+  for (const [id, amt] of [['M2-01', 220], ['M2-04', 290], ['M2-11', 340], ['M2-15', 360], ['M2-16', 330]]) {
+    const r = land(id, { patch: { gold: 10 } });
+    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+    assert.equal(only.length, 1, id);
+    const w = choose(r.state, only[0].optionId);
+    assert.equal(w.state.gold, 10 + amt, id);
+    assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
+  }
+});
+
+test('M2 gear gifts: SW11 / AR12 / SW17 / AR19 free; M2-19 SW14 or AR14; M2-42 260G or AR16', () => {
+  for (const [id, gid] of [['M2-17', 'SW11'], ['M2-18', 'AR12'], ['M2-20', 'SW17'], ['M2-21', 'AR19']]) {
+    const r = land(id);
+    const o = view(content, r.state).actions.find((a) => a.type === 'chooseOption');
+    const w = choose(r.state, o.optionId).state;
+    assert.ok(ownsGear(w, gid), id);
+    assert.equal(gearOf(w, gid).paidGold, null);
+  }
+  const r = land('M2-19');
+  assert.ok(ownsGear(choose(r.state, 'sword').state, 'SW14') && !ownsGear(choose(r.state, 'sword').state, 'AR14'));
+  assert.ok(ownsGear(choose(r.state, 'armor').state, 'AR14') && !ownsGear(choose(r.state, 'armor').state, 'SW14'));
+  const c = land('M2-42', { patch: { gold: 40 } });
+  const gold = choose(c.state, 'gold');
+  assert.equal(gold.state.gold, 300); assert.ok(!ownsGear(gold.state, 'AR16'));
+  assert.deepEqual(goldFx(gold.effects), [[260, 'award']]);
+  const armor = choose(c.state, 'armor').state;
+  assert.ok(ownsGear(armor, 'AR16')); assert.equal(armor.gold, 40);
+});
+
+test('M2 battles: EN03 (22/24/26) and EN04 (23/25/27)', () => {
+  for (const [id, en] of [['M2-22', 'EN03'], ['M2-23', 'EN04'], ['M2-24', 'EN03'], ['M2-25', 'EN04'], ['M2-26', 'EN03'], ['M2-27', 'EN04']]) {
+    const r = land(id);
+    assert.equal(r.state.phase, 'battle', id);
+    assert.equal(r.state.battle.enemyId, en, id);
+  }
+});
+
+test('M2 item gifts: BD11 HE12 AT13 BD15 HE16 AT19 enter the bag', () => {
+  for (const [id, it] of [['M2-28', 'BD11'], ['M2-29', 'HE12'], ['M2-30', 'AT13'], ['M2-31', 'BD15'], ['M2-32', 'HE16'], ['M2-33', 'AT19']]) {
+    const r = land(id, { patch: { bag: [] } });
+    const o = view(content, r.state).actions.find((a) => a.type === 'chooseOption');
+    assert.deepEqual(choose(r.state, o.optionId).state.bag, [it], id);
+  }
+});
+
+test('M2 recovery squares: 34 hp+8, 35 mp+4, 36 hp+7 mp+1, 37 hp+3 mp+3', () => {
+  for (const [id, hp1, mp1] of [['M2-34', 28, 3], ['M2-35', 20, 7], ['M2-36', 27, 4], ['M2-37', 23, 6]]) {
+    const s = land(id, { patch: { hp: 20, mp: 3 } }).state;
+    assert.equal(s.phase, 'board');
+    assert.equal(s.hp, hp1, id); assert.equal(s.mp, mp1, id);
+  }
+});
+
+test('M2-43/44/47 choices and M2-46 purchase (73G, HE20; unaffordable or declined changes nothing)', () => {
+  let r = land('M2-43', { patch: { hp: 20, mp: 3 } });
+  assert.equal(choose(r.state, 'dango').state.hp, 28);
+  assert.equal(choose(r.state, 'tea').state.mp, 8);
+  r = land('M2-44', { patch: { bag: [] } });
+  assert.deepEqual(choose(r.state, 'red').state.bag, ['AT18']);
+  assert.deepEqual(choose(r.state, 'blue').state.bag, ['BD18']);
+  r = land('M2-47', { patch: { hp: 20, mp: 3 } });
+  assert.equal(choose(r.state, 'bench').state.hp, 29);
+  const s = choose(r.state, 'song').state; assert.equal(s.hp, 23); assert.equal(s.mp, 7);
+  r = land('M2-46', { patch: { gold: 73, bag: [] } });
+  const b = choose(r.state, 'buy').state; assert.equal(b.gold, 0); assert.deepEqual(b.bag, ['HE20']);
+  r = land('M2-46', { patch: { gold: 72, bag: [] } });
+  assert.equal(actionOf(r.state, 'buy').reason, 'insufficientGold');
+  const n = choose(r.state, 'return').state; assert.equal(n.gold, 72); assert.deepEqual(n.bag, []);
+});
+
+test('M2-45: help costs 3 hp (floor 1) and pays 350G; the flag changes nothing', () => {
+  let r = land('M2-45', { patch: { hp: 20, gold: 0 } });
+  let w = choose(r.state, 'help'); assert.equal(w.state.hp, 17); assert.equal(w.state.gold, 350);
+  assert.deepEqual(goldFx(w.effects), [[350, 'award']]);
+  r = land('M2-45', { patch: { hp: 2, gold: 0 } });
+  assert.equal(choose(r.state, 'help').state.hp, 1);
+  w = choose(r.state, 'flag').state; assert.equal(w.hp, 2); assert.equal(w.gold, 0);
+});
+
+test('M2 traps: 48 hp-3; 49 boat 90G or untie hp-4; 50 board 100G or rail hp-3 (all floor 1, all trapLoss)', () => {
+  assert.equal(choose(land('M2-48', { patch: { hp: 20 } }).state, 'wait').state.hp, 17);
+  assert.equal(choose(land('M2-48', { patch: { hp: 3 } }).state, 'wait').state.hp, 1);
+  let r = land('M2-49', { patch: { gold: 89, hp: 20 } });
+  assert.equal(actionOf(r.state, 'boat').enabled, false);
+  assert.equal(choose(r.state, 'untie').state.hp, 16);
+  assert.equal(choose(land('M2-49', { patch: { gold: 90, hp: 20 } }).state, 'boat').state.gold, 0);
+  r = land('M2-50', { patch: { gold: 99, hp: 20 } });
+  assert.equal(actionOf(r.state, 'board').enabled, false);
+  const w = choose(r.state, 'rail'); assert.equal(w.state.hp, 17);
+  assert.ok(w.effects.some((e) => e.t === 'hp' && e.trapLoss));
+  assert.equal(choose(land('M2-50', { patch: { gold: 100, hp: 20 } }).state, 'board').state.gold, 0);
+});
