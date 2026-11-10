@@ -23,7 +23,7 @@ import { FIXED_LAST, bandOfPos, forcedStopFor, minRollsForBoard, moveTarget, nex
 import { itemStatus, shopView, applyItemUse, whereOf } from './items.js';
 import { REASON_TEXT, optionStatus, reasonText } from './options.js';
 import { gearSellPrice, innServices, itemSellPrice, restHalf, serviceStatus, slotStatus } from './inn.js';
-import { battleSpellCost, enemyDef } from './battle.js';
+import { battleSpellCost, enemyDef, spellPower, statsFor } from './battle.js';
 import { newScope } from './runner.js';
 import { chestChoiceCount } from './events.js';
 
@@ -72,7 +72,7 @@ export function describeSpell(content, s, id) {
     id,
     name: sp.name,
     kind: sp.kind,
-    power: sp.power,
+    power: sp.kind === 'finisher' ? sp.power : spellPower(sp, s), // attack/heal: current value (level applied); finisher: the multiplier
     text: sp.text || sp.effect,
     price: sp.price,
     mpCost: sp.mpCost,
@@ -365,14 +365,14 @@ function battleView(content, s) {
     let reason = null;
     if (s.mp < cost) reason = 'insufficientMp';
     else if (sp.kind === 'heal' && s.hp >= maxHpOf(content, s)) reason = 'hpFull';
-    return { id, name: sp.name, kind: sp.kind, cost, mpAfter: Math.max(0, s.mp - cost), power: sp.power, text: sp.text, enabled: !reason, reason, reasonText: reason ? REASON_TEXT[reason] : undefined };
+    return { id, name: sp.name, kind: sp.kind, cost, mpAfter: Math.max(0, s.mp - cost), power: sp.kind === 'finisher' ? sp.power : spellPower(sp, s), text: sp.text, enabled: !reason, reason, reasonText: reason ? REASON_TEXT[reason] : undefined };
   });
   return {
     id: b.id,
     stage: b.stage,
     kind: b.kind,
     round: b.round,
-    enemy: { id: b.enemyId, name: def.name, hp: b.enemy.hp, maxHp: b.enemy.maxHp, tell: def.tell, response: def.response },
+    enemy: { id: b.enemyId, name: def.name, hp: b.enemy.hp, maxHp: b.enemy.maxHp, tell: def.tell, response: def.response, band: b.band, actionTable: statsFor(content, b.enemyId, b.band).phases.map((p) => p.actions.map((a) => ({ order: a.order, name: a.name, kind: a.kind }))) },
     phase: { index: b.phaseIdx, name: cur.phaseName, changed: b.phaseChanged },
     telegraph: {
       name: cur.name,
