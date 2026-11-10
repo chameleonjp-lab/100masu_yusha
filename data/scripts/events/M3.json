@@ -1,0 +1,723 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "M3-01": {
+      "options": [
+        {
+          "id": "stone",
+          "label": "白い筋のある石を、見本と同じ棚に置く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 380
+            }
+          ]
+        }
+      ]
+    },
+    "M3-02": {
+      "options": [
+        {
+          "id": "flag",
+          "label": "空の台車に赤を見せて止め、重い台車が通ったら旗をおろす",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 420
+            }
+          ]
+        }
+      ]
+    },
+    "M3-03": {
+      "options": [
+        {
+          "id": "brush",
+          "label": "紙を傾け、折り目に残る粉をやわらかいはけで払う",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 310
+            }
+          ]
+        }
+      ]
+    },
+    "M3-04": {
+      "options": [
+        {
+          "id": "plug",
+          "label": "音の出る穴を探し、丸い木栓をはめる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 350
+            }
+          ]
+        }
+      ]
+    },
+    "M3-05": {
+      "options": [
+        {
+          "id": "egg",
+          "label": "卵を柔らかい布に乗せ、元の巣へ戻す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 400
+            }
+          ]
+        }
+      ]
+    },
+    "M3-06": {
+      "options": [
+        {
+          "id": "glass",
+          "label": "時計を平らな石へ移し、上下を返して砂が流れるのを確かめる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 330
+            }
+          ]
+        }
+      ]
+    },
+    "M3-07": {
+      "options": [
+        {
+          "id": "sign",
+          "label": "輪に短いひもを通し、看板が少し動く長さで柱に結ぶ",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 390
+            }
+          ]
+        }
+      ]
+    },
+    "M3-08": {
+      "options": [
+        {
+          "id": "oil",
+          "label": "一人分ずつ大びんに移し、油の高さに横線を引く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 460
+            }
+          ]
+        }
+      ]
+    },
+    "M3-09": {
+      "options": [
+        {
+          "id": "stones",
+          "label": "冷めたかまどで奥の石を手前に移し、火との間をあける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 370
+            }
+          ]
+        }
+      ]
+    },
+    "M3-10": {
+      "options": [
+        {
+          "id": "stamp",
+          "label": "注文の紙を裏から明かりにかざし、彫る向きを石工に見せる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 490
+            }
+          ]
+        }
+      ]
+    },
+    "M3-11": {
+      "options": [
+        {
+          "id": "box",
+          "label": "板の切れ目を組み合わせ、箱の中に小部屋を作る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 440
+            }
+          ]
+        }
+      ]
+    },
+    "M3-12": {
+      "options": [
+        {
+          "id": "rut",
+          "label": "砂利を深い方の溝に運び、板で高さをそろえる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 520
+            }
+          ]
+        }
+      ]
+    },
+    "M3-13": {
+      "options": [
+        {
+          "id": "thimble",
+          "label": "古い革の切れ端を指の形に丸め、手袋の上からかぶせる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 320
+            }
+          ]
+        }
+      ]
+    },
+    "M3-14": {
+      "options": [
+        {
+          "id": "cloth",
+          "label": "曲がり角の台に立ち、先頭の白い布を見たら自分の布を上げる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 470
+            }
+          ]
+        }
+      ]
+    },
+    "M3-15": {
+      "options": [
+        {
+          "id": "tap",
+          "label": "同じ木づちで軽く鳴らし、にぶい石だけ返す箱に入れる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 430
+            }
+          ]
+        }
+      ]
+    },
+    "M3-16": {
+      "options": [
+        {
+          "id": "model",
+          "label": "模型の下に薄い木をはさみ、玉が出口まで転がる高さを探す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 550
+            }
+          ]
+        }
+      ]
+    },
+    "M3-17": {
+      "options": [
+        {
+          "id": "weight",
+          "label": "外れた重りを輪へ戻す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW22"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-18": {
+      "options": [
+        {
+          "id": "wipe",
+          "label": "布に付く黒い粉を目印に、金具の周りをぬぐう",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR23"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-19": {
+      "options": [
+        {
+          "id": "hilt",
+          "label": "柄をつける台を手伝う",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW25"
+            }
+          ]
+        },
+        {
+          "id": "lining",
+          "label": "裏布を当てる台を手伝う",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR25"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-20": {
+      "options": [
+        {
+          "id": "tie",
+          "label": "棒の真ん中へ荷を寄せ、両端からはみ出ないよう結ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW28"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-21": {
+      "options": [
+        {
+          "id": "pattern",
+          "label": "印の通りに小石を置き、型紙を押さえる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR29"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN05"
+        }
+      ]
+    },
+    "M3-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M3-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN05"
+        }
+      ]
+    },
+    "M3-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M3-26": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN05"
+        }
+      ]
+    },
+    "M3-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M3-28": {
+      "options": [
+        {
+          "id": "dig",
+          "label": "砂に残った四角いあとから、木のさじで品を掘り出す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT21"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-29": {
+      "options": [
+        {
+          "id": "shell",
+          "label": "殻を割らないようにひもを持ち、薬師へ包みを差し出す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE22"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-30": {
+      "options": [
+        {
+          "id": "bag",
+          "label": "口を少し開けたまま底から空気を抜き、ひもを結び直す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD24"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-31": {
+      "options": [
+        {
+          "id": "hole",
+          "label": "細いひもを小さい穴へ通し直し、板を棚に掛ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD27"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-32": {
+      "options": [
+        {
+          "id": "spatula",
+          "label": "長いへらを差し込み、仕切りを倒して袋を寄せる",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT26"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-33": {
+      "options": [
+        {
+          "id": "stand",
+          "label": "割った丸太の溝に本を立て、開いた所をひもで留める",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE30"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-34": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 10
+        }
+      ]
+    },
+    "M3-35": {
+      "onLand": [
+        {
+          "op": "mp",
+          "delta": 6
+        }
+      ]
+    },
+    "M3-36": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 8
+        },
+        {
+          "op": "mp",
+          "delta": 2
+        }
+      ]
+    },
+    "M3-37": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 4
+        },
+        {
+          "op": "mp",
+          "delta": 4
+        }
+      ]
+    },
+    "M3-38": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M3-39": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M3-40": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M3-41": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M3-42": {
+      "options": [
+        {
+          "id": "wage",
+          "label": "給金を選ぶ（410G）",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 410
+            }
+          ]
+        },
+        {
+          "id": "tool",
+          "label": "戦い道具を選ぶ（AT23）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT23"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-43": {
+      "options": [
+        {
+          "id": "red",
+          "label": "赤い卓で食べる（体力11回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 11
+            }
+          ]
+        },
+        {
+          "id": "blue",
+          "label": "青い卓で湯気を吸う（魔力7回復）",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "M3-44": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "420Gで剣を買う",
+          "cost": {
+            "gold": 420
+          },
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW27",
+              "paidGold": 420
+            }
+          ]
+        },
+        {
+          "id": "pass",
+          "label": "買わずに峠をたどる",
+          "effects": []
+        }
+      ]
+    },
+    "M3-45": {
+      "options": [
+        {
+          "id": "road",
+          "label": "道の備えを伝える（BD29）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD29"
+            }
+          ]
+        },
+        {
+          "id": "injury",
+          "label": "けがの備えを伝える（HE29）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE29"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-46": {
+      "options": [
+        {
+          "id": "push",
+          "label": "荷台を押す（体力4を使う。最低1。540G）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 540
+            }
+          ]
+        },
+        {
+          "id": "fruit",
+          "label": "日陰で果物を食べる（体力5回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "M3-47": {
+      "options": [
+        {
+          "id": "soup",
+          "label": "汁物を温める（体力9・魔力2回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 9
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "tool",
+          "label": "戦い道具を仕上げる（AT30）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT30"
+            }
+          ]
+        }
+      ]
+    },
+    "M3-48": {
+      "options": [
+        {
+          "id": "rail",
+          "label": "手すりを伝って固い地面へ戻る（体力4を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M3-49": {
+      "options": [
+        {
+          "id": "jack",
+          "label": "ジャッキを140Gで借りて戸を上げる",
+          "cost": {
+            "gold": 140,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "shoulder",
+          "label": "肩で支えてくぐる（体力5を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M3-50": {
+      "options": [
+        {
+          "id": "mark",
+          "label": "魔力で岩を開く（魔力3を使う）",
+          "cost": {
+            "mp": {
+              "amount": 3,
+              "strict": true
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "pull",
+          "label": "ひもを手で引き抜く（体力4を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    }
+  }
+}

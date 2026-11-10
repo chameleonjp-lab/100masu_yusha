@@ -1,0 +1,717 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "M4-01": {
+      "options": [
+        {
+          "id": "moon",
+          "label": "軒先まで荷車と歩き、戸口の月を見つけて荷を渡す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 480
+            }
+          ]
+        }
+      ]
+    },
+    "M4-02": {
+      "options": [
+        {
+          "id": "menu",
+          "label": "料理ごとの木の見本を黒板の下へつるし、なべと同じ順に並べる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 450
+            }
+          ]
+        }
+      ]
+    },
+    "M4-03": {
+      "options": [
+        {
+          "id": "cloth",
+          "label": "客引きに店の内側を向いてもらい、丸めた厚布をうろの入口へ掛ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 520
+            }
+          ]
+        }
+      ]
+    },
+    "M4-04": {
+      "options": [
+        {
+          "id": "thread",
+          "label": "葉先に糸を垂らし、しずくが机の外の水がめへ伝うようにする",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 410
+            }
+          ]
+        }
+      ]
+    },
+    "M4-05": {
+      "options": [
+        {
+          "id": "cloths",
+          "label": "新しい布を三枚取り出し、それぞれの箱の下に一枚ずつ置く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 560
+            }
+          ]
+        }
+      ]
+    },
+    "M4-06": {
+      "options": [
+        {
+          "id": "rings",
+          "label": "年輪の線がつながる向きで板を合わせ、職人が留める間支える",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 620
+            }
+          ]
+        }
+      ]
+    },
+    "M4-07": {
+      "options": [
+        {
+          "id": "saucer",
+          "label": "小さな木の皿をつぼの横に添え、取り替える間だけ台の下へ差す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 490
+            }
+          ]
+        }
+      ]
+    },
+    "M4-08": {
+      "options": [
+        {
+          "id": "rope",
+          "label": "綱に短い黒布をいくつか結び、運び手が道を見失わないようにする",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 590
+            }
+          ]
+        }
+      ]
+    },
+    "M4-09": {
+      "options": [
+        {
+          "id": "cards",
+          "label": "教わった道を枝分かれごとの絵札にして、入口から順に並べる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 540
+            }
+          ]
+        }
+      ]
+    },
+    "M4-10": {
+      "options": [
+        {
+          "id": "stand",
+          "label": "落ち葉を掃き、左右の靴が一組ずつ乗る台を空き板で作る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 430
+            }
+          ]
+        }
+      ]
+    },
+    "M4-11": {
+      "options": [
+        {
+          "id": "brow",
+          "label": "少し離れて見ながら、上がり過ぎたまゆにやさしい曲線を描く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 500
+            }
+          ]
+        }
+      ]
+    },
+    "M4-12": {
+      "options": [
+        {
+          "id": "knots",
+          "label": "ひと結びとふた結びを指で探し、別々の棒に掛ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 580
+            }
+          ]
+        }
+      ]
+    },
+    "M4-13": {
+      "options": [
+        {
+          "id": "star",
+          "label": "びんを寝かせ、短い角が細い口に先に通るよう回す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 470
+            }
+          ]
+        }
+      ]
+    },
+    "M4-14": {
+      "options": [
+        {
+          "id": "drawer",
+          "label": "やわらかい実を一段ずつ引き出しに並べ、固い実だけ袋へ移す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 610
+            }
+          ]
+        }
+      ]
+    },
+    "M4-15": {
+      "options": [
+        {
+          "id": "curtain",
+          "label": "幕の輪を棒から一度外し、ねじれをほどいて同じ向きで通す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 670
+            }
+          ]
+        }
+      ]
+    },
+    "M4-16": {
+      "options": [
+        {
+          "id": "arrow",
+          "label": "黒い布に白い出口の矢印を縫いつけ、目の高さで張る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 700
+            }
+          ]
+        }
+      ]
+    },
+    "M4-17": {
+      "options": [
+        {
+          "id": "balance",
+          "label": "棚を押さえてもらい、一本ずつ抜いて重りを合わせる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW31"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-18": {
+      "options": [
+        {
+          "id": "mirror",
+          "label": "手鏡を傾け、正面の鏡へ留め金を映す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR33"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-19": {
+      "options": [
+        {
+          "id": "slim",
+          "label": "細い実を剣の絵へ置く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW35"
+            }
+          ]
+        },
+        {
+          "id": "flat",
+          "label": "平たい実を防具の絵へ置く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR35"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-20": {
+      "options": [
+        {
+          "id": "cloth",
+          "label": "見本布の角を別々の枝に掛け、光を通して縫い目を見せる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR38"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-21": {
+      "options": [
+        {
+          "id": "paper",
+          "label": "刃にさわらず、内側の紙の端を先に抜いて伝言を読む",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW40"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06"
+        }
+      ]
+    },
+    "M4-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M4-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06"
+        }
+      ]
+    },
+    "M4-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M4-26": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06"
+        }
+      ]
+    },
+    "M4-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M4-28": {
+      "options": [
+        {
+          "id": "spatula",
+          "label": "木のへらでとげを寝かせ、穴を広げずに袋を外す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT32"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-29": {
+      "options": [
+        {
+          "id": "wash",
+          "label": "水でふき口を洗い、乾いた布でぬぐう",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD33"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-30": {
+      "options": [
+        {
+          "id": "leaf",
+          "label": "見本に合わせて葉を返し、茎で折り目を押さえる",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE34"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-31": {
+      "options": [
+        {
+          "id": "fan",
+          "label": "大きな葉のうちわで順番に風を当て、回るところを見せる",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT36"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-32": {
+      "options": [
+        {
+          "id": "branch",
+          "label": "枝で箱の向きを止め、荷主に棒の輪を掛けてもらう",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD37"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-33": {
+      "options": [
+        {
+          "id": "glass",
+          "label": "光るガラス玉を置き、栓を落とすのを待つ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE39"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-34": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 12
+        }
+      ]
+    },
+    "M4-35": {
+      "onLand": [
+        {
+          "op": "mp",
+          "delta": 7
+        }
+      ]
+    },
+    "M4-36": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 6
+        },
+        {
+          "op": "mp",
+          "delta": 4
+        }
+      ]
+    },
+    "M4-37": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 9
+        },
+        {
+          "op": "mp",
+          "delta": 2
+        }
+      ]
+    },
+    "M4-38": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M4-39": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M4-40": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M4-41": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M4-42": {
+      "options": [
+        {
+          "id": "purse",
+          "label": "財布を差し出す（530G）",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 530
+            }
+          ]
+        },
+        {
+          "id": "bag",
+          "label": "薬を入れる袋を差し出す（HE31）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE31"
+            }
+          ]
+        }
+      ]
+    },
+    "M4-43": {
+      "options": [
+        {
+          "id": "ticket",
+          "label": "お試し券を道具屋へ出す（BD34）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD34"
+            }
+          ]
+        },
+        {
+          "id": "rain",
+          "label": "小屋で雨音の演奏を聞く（魔力7回復）",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "M4-44": {
+      "options": [
+        {
+          "id": "green",
+          "label": "緑の光のもとで防具を受け取る（AR37）",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR37"
+            }
+          ]
+        },
+        {
+          "id": "yellow",
+          "label": "黄色い席で料理を味わう（体力13回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 13
+            }
+          ]
+        }
+      ]
+    },
+    "M4-45": {
+      "options": [
+        {
+          "id": "sleep",
+          "label": "眠る話を聞いて横になる（体力11回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 11
+            }
+          ]
+        },
+        {
+          "id": "wake",
+          "label": "目が覚める話を聞いて深く息を吸う（体力3・魔力6回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3
+            },
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        }
+      ]
+    },
+    "M4-46": {
+      "options": [
+        {
+          "id": "light",
+          "label": "魔力3を使って札を灯す（680G）",
+          "cost": {
+            "mp": {
+              "amount": 3,
+              "strict": true
+            }
+          },
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 680
+            }
+          ]
+        },
+        {
+          "id": "watch",
+          "label": "見学する",
+          "effects": []
+        }
+      ]
+    },
+    "M4-47": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "木笛を136Gで買う（AT38）",
+          "cost": {
+            "gold": 136
+          },
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT38"
+            }
+          ]
+        },
+        {
+          "id": "return",
+          "label": "ふたを閉めて返す",
+          "effects": []
+        }
+      ]
+    },
+    "M4-48": {
+      "options": [
+        {
+          "id": "rein",
+          "label": "手綱で引いてもらう（160G）",
+          "cost": {
+            "gold": 160,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "root",
+          "label": "太い根を握って自分で戻る（体力5を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M4-49": {
+      "options": [
+        {
+          "id": "sleeve",
+          "label": "枝の曲がりにそって袖を少しずつもどす（体力4を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M4-50": {
+      "options": [
+        {
+          "id": "mark",
+          "label": "魔力を通して石を起こす（魔力4を使う）",
+          "cost": {
+            "mp": {
+              "amount": 4,
+              "strict": true
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "cloth",
+          "label": "布で手を守って押し返す（体力5を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    }
+  }
+}
