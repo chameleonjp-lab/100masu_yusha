@@ -448,7 +448,7 @@ function actionsFor(content, s, parts) {
         push({ type: 'skipUnscripted', note: 'unscripted' });
         break;
       }
-      if (s.prompt && s.prompt.kind === 'choice') for (const o of parts.prompt.options) A.push({ type: 'chooseOption', optionId: o.optionId, label: o.label, enabled: o.enabled, reason: o.reason, reasonText: o.reasonText, cost: o.cost, afterGold: o.afterGold, input: o.input });
+      if (s.prompt && s.prompt.kind === 'choice') for (const o of parts.prompt.options) A.push({ type: 'chooseOption', optionId: o.optionId, label: o.label, enabled: o.enabled, reason: o.reason, reasonText: o.reasonText, cost: o.cost, afterGold: o.afterGold, shortfall: o.shortfall, input: o.input });
       if (s.prompt && s.prompt.kind === 'pickBagItem') parts.prompt.bag.forEach((b) => push({ type: 'pickBagItem', index: b.index, id: b.id, name: b.name }));
       if (whereOf(s) === 'trap') A.push(...itemActions(content, s).filter((a) => a.itemId === 'AT02'));
       break;

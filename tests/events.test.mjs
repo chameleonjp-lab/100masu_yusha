@@ -203,9 +203,13 @@ test('equipment events: free vs paid, paidGold provenance recorded', () => {
   assert.equal(heel.state.hp, 38);
   const mallet = choose(r.state, 'mallet');
   assert.equal(mallet.state.gear.find((g) => g.id === 'SW29').paidGold, 80);
-  r = landOnEvent(content, base, 'M3-44', { pos: 50, die: 2 });
+  r = landOnEvent(content, base, 'M3-44', { pos: 50, die: 2, patch: { gold: 500 } });
   const sw27 = choose(r.state, 'buy');
-  assert.equal(sw27.state.gold, 0 === 1 ? 0 : 200 - 420 < 0 ? 200 : 0);
+  assert.equal(sw27.state.gold, 80);
+  assert.equal(sw27.state.gear.find((g) => g.id === 'SW27').paidGold, 420);
+  const noMoney = landOnEvent(content, base, 'M3-44', { pos: 50, die: 2, patch: { gold: 419 } });
+  assert.equal(optionOf(noMoney.state, 'buy').enabled, false);
+  assert.equal(choose(noMoney.state, 'pass').state.gold, 419);
 });
 
 test('item events: free vs paid; swapping an item needs the item and room for both results', () => {

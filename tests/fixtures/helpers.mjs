@@ -37,8 +37,9 @@ export function place(s, pos, patch = {}) {
 /** Replace the content id of a board square (fixture surgery for scripted events that are not on the example boards). */
 export function withSquare(s, pos, contentId, treasure) {
   const t = cl(s);
+  const keep = t.board.squares[pos - 1].treasure; // an existing chest overlay stays unless replaced
   t.board.squares[pos - 1] = { position: pos, contentId };
-  if (treasure) t.board.squares[pos - 1].treasure = treasure;
+  if (treasure || keep) t.board.squares[pos - 1].treasure = treasure || keep;
   return t;
 }
 
@@ -73,5 +74,6 @@ export function fxOf(effects, t) {
 export function landOnEvent(content, s, contentId, { pos = 10, die = 1, patch = {} } = {}) {
   let t = withSquare(s, pos, contentId);
   t = place(t, pos - die, patch);
+  for (const p of t.board.innPositions) if (p < pos) t.inns[p].visited = true; // never stop early at an inn on the way
   return walk(content, t, die);
 }
