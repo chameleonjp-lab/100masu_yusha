@@ -194,6 +194,139 @@ def option_a_battle():
                    icon_defs() + pattern_defs())
 
 
+# ================================================================ OPTION B — watercolour travel journal (rejected)
+B = {'paper': '#FBF8F1', 'line': '#6B5B4B', 'text': '#5A4636', 'rule': '#CFE0EA', 'margin': '#E9A8A0'}
+PEN_B = {'outline': 1.25, 'ink': B['line'], 'line_scale': 0.6}
+
+
+def b_defs():
+    return (icon_defs() + pattern_defs()
+            + '<filter id="wc" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="7" result="n"/>'
+              '<feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter>'
+            + '<filter id="wc2" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="3" result="n"/>'
+              '<feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>'
+            + '<radialGradient id="glow-red"><stop offset="0" stop-color="#E07A6A" stop-opacity=".6"/><stop offset=".6" stop-color="#E07A6A" stop-opacity=".25"/><stop offset="1" stop-color="#E07A6A" stop-opacity="0"/></radialGradient>'
+            + '<pattern id="ruled" width="402" height="28" patternUnits="userSpaceOnUse"><path d="M0 27.5H402" stroke="#CFE0EA" stroke-width="1"/></pattern>')
+
+
+def b_page(W, H):
+    return rect(0, 0, W, H, fill=B['paper']) + rect(0, 0, W, H, fill='url(#ruled)') + f'<path d="M30 0V{H}" stroke="{B["margin"]}" stroke-width="1.2"/>'
+
+
+def wash(d, color, op=.55, filt='wc'):
+    return f'<path d="{d}" fill="{color}" opacity="{op}" filter="url(#{filt})"/>'
+
+
+def b_text(x, y, s, size=16, weight=500, fill=None, anchor='start'):
+    return text(x, y, s, size, weight, fill or B['text'], anchor)
+
+
+def pill(x, y, w, h, label, icon, color, sub=None, disabled=False):
+    op = ' opacity=".45"' if disabled else ''
+    o = [f'<g class="pill"{op}>', f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{h / 2}" fill="{color}" opacity=".85" filter="url(#wc2)"/>',
+         f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{h / 2}" fill="none" stroke="{B["line"]}" stroke-width="1.25"/>']
+    lw = tw(label, 18)
+    ix = x + (w - (24 + 8 + lw)) / 2
+    cy = y + h / 2 - (6 if sub else 0)
+    o.append(f'<g opacity=".8">{use(icon, ix, cy - 12, 24)}</g>' + b_text(ix + 32, cy + 6.5, label, 18, 500))
+    if sub:
+        o.append(b_text(x + w / 2, cy + 24, sub, 12, 500, '#8A7A6A', 'middle'))
+    o.append('</g>')
+    return ''.join(o)
+
+
+def thin_bar(x, y, w, frac, color):
+    return (f'<path d="M{x} {y}H{x + w}" stroke="#E9E1D3" stroke-width="6" stroke-linecap="round"/>'
+            f'<path d="M{x} {y}H{x + w * frac:.1f}" stroke="{color}" stroke-width="6" stroke-linecap="round" opacity=".75"/>')
+
+
+@builder('option-b-battle.svg')
+def option_b_battle():
+    W, H = 402, 874
+    b = [b_page(W, H)]
+    b.append(b_text(40, 94, '石門番', 18, 700) + b_text(104, 94, '（強敵）', 13, 500, '#8A7A6A'))
+    b.append(b_text(186, 94, '体力', 13) + thin_bar(222, 89, 110, 52 / 70, '#9C7BB8') + b_text(386, 94, '52/70', 14, 500, None, 'end'))
+    # stage: soft washes
+    b.append(wash('M10 120Q200 96 392 124L388 420Q200 446 14 418Z', '#C9B79C', .45))
+    b.append(wash('M20 360Q200 340 384 366L380 440Q200 452 22 436Z', '#B09A80', .45))
+    b.append(wash('M120 150Q150 130 180 152Q160 180 130 176Z', '#F4D37A', .5))
+    b.append(f'<ellipse cx="292" cy="300" rx="130" ry="150" fill="url(#glow-red)"/>')
+    b.append(f'<ellipse cx="110" cy="430" rx="110" ry="26" fill="url(#glow-red)" opacity=".7"/>')
+    b.append(f'<g opacity=".88">{render(mb01("big"), "big", 186, 436 - 246 * .82, .82, margin=False, pen_kw=PEN_B)}</g>')
+    b.append(f'<g opacity=".88">{render(companion("medic"), "idle", 2, 432 - 134 * .62, .62, margin=False, pen_kw=PEN_B)}'
+             f'{render(companion("shield"), "idle", 46, 432 - 134 * .62, .62, margin=False, pen_kw=PEN_B)}'
+             f'{render(hero("warrior", "idle"), "idle", 104, 432 - 152 * .72, .72, margin=False, pen_kw=PEN_B)}</g>')
+    # sticky note
+    b.append('<g transform="rotate(-3 110 210)">'
+             + f'<rect x="22" y="134" width="176" height="150" fill="#FFF3B8" opacity=".92" filter="url(#wc2)"/>'
+             + f'<rect x="22" y="134" width="176" height="150" fill="none" stroke="{B["line"]}" stroke-width="1"/>'
+             + b_text(34, 160, 'つぎは 大技', 16, 500, '#B3261E')
+             + b_text(34, 184, '石腕の大振り', 15, 700)
+             + ''.join(b_text(34, 206 + i * 20, ln, 14, 500) for i, ln in enumerate(S.wrap('石の腕を頭上で止めてから、重い一振りを放つ。', 14, 150)))
+             + b_text(34, 272, '攻撃46・防御14', 12, 500, '#8A7A6A') + '</g>')
+    # party
+    b.append(b_text(40, 478, '体力', 13) + thin_bar(80, 473, 200, 41 / 52, '#E8968A') + b_text(386, 480, '41/52', 18, 600, None, 'end'))
+    b.append(b_text(40, 504, '魔力', 13) + thin_bar(80, 499, 130, 14 / 22, '#8FB4DE') + b_text(270, 506, '14/22', 14, 500, None, 'end'))
+    b.append(b_text(40, 534, '盾役：大技の前にかばう　薬師：半分以下で回復', 13, 500, '#8A7A6A'))
+    b.append(b_text(40, 572, '石門番が 石の腕を 頭上で止めた', 15, 500))
+    bw, bh = 170, 72
+    b.append(pill(36, 596, bw, bh, '攻撃', 'i-sword', '#F6E3C4'))
+    b.append(pill(36 + bw + 10, 596, bw, bh, '防御', 'i-shield', '#DDE8EF'))
+    b.append(pill(36, 596 + bh + 12, bw, bh, '呪文', 'i-spell', '#E9E0F2', sub='魔力を使う'))
+    b.append(pill(36 + bw + 10, 596 + bh + 12, bw, bh, '道具', 'i-bag', '#EFE6D2', sub='袋 3こ'))
+    b.append(pill(36, 780, 150, 44, '逃げる', 'i-run', '#EFE6D2', disabled=True))
+    b.append(b_text(386, 808, '演出：標準 ／ 短縮', 14, 500, '#8A7A6A', 'end'))
+    b.append(phone_chrome(W, H, '見本B・不採用'))
+    return svg_doc(W, H, '\n'.join(b), 'option B battle', '見本B（水彩の旅日記・不採用）: 戦闘・石門番の大技の予告。', b_defs())
+
+
+@builder('option-b-board.svg')
+def option_b_board():
+    W, H = 402, 874
+    b = [b_page(W, H)]
+    b.append(b_text(40, 92, '金貨の商人道', 18, 700) + b_text(40, 112, '第1区間・草原の門出　4/100', 13, 500, '#8A7A6A'))
+    b.append(b_text(40, 146, '体力', 13) + thin_bar(76, 141, 150, 32 / 40, '#E8968A') + b_text(270, 148, '32/40', 15, 600, None, 'end')
+             + b_text(386, 148, '200G', 15, 600, None, 'end'))
+    b.append(b_text(40, 168, '魔力', 13) + thin_bar(76, 163, 80, 8 / 10, '#8FB4DE') + b_text(200, 170, '8/10', 13, 500, None, 'end')
+             + b_text(386, 170, 'Lv1 旅人', 13, 500, None, 'end'))
+    # map washes
+    b.append(wash('M14 190Q200 176 390 196L388 330Q200 340 16 326Z', '#BFDDEB', .5))
+    b.append(wash('M10 300Q120 270 220 300T392 296L390 590Q200 600 12 588Z', '#BFD9A0', .55))
+    b.append(wash('M40 250Q120 220 200 250T360 240L362 300Q200 310 40 300Z', '#A9C98A', .45))
+    b.append(f'<g opacity=".7" transform="translate(212 196)"><path d="M0 40V22h6v-6h4v6h8V10h-2V4h10v6h-2v12h8v-6h4v6h6v18Z" fill="none" stroke="{B["line"]}" stroke-width="1"/></g>')
+    road = [(200, 610), (200, 538), (300, 494), (336, 428), (250, 392), (156, 356), (96, 306), (158, 276), (226, 246)]
+    b.append(f'<path d="{S.smooth(road)}" fill="none" stroke="#8A7A6A" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/>')
+    stamps = [((158, 276), 14, '金貨', .35), ((96, 306), 15, '金貨', .35), ((156, 356), 22, '宿場', 1), ((250, 392), 18, '道具', 1),
+              ((336, 428), 19, '金貨', 1), ((300, 494), 20, '装備', 1), ((200, 538), 26, '道具', 1)]
+    for (cx, cy), r, k, op in stamps:
+        fk, ic = KIND[k]
+        b.append(f'<g opacity="{op}"><circle cx="{cx}" cy="{cy}" r="{r}" fill="{P[fk]}" opacity=".55" filter="url(#wc2)"/>'
+                 f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{B["line"]}" stroke-width="1"/>'
+                 f'<g opacity=".7">{use(ic, cx - r * .6, cy - r * .6, r * 1.2)}</g></g>')
+    for (cx, cy), n in [((300, 494), 1), ((336, 428), 2), ((250, 392), 3), ((156, 356), 4)]:
+        b.append(b_text(cx + 18, cy - 16, str(n), 13, 600, '#8A7A6A'))
+    b.append(f'<g opacity=".9">{render(hero("traveler", "idle"), "idle", 200 - 60 * .42, 532 - 152 * .42, .42, margin=False, pen_kw=PEN_B)}</g>')
+    b.append(b_text(40, 586, 'いま：4 ひっくり返る的', 14, 500))
+    # next 6
+    b.append(b_text(40, 626, 'つぎの6マス', 14, 600) + b_text(386, 626, '宿まで あと4', 13, 500, '#8A7A6A', 'end'))
+    for i, k in enumerate(['装備', '金貨', '道具', '宿場', '金貨', '金貨']):
+        cx = 64 + i * 56
+        fk, ic = KIND[k]
+        op = .35 if i >= 4 else 1
+        b.append(f'<g opacity="{op}">' + b_text(cx, 650, str(i + 1), 12, 600, '#8A7A6A', 'middle')
+                 + f'<circle cx="{cx}" cy="{674}" r="18" fill="{P[fk]}" opacity=".5" filter="url(#wc2)"/>'
+                 + f'<circle cx="{cx}" cy="674" r="18" fill="none" stroke="{B["line"]}" stroke-width="1"/>'
+                 + f'<g opacity=".7">{use(ic, cx - 11, 663, 22)}</g>' + b_text(cx, 710, k, 12, 500, None, 'middle') + '</g>')
+    b.append(b_text(386, 734, '4〜6は 宿でとまる', 12, 500, '#8A7A6A', 'end'))
+    bw = 104
+    b.append(pill(36, 748, bw, 40, '地図', 'i-map', '#EFE6D2'))
+    b.append(pill(36 + bw + 9, 748, bw, 40, '道具袋', 'i-bag', '#EFE6D2'))
+    b.append(pill(36 + 2 * (bw + 9), 748, bw, 40, '装備', 'i-gear', '#EFE6D2'))
+    b.append(pill(36, 796, 330, 44, 'サイコロを振る', 'd-5', '#F6E3C4'))
+    b.append(phone_chrome(W, H, '見本B・不採用'))
+    return svg_doc(W, H, '\n'.join(b), 'option B board', '見本B（水彩の旅日記・不採用）: 盤面・次の6マス。', b_defs())
+
+
 if __name__ == '__main__':
     names = sys.argv[1:] or list(BUILDERS)
     for n in names:
