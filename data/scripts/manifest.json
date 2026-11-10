@@ -5,7 +5,8 @@
     "events/_samples.json",
     "events/M1.json",
     "events/M2.json",
-    "events/M3.json"
+    "events/M3.json",
+    "events/M4.json"
   ],
   "items": [
     "_samples-items.json"
