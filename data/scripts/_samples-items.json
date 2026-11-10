@@ -1,0 +1,159 @@
+{
+  "format": "item-scripts-1",
+  "_note": "Reference conversions written by game-implementation. A `use` = { where[], inputs?, requires?[{when,reason}], effects[], unique?, id? }. See docs/dev/script-format.md.",
+  "items": {
+    "HE01": {
+      "uses": [
+        { "where": ["battle", "inn", "gate"],
+          "requires": [ { "when": { "gt": [ { "ref": "hp" }, 0 ] }, "reason": "notNow" } ],
+          "effects": [ { "op": "hp", "delta": 12 } ] }
+      ]
+    },
+    "HE02": {
+      "uses": [
+        { "where": ["battle", "inn", "gate"],
+          "requires": [ { "when": { "lt": [ { "ref": "mp" }, { "ref": "maxMp" } ] }, "reason": "mpFull" } ],
+          "effects": [ { "op": "mp", "delta": 5 } ] }
+      ]
+    },
+    "HE11": {
+      "uses": [
+        { "where": ["battle", "inn", "gate"],
+          "inputs": [ { "id": "which", "type": "enum", "values": ["hp", "mp"], "optional": true } ],
+          "requires": [
+            { "when": { "gt": [ { "ref": "hp" }, 0 ] }, "reason": "notNow" },
+            { "when": { "or": [ { "lt": [ { "ref": "hp" }, { "ref": "maxHp" } ] }, { "lt": [ { "ref": "mp" }, { "ref": "maxMp" } ] } ] }, "reason": "nothingToRestore" }
+          ],
+          "effects": [
+            { "op": "if",
+              "cond": { "lt": [ { "mul": [ { "ref": "hp" }, { "ref": "maxMp" } ] }, { "mul": [ { "ref": "mp" }, { "ref": "maxHp" } ] } ] },
+              "then": [ { "op": "hp", "delta": { "min": [ 18, { "ceilDiv": [ { "ref": "maxHp" }, 3 ] } ] } } ],
+              "else": [
+                { "op": "if",
+                  "cond": { "gt": [ { "mul": [ { "ref": "hp" }, { "ref": "maxMp" } ] }, { "mul": [ { "ref": "mp" }, { "ref": "maxHp" } ] } ] },
+                  "then": [ { "op": "mp", "delta": { "min": [ 8, { "ceilDiv": [ { "ref": "maxMp" }, 3 ] } ] } } ],
+                  "else": [
+                    { "op": "if", "cond": { "eq": [ { "ref": "var.which" }, "hp" ] },
+                      "then": [ { "op": "hp", "delta": { "min": [ 18, { "ceilDiv": [ { "ref": "maxHp" }, 3 ] } ] } } ],
+                      "else": [ { "op": "mp", "delta": { "min": [ 8, { "ceilDiv": [ { "ref": "maxMp" }, 3 ] } ] } } ] }
+                  ] }
+              ] }
+          ] }
+      ]
+    },
+    "AT01": {
+      "uses": [
+        { "where": ["battle"], "effects": [ { "op": "dealDamage", "amount": 10, "boostable": true } ] }
+      ]
+    },
+    "AT02": {
+      "uses": [
+        { "id": "battle", "where": ["battle"], "unique": "AT02",
+          "effects": [
+            { "op": "addMark", "mark": {
+                "id": "AT02-card", "hook": "enemyDamage", "stage": "card", "unique": "AT02",
+                "when": { "gt": [ { "ref": "battle.damage" }, 0 ] },
+                "uses": 1,
+                "effects": [ { "op": "halveDamage", "round": "ceil" } ] } }
+          ] },
+        { "id": "trap", "where": ["trap"], "effects": [ { "op": "negateTrap" } ] }
+      ]
+    },
+    "AT03": {
+      "uses": [
+        { "where": ["battle"], "unique": "AT03",
+          "effects": [
+            { "op": "addMark", "mark": {
+                "id": "AT03-caltrops", "hook": "afterEnemyAction", "unique": "AT03",
+                "when": { "gt": [ { "ref": "battle.hpLost" }, 0 ] },
+                "uses": 2, "expires": { "enemyActions": 2 },
+                "effects": [ { "op": "dealDamage", "amount": 4 } ] } }
+          ] }
+      ]
+    },
+    "AT11": {
+      "uses": [
+        { "where": ["battle"], "effects": [ { "op": "dealDamage", "amount": 5, "times": 2 } ] }
+      ]
+    },
+    "BD01": {
+      "uses": [
+        { "where": ["afterRoll"],
+          "inputs": [ { "id": "delta", "type": "enum", "values": [-1, 1] } ],
+          "effects": [ { "op": "adjustDie", "to": { "add": [ { "ref": "die" }, { "ref": "var.delta" } ] } } ] }
+      ]
+    },
+    "BD02": {
+      "uses": [
+        { "where": ["board"], "effects": [ { "op": "setDieRule", "table": { "4": 3, "5": 3, "6": 3 } } ] }
+      ]
+    },
+    "BD09": {
+      "uses": [
+        { "where": ["board"], "effects": [ { "op": "revealShop" } ] }
+      ]
+    },
+    "BD11": {
+      "uses": [
+        { "where": ["afterRoll"], "effects": [ { "op": "adjustDie", "to": { "sub": [ 7, { "ref": "die" } ] } } ] }
+      ]
+    },
+    "BD40": {
+      "uses": [
+        { "where": ["inn"],
+          "inputs": [ { "id": "slot", "type": "int", "min": 2, "max": 3 }, { "id": "newItemId", "type": "string" } ],
+          "effects": [ { "op": "swapShopSlot" } ] }
+      ]
+    },
+    "BD41": {
+      "uses": [
+        { "where": ["afterRoll"],
+          "effects": [ { "op": "adjustDie",
+            "to": { "if": [ { "lte": [ { "ref": "die" }, 3 ] }, 4, 3 ] },
+            "constraints": ["sameForcedStop"] } ] }
+      ]
+    },
+    "BD42": {
+      "uses": [
+        { "where": ["afterRoll"],
+          "effects": [ { "op": "adjustDie",
+            "to": { "if": [ { "lte": [ { "ref": "die" }, 3 ] }, { "add": [ { "ref": "die" }, 3 ] }, { "sub": [ { "ref": "die" }, 3 ] } ] } } ] }
+      ]
+    },
+    "BD43": {
+      "uses": [
+        { "where": ["board"],
+          "inputs": [ { "id": "target", "type": "int", "min": 2, "max": 100 } ],
+          "effects": [ { "op": "showLandingOdds", "within": 12 } ] }
+      ]
+    },
+    "BD49": {
+      "uses": [
+        { "where": ["gate"],
+          "inputs": [ { "id": "order", "type": "sequence", "of": ["sword", "staff", "shield"] } ],
+          "requires": [ { "when": { "not": { "ref": "flag", "key": "BD49used" } }, "reason": "used" } ],
+          "effects": [
+            { "op": "setFlag", "key": "BD49used", "value": true },
+            { "op": "if", "cond": { "eq": [ { "ref": "var.order" }, ["sword", "staff", "shield"] ] },
+              "then": [ { "op": "reserve", "slot": "nextBattle", "filter": "king", "unique": "BD49", "label": "BD49",
+                "rules": [ { "id": "BD49-guard", "hook": "enemyDamage", "stage": "gear",
+                  "when": { "gt": [ { "ref": "battle.damage" }, 0 ] }, "uses": 1,
+                  "effects": [ { "op": "reduceDamage", "amount": 10 } ] } ] } ] }
+          ] }
+      ]
+    },
+    "BD50": {
+      "uses": [
+        { "where": ["board"],
+          "inputs": [ { "id": "nums", "type": "ints", "min": 1, "max": 6, "minCount": 2, "maxCount": 3 } ],
+          "requires": [ { "when": { "between": [ { "sub": [ { "ref": "nextStop" }, { "ref": "pos" } ] }, 3, 15 ] }, "reason": "notNow" } ],
+          "effects": [
+            { "op": "if",
+              "cond": { "eq": [ { "sum": { "ref": "var.nums" } }, { "sub": [ { "ref": "nextStop" }, { "ref": "pos" } ] } ] },
+              "then": [ { "op": "reserve", "slot": "arrival", "pos": { "ref": "nextStop" }, "withinMoves": 6, "unique": "BD50", "label": "BD50",
+                "effects": [ { "op": "hp", "delta": 18 }, { "op": "mp", "delta": 6 } ] } ] }
+          ] }
+      ]
+    }
+  }
+}
