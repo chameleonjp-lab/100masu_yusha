@@ -20,6 +20,8 @@ export class ContentError extends Error {
 }
 
 const KINDS = ['金貨', '装備', '戦闘', '道具', '回復', '宿場', '選択', '罠'];
+// MB03 (霧狼) fights with decoys: 3 candidates, one real body (tuning.enemyTraits may override)
+const DEFAULT_TRAITS = { MB03: { decoys: 3 } };
 export const ENEMY_KIND = (id) => (id === 'DK01' ? 'king' : id.startsWith('MB') ? 'optional' : 'normal');
 
 function isSampleFile(name) {
@@ -78,12 +80,19 @@ export function buildContent(raw, options = {}) {
       err('tuning-spell', `tuning.spells.${id} missing`);
       continue;
     }
-    Object.assign(spells[id], { mpCost: t.mpCost, kind: t.kind, power: t.power, text: t.text });
+    const { name: _n, ...rest } = t; // base spellBooks owns the name
+    Object.assign(spells[id], rest);
+    if (!['attack', 'heal', 'guard', 'finisher'].includes(t.kind)) err('tuning-spell', `tuning.spells.${id}.kind must be attack|heal|guard|finisher`);
+    if (typeof t.mpCost !== 'number' || typeof t.power !== 'number') err('tuning-spell', `tuning.spells.${id} needs numeric mpCost and power`);
   }
   for (const j of ['JB00', 'JB01', 'JB02', 'JB03']) if (!tuning.jobs || !tuning.jobs[j]) err('tuning-job', `tuning.jobs.${j} missing`);
+  if (!tuning.dieBonus || !tuning.dieBonus.small || !tuning.dieBonus.big) err('tuning-die-bonus', 'tuning.dieBonus.small / .big missing');
   const jobs = tuning.jobs || {};
   const companions = tuning.companions || {};
   const taverns = tuning.taverns || {};
+  for (const b of base.bands) if (!taverns[String(b.id)]) err('tuning-taverns', `tuning.taverns.${b.id} missing`);
+  for (const [bid, ids] of Object.entries(taverns)) for (const id of ids) if (!companions[id]) err('tuning-taverns', `tuning.taverns.${bid} lists unknown companion ${id}`);
+  for (const id of tuning.tavernFallbackOrder || []) if (!companions[id]) err('tuning-taverns', `tavernFallbackOrder lists unknown companion ${id}`);
 
   // ---- enemies ------------------------------------------------------------
   const enemies = {};
@@ -108,8 +117,9 @@ export function buildContent(raw, options = {}) {
       maxHp: null,
       phases: null,
       phaseTwoThresholdHp: null,
-      traits: { ...(tuning.enemyTraits && tuning.enemyTraits[r.id]) },
+      traits: { ...(DEFAULT_TRAITS[r.id] || {}), ...(tuning.enemyTraits && tuning.enemyTraits[r.id]) },
       statSource: null,
+      bandStats: {},
     };
   }
   for (const b of settings.bosses || []) {
@@ -150,8 +160,16 @@ export function buildContent(raw, options = {}) {
       phaseTwoThresholdHp: null,
       traits: { ...(tuning.enemyTraits && tuning.enemyTraits[m.id]) },
       statSource: 'balance-draft-2',
+      bandStats: {},
     };
   }
+  const checkActions = (id, label, actions) => {
+    if (!Array.isArray(actions) || !actions.length) {
+      err('enemy-order', `${id} ${label}: actions missing`);
+      return;
+    }
+    if (actions.map((a) => a.order).join() !== actions.map((_, i) => i + 1).join()) err('enemy-order', `${id} ${label}: action orders must be 1..n`);
+  };
   for (const [id, t] of Object.entries(tuning.normalEnemies || {})) {
     const e = enemies[id];
     if (!e) {
@@ -165,6 +183,19 @@ export function buildContent(raw, options = {}) {
     e.maxHp = t.maxHp;
     e.phases = [{ name: '通常', actions: t.actions.map((a) => ({ ...a })) }];
     e.statSource = 'tuning';
+    if (t.bands && JSON.stringify(t.bands) !== JSON.stringify(e.bands)) err('tuning-enemy-bands', `${id}: tuning bands ${JSON.stringify(t.bands)} != base bands ${JSON.stringify(e.bands)}`);
+    checkActions(id, 'base', t.actions);
+    // per-band stat blocks (EN02 band 3, EN07 band 5): a whole block replaces maxHp/baseAttack/baseDefense/actions
+    for (const [bandKey, blk] of Object.entries(t.bandOverrides || {})) {
+      const bandNum = Number(bandKey);
+      if (!e.bands.includes(bandNum)) {
+        err('tuning-band-override', `${id}.bandOverrides.${bandKey}: ${id} does not appear in band ${bandKey}`);
+        continue;
+      }
+      for (const f of ['maxHp', 'baseAttack', 'baseDefense', 'actions']) if (blk[f] === undefined) err('tuning-band-override', `${id}.bandOverrides.${bandKey}.${f} missing`);
+      checkActions(id, `band ${bandKey}`, blk.actions);
+      e.bandStats[bandNum] = { maxHp: blk.maxHp, phases: [{ name: '通常', actions: blk.actions.map((a) => ({ ...a })) }] };
+    }
   }
   for (const e of Object.values(enemies)) {
     if (!e.phases || !e.maxHp) err('enemy-stats', `enemy ${e.id} (${e.name}) has no maxHp/actions (tuning missing?)`);
@@ -358,16 +389,8 @@ export function buildContent(raw, options = {}) {
 export async function loadContent(loader, options = {}) {
   const base = await loader.readJson('data/adventure-content.json');
   const balance = await loader.readJson('data/balance-draft-2.json');
-  let tuning = null;
-  let tuningSource = 'data';
-  for (const [i, path] of (loader.tuningPaths || ['data/tuning.json']).entries()) {
-    tuning = await loader.readJson(path, { optional: true });
-    if (tuning) {
-      tuningSource = i === 0 ? 'data' : 'stub';
-      break;
-    }
-  }
-  if (!tuning) throw new Error('no tuning file found (data/tuning.json or the fixture stub)');
+  const tuning = await loader.readJson('data/tuning.json');
+  const tuningSource = 'data';
   const patch = await loader.readJson('data/patches/encounters-balance-draft-2.json', { optional: true });
   const files = await loader.scriptFiles();
   const read = async (list) => {

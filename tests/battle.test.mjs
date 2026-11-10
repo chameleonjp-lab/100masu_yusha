@@ -15,27 +15,27 @@ const tweak = (s, fn) => {
 const A = (c, s, a, o) => dispatch(c, s, a, o);
 
 test('rounds: damage = max(1, atk-def) with the announced defense; zero-attack actions do not hit; the table cycles from order 1', () => {
-  // die 2 -> the first positive damage the hero takes is softened by 3
-  const b = startBattle(content, base, 'EN09', { die: 2 });
+  // die 3 -> the first positive damage the hero takes is softened by 4 (tuning.dieBonus.small)
+  const b = startBattle(content, base, 'EN09', { die: 3 });
   const c = b.content;
   let s = b.state;
   assert.equal(s.phase, 'battle');
   let v = view(c, s);
   assert.deepEqual([v.battle.telegraph.name, v.battle.telegraph.kind, v.battle.telegraph.defense, v.battle.telegraph.hits], ['草束を投げる', '通常攻撃', 2, true]);
   assert.deepEqual([v.battle.telegraph.damageIfUnguarded, v.battle.telegraph.damageIfGuarded, v.battle.telegraph.heroAttackDamage], [5, 3, 5]);
-  // round 1: hero deals 7-2=5; enemy base 10-5=5, softened to 2
+  // round 1: hero deals 7-2=5; enemy base 10-5=5, softened to 1
   let r = A(c, s, { type: 'attack' });
   s = r.state;
   assert.equal(s.battle.enemy.hp, 8);
-  assert.equal(s.hp, 38);
-  assert.deepEqual(fxOf(r.effects, 'hit').map((e) => [e.target, e.amount]), [['enemy', 5], ['hero', 2]]);
+  assert.equal(s.hp, 39);
+  assert.deepEqual(fxOf(r.effects, 'hit').map((e) => [e.target, e.amount]), [['enemy', 5], ['hero', 1]]);
   // round 2: 草盾 (defense 5, no attack): displayed defense applies this turn, the enemy does not hit
   v = view(c, s);
   assert.deepEqual([v.battle.telegraph.name, v.battle.telegraph.defense, v.battle.telegraph.hits], ['草盾を立てる', 5, false]);
   r = A(c, s, { type: 'attack' });
   s = r.state;
   assert.equal(s.battle.enemy.hp, 6); // 7-5 = 2
-  assert.equal(s.hp, 38);
+  assert.equal(s.hp, 39);
   assert.deepEqual(fxOf(r.effects, 'hit').map((e) => e.target), ['enemy']);
   // round 3: ほどける (defense 1): 6 damage kills; the kill is a win, no enemy action
   v = view(c, s);
@@ -43,9 +43,9 @@ test('rounds: damage = max(1, atk-def) with the announced defense; zero-attack a
   r = A(c, s, { type: 'attack' }, NO_DROPS);
   assert.equal(r.state.phase, 'battleReward');
   assert.equal(fxOf(r.effects, 'enemyAct').length, 0);
-  assert.equal(r.state.hp, 38);
+  assert.equal(r.state.hp, 39);
   // the table wraps back to order 1
-  const again = startBattle(content, base, 'EN09', { die: 2 });
+  const again = startBattle(content, base, 'EN09', { die: 3 });
   let t = again.state;
   for (let i = 0; i < 3; i++) t = A(again.content, t, { type: 'guard' }).state;
   assert.equal(view(again.content, t).battle.telegraph.name, '草束を投げる');
@@ -65,23 +65,23 @@ test('guard halves (ceil) before everything else; a softened 0 leaves nothing to
 test('landing die: 1-3 softens only the first positive hit taken; 4-6 boosts only the first direct damage (attack/spell/AT01, not AT11)', () => {
   const soft = startBattle(content, base, 'EN09', { die: 3 });
   let s = A(soft.content, soft.state, { type: 'attack' }).state;
-  assert.equal(s.hp, 38);
+  assert.equal(s.hp, 39);
   s = A(soft.content, s, { type: 'guard' }).state; // round 2: no attack
   s = A(soft.content, s, { type: 'guard' }).state; // round 3
   const r4 = A(soft.content, s, { type: 'guard' }); // round 4: 草束 again, guarded: ceil(5/2) = 3, soften already used
-  assert.equal(r4.state.hp, 35);
+  assert.equal(r4.state.hp, 36);
 
   const boost = startBattle(content, base, 'EN09', { die: 5, patch: { bag: ['AT11', 'AT01'] } });
-  assert.deepEqual(view(boost.content, boost.state).battle.dieBonus, { kind: 'boost', amount: 4, used: false, die: 5 });
+  assert.deepEqual(view(boost.content, boost.state).battle.dieBonus, { kind: 'boost', amount: 5, used: false, die: 5 });
   let t = tweak(boost.state, (x) => { x.battle.enemy.hp = 60; x.battle.enemy.maxHp = 60; });
   let r = A(boost.content, t, { type: 'item', itemId: 'AT11' }); // two 5s, not boostable
   assert.equal(r.state.battle.enemy.hp, 50);
   assert.equal(r.state.battle.dieBonus.used, false);
-  r = A(boost.content, r.state, { type: 'attack' }); // round 2 (def 5): 2 + 4 boost
-  assert.equal(r.state.battle.enemy.hp, 44);
+  r = A(boost.content, r.state, { type: 'attack' }); // round 2 (def 5): 2 + 5 boost (die 5)
+  assert.equal(r.state.battle.enemy.hp, 43);
   assert.equal(r.state.battle.dieBonus.used, true);
   r = A(boost.content, r.state, { type: 'item', itemId: 'AT01' }); // plain 10 now
-  assert.equal(r.state.battle.enemy.hp, 34);
+  assert.equal(r.state.battle.enemy.hp, 33);
   // guard / heal / viewing never spend the boost
   const g = startBattle(content, base, 'EN09', { die: 6 });
   assert.equal(A(g.content, g.state, { type: 'guard' }).state.battle.dieBonus.used, false);
@@ -160,17 +160,17 @@ test('AT02 halves (ceil) the next hit actually taken; no-attack turns and 0 dama
   assert.throws(() => A(dup.content, used, { type: 'item', itemId: 'AT02' }), /item_alreadyActive/);
 });
 
-test('reduction order: guard -> shield companion -> small die -> card; a card keeps its use when nothing is left to halve', () => {
+test('reduction order: guard -> 石の衣 -> shield companion -> small die -> card; a card keeps its use when nothing is left to halve', () => {
   const card = { id: 'card', hook: 'enemyDamage', stage: 'card', when: { gt: [{ ref: 'battle.damage' }, 0] }, uses: 1, effects: [{ op: 'halveDamage', round: 'ceil' }] };
-  // guarded 5 -> 3, die 2 softens 3 -> 0: the card is not spent
+  // EN09, die 2 (soften 5): guarded 5 -> 3, softened 3 -> 0: the card is not spent
   const g = startBattle(content, base, 'EN09', { die: 2, rules: [card] });
   let r = A(g.content, g.state, { type: 'guard' });
   assert.equal(r.state.hp, 40);
   assert.equal(r.state.battle.marks.length, 1);
-  // unguarded 5 -> soften -> 2 -> card -> 1
-  const u = startBattle(content, base, 'EN09', { die: 2, rules: [card] });
+  // EN03, die 3 (soften 4): unguarded 10 -> softened 6 -> card 3
+  const u = startBattle(content, base, 'EN03', { die: 3, rules: [card] });
   r = A(u.content, u.state, { type: 'attack' });
-  assert.equal(r.state.hp, 39);
+  assert.equal(r.state.hp, 37);
   assert.equal(r.state.battle.marks.length, 0);
 });
 
@@ -182,75 +182,119 @@ test('AT11 hits twice and stops when the first hit finishes the enemy; AT01 10 f
   assert.equal(r.state.phase, 'battleReward');
 });
 
-test('spells: cost shown and paid, insufficient mp neither spends nor lets the enemy act; mage discount; heal; finisher vs 大技', () => {
+test('spells: cost shown and paid, insufficient mp neither spends nor lets the enemy act; mage discount; heal; finisher vs 大技; 石の衣 persists until a hit lands', () => {
   const learned = { spells: { learned: ['SP01', 'SP02', 'SP03', 'SP04'], prepared: ['SP01', 'SP04'] } };
-  const b = startBattle(content, base, 'EN03', { die: 2, patch: { ...learned, hp: 30 } });
-  let v = view(b.content, b.state);
-  assert.deepEqual(v.battle.spells.map((x) => [x.id, x.cost, x.mpAfter]), [['SP01', 3, 7], ['SP04', 8, 2]]);
-  // 火花: 10 fixed (ignores defense 5)
+  const sw10 = { gear: [...base.gear, { iid: 'g3', id: 'SW10', paidGold: null, from: 'drop' }], equipped: { sword: 'g3', armor: 'g2' } }; // atk 6+5
+  const b = startBattle(content, base, 'EN03', { die: 2, patch: { ...learned, ...sw10, hp: 30 } });
+  const v = view(b.content, b.state);
+  assert.deepEqual(v.battle.spells.map((x) => [x.id, x.cost, x.mpAfter]), [['SP01', 4, 6], ['SP04', 7, 3]]);
+  // 火花: 4 + 2 x level = 6 fixed damage (defense 6 does not matter)
   let r = A(b.content, b.state, { type: 'spell', spellId: 'SP01' });
-  assert.equal(r.state.mp, 7);
-  assert.equal(r.state.battle.enemy.hp, 16);
+  assert.equal(r.state.mp, 6);
+  assert.equal(r.state.battle.enemy.hp, 12);
   assert.throws(() => A(b.content, b.state, { type: 'spell', spellId: 'SP02' }), /spell_not_prepared/);
-  // finisher: half on a normal telegraph, full on 大技 (round 2 of EN03)
+  // finisher: x1 on a normal telegraph (11-6 = 5), x2 on 大技 (round 2)
   r = A(b.content, b.state, { type: 'spell', spellId: 'SP04' });
-  assert.equal(r.state.battle.enemy.hp, 26 - 18);
+  assert.equal(r.state.battle.enemy.hp, 18 - 5);
   const big = tweak(b.state, (x) => { x.battle.enemy.hp = 60; x.battle.enemy.maxHp = 60; x.mp = 20; });
   const r2 = A(b.content, big, { type: 'guard' });
   assert.equal(r2.state.battle.current.kind, '大技');
   const fin = A(b.content, r2.state, { type: 'spell', spellId: 'SP04' });
-  assert.equal(60 - fin.state.battle.enemy.hp, 36);
-  assert.equal(view(b.content, A(b.content, big, { type: 'guard' }).state).battle.spells[1].enabled, true);
-  const poor = tweak(r2.state, (x) => { x.mp = 2; });
+  assert.equal(60 - fin.state.battle.enemy.hp, 10);
+  const poor = tweak(r2.state, (x) => { x.mp = 6; });
   assert.equal(view(b.content, poor).battle.spells[1].enabled, false);
   // insufficient mp: dispatch throws, nothing changes (no enemy action either)
-  const low = tweak(b.state, (x) => { x.mp = 2; });
+  const low = tweak(b.state, (x) => { x.mp = 3; });
   const frozen = cl(low);
   assert.throws(() => A(b.content, low, { type: 'spell', spellId: 'SP01' }), /insufficient_mp/);
   assert.deepEqual(low, frozen);
-  // mage discount
+  // mage discount: attack spells only, min 1
   const mage = startBattle(content, base, 'EN03', { die: 2, patch: { ...learned, job: 'JB02' } });
-  assert.equal(view(mage.content, mage.state).battle.spells[0].cost, 2);
+  assert.deepEqual(view(mage.content, mage.state).battle.spells.map((x) => x.cost), [2, 5]);
   assert.equal(A(mage.content, mage.state, { type: 'spell', spellId: 'SP01' }).state.mp, 8);
-  // heal and guard spells
+  const mageHeal = startBattle(content, base, 'EN03', { die: 2, patch: { spells: { learned: ['SP02'], prepared: ['SP02'] }, job: 'JB02', hp: 5 } });
+  assert.equal(view(mageHeal.content, mageHeal.state).battle.spells[0].cost, 5); // not an attack spell
+  // heal 10 + level: 11, then the crab's hit (15-5 = 10, softened 5) leaves 5
   const heal = startBattle(content, base, 'EN03', { die: 2, patch: { spells: { learned: ['SP01', 'SP02'], prepared: ['SP01', 'SP02'] }, hp: 10 } });
   const h = A(heal.content, heal.state, { type: 'spell', spellId: 'SP02' });
-  assert.equal(h.state.mp, 4);
-  assert.equal(h.state.hp, 10 + 16 - (10 - 3)); // heals 16, then 草歩き hit: 15-5=10, softened by 3
+  assert.equal(h.state.mp, 5);
+  assert.equal(h.state.hp, 10 + 11 - 5);
   const full = startBattle(content, base, 'EN03', { die: 2, patch: { spells: { learned: ['SP02'], prepared: ['SP02'] } } });
   assert.throws(() => A(full.content, full.state, { type: 'spell', spellId: 'SP02' }), /hp_full/);
+  // 石の衣: blocks up to 20 of the next hit that lands, survives a turn without an attack, cannot be stacked
+  const wall = startBattle(content, base, 'EN09', { die: 5, patch: { spells: { learned: ['SP03'], prepared: ['SP03'] } } });
+  const w0 = tweak(wall.state, (x) => { x.battle.enemy.hp = 100; x.battle.enemy.maxHp = 100; });
+  const w = A(wall.content, w0, { type: 'spell', spellId: 'SP03' }); // round 1: the hit (5) is blocked
+  assert.equal(w.state.hp, 40);
+  assert.equal(w.state.battle.marks.length, 0);
+  // a round without an attack (草盾): the wall stays; casting it again is refused
+  const noAttack = { order: 2, name: '草盾を立てる', attack: 0, defense: 5, kind: '守り', tell: '', phaseIdx: 0 };
+  const atAttackFree = tweak(w0, (x) => { x.battle.cursor = 1; x.battle.current = { ...noAttack }; x.battle.rounds[0].enemyAction = { ...noAttack }; });
+  const w1 = A(wall.content, atAttackFree, { type: 'spell', spellId: 'SP03' });
+  assert.equal(w1.state.hp, 40);
+  assert.equal(w1.state.battle.marks.length, 1);
+  assert.throws(() => A(wall.content, tweak(w1.state, (x) => { x.mp = 10; }), { type: 'spell', spellId: 'SP03' }), /spell_active/);
+  // it then blocks the next hit that lands (up to 20), even a guarded one, and is gone afterwards
+  const hitRound = tweak(w1.state, (x) => { const a = { order: 1, name: '草束を投げる', attack: 10, defense: 2, kind: '通常攻撃', tell: '', phaseIdx: 0 }; x.battle.cursor = 0; x.battle.current = a; x.battle.rounds[x.battle.round - 1].enemyAction = a; });
+  const w2 = A(wall.content, hitRound, { type: 'guard' });
+  assert.equal(w2.state.hp, 40);
+  assert.equal(w2.state.battle.marks.length, 0);
 });
 
-test('warrior: the attack right after a guard hits 4 harder', () => {
+test('warrior: the attack right after a guard hits 6 harder', () => {
   const b = startBattle(content, base, 'EN09', { die: 2, patch: { job: 'JB01' } });
   let s = tweak(b.state, (x) => { x.battle.enemy.hp = 40; x.battle.enemy.maxHp = 40; });
   s = A(b.content, s, { type: 'guard' }).state; // round 1
-  const r = A(b.content, s, { type: 'attack' }); // round 2 (defense 5): 7-5 = 2, +4
-  assert.equal(40 - r.state.battle.enemy.hp, 6);
+  const r = A(b.content, s, { type: 'attack' }); // round 2 (defense 5): 7-5 = 2, +6
+  assert.equal(40 - r.state.battle.enemy.hp, 8);
   const r2 = A(b.content, r.state, { type: 'attack' }); // round 3 (defense 1): 6, no bonus
   assert.equal(r.state.battle.enemy.hp - r2.state.battle.enemy.hp, 6);
 });
 
-test('companions: shield trims 大技 before the hit, medic heals once at half hp, rule-based companions use the same hooks', () => {
+test('companions: shield trims every 大技 hit by 5 before the hit, medic heals 15 once at half hp, thrower, lantern', () => {
   const shield = startBattle(content, base, 'EN03', { die: 5, patch: { companions: ['CP01'] } });
   let s = A(shield.content, shield.state, { type: 'guard' }).state; // round 1: normal 10, guarded 5
   assert.equal(s.hp, 35);
-  const r = A(shield.content, s, { type: 'attack' }); // round 2: 大技 22-5 = 17, shield 6 -> 11
-  assert.equal(35 - r.state.hp, 11);
+  const r = A(shield.content, s, { type: 'attack' }); // round 2: 大技 22-5 = 17, shield 5 -> 12
+  assert.equal(35 - r.state.hp, 12);
   assert.equal(fxOf(r.effects, 'companion')[0].role, 'shield');
+  // the shield does not touch a normal attack
+  const plain = startBattle(content, base, 'EN03', { die: 5, patch: { companions: ['CP01'] } });
+  assert.equal(A(plain.content, plain.state, { type: 'attack' }).state.hp, 30);
+
   const medic = startBattle(content, base, 'EN03', { die: 5, patch: { companions: ['CP02'], hp: 24 } });
-  let m = A(medic.content, medic.state, { type: 'attack' }); // 24-10 = 14 <= 20 -> heal 14
-  assert.equal(m.state.hp, 28);
-  assert.equal(fxOf(m.effects, 'companion')[0].amount, 14);
-  m = A(medic.content, m.state, { type: 'attack' }); // 大技 17 -> 11 <= 20 but already used
-  assert.equal(m.state.hp, 11);
-  const striker = startBattle(content, base, 'EN03', { die: 2, patch: { companions: ['CP03'] } });
-  const st = A(striker.content, striker.state, { type: 'attack' });
-  assert.equal(striker.state.battle.enemy.hp - st.state.battle.enemy.hp, 2 + 3);
+  let m = A(medic.content, medic.state, { type: 'attack' }); // 24-10 = 14 <= 20 -> heal 15
+  assert.equal(m.state.hp, 29);
+  assert.equal(fxOf(m.effects, 'companion')[0].amount, 15);
+  m = A(medic.content, m.state, { type: 'attack' }); // 大技 17 -> 12 <= 20 but already used
+  assert.equal(m.state.hp, 12);
+
+  // CP03 thrower: 6 damage ignoring defense on an 反撃の隙 turn when the hero's action left the enemy alive
+  const thrower = startBattle(content, base, 'EN03', { die: 2, patch: { companions: ['CP03'] } });
+  let t = tweak(thrower.state, (x) => { x.battle.enemy.hp = 100; x.battle.enemy.maxHp = 100; });
+  t = A(thrower.content, t, { type: 'guard' }).state;
+  let tr = A(thrower.content, t, { type: 'guard' });
+  assert.equal(fxOf(tr.effects, 'companion').length, 0);
+  t = tr.state; // round 3: 両ばさみが下がる (defense 2): attack 7-2 = 5, thrower 6
+  tr = A(thrower.content, t, { type: 'attack' });
+  assert.equal(t.battle.enemy.hp - tr.state.battle.enemy.hp, 5 + 6);
+  assert.equal(fxOf(tr.effects, 'companion')[0].role, 'thrower');
+  // the thrower can finish the enemy: a win is a win
+  const finish = tweak(t, (x) => { x.battle.enemy.hp = 8; });
+  assert.equal(A(thrower.content, finish, { type: 'attack' }, NO_DROPS).state.phase, 'battleReward');
+
+  // CP04 lantern: +3 mp when a fight starts, including a retry; the recorded start mp is the one before it
+  const lantern = startBattle(content, base, 'EN09', { die: 5, patch: { companions: ['CP04'], mp: 5, hp: 1 } });
+  assert.equal(lantern.state.mp, 8);
+  assert.equal(lantern.state.battle.startMp, 5);
+  const lost = A(lantern.content, lantern.state, { type: 'attack' });
+  assert.equal(lost.state.phase, 'retryOffer');
+  const again = A(lantern.content, A(lantern.content, lost.state, { type: 'retry' }).state, { type: 'resumeBattle' });
+  assert.equal(again.state.mp, 8); // max(5, ceil(10/2)) = 5, then +3 again
 });
 
 test('gear rules: SW07 riposte, SW50 combo (attack+guard in any order), one use per battle', () => {
-  const sw07 = startBattle(content, base, 'EN09', { die: 2, patch: { gear: [...base.gear, { iid: 'g3', id: 'SW07', paidGold: null, from: 'drop' }], equipped: { sword: 'g3', armor: 'g2' } } });
+  const sw07 = startBattle(content, base, 'EN09', { die: 3, patch: { gear: [...base.gear, { iid: 'g3', id: 'SW07', paidGold: null, from: 'drop' }], equipped: { sword: 'g3', armor: 'g2' } } });
   let s = tweak(sw07.state, (x) => { x.battle.enemy.hp = 50; x.battle.enemy.maxHp = 50; });
   s = A(sw07.content, s, { type: 'attack' }).state; // round 1: 9-2 = 7, hp lost this round (2 after soften)
   assert.equal(s.battle.enemy.hp, 43);

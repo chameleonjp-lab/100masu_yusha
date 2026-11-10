@@ -13,8 +13,6 @@ export const REPO_ROOT = resolve(HERE, '..', '..');
 export function createNodeLoader(root = REPO_ROOT) {
   return {
     root,
-    // data/tuning.json is preferred; the fixture stub is the fallback.
-    tuningPaths: ['data/tuning.json', 'tests/fixtures/tuning.stub.json'],
     async readJson(rel, opts = {}) {
       try {
         return JSON.parse(await readFile(join(root, rel), 'utf8'));

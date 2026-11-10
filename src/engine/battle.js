@@ -25,11 +25,14 @@ import { ORIGIN_HANDLERS, finishEvent, finishSquare, resetTurn } from './events.
 
 // ---- setup ------------------------------------------------------------------------------
 
+// tuning.dieBonus: small.firstPositiveDamageReduction[die] for dice 1-3, big.firstDirectHitBonus[die] for dice 4-6
 const dieBonusFor = (content, die) => {
   const cfg = content.tuning.dieBonus;
   if (!cfg || die == null) return null;
-  if (die >= cfg.soften.range[0] && die <= cfg.soften.range[1]) return { kind: 'soften', amount: cfg.soften.amount, used: false, die };
-  if (die >= cfg.boost.range[0] && die <= cfg.boost.range[1]) return { kind: 'boost', amount: cfg.boost.amount, used: false, die };
+  const soft = cfg.small.firstPositiveDamageReduction[String(die)];
+  if (soft !== undefined) return { kind: 'soften', amount: soft, used: false, die };
+  const boost = cfg.big.firstDirectHitBonus[String(die)];
+  if (boost !== undefined) return { kind: 'boost', amount: boost, used: false, die };
   return null;
 };
 
@@ -37,6 +40,13 @@ export function enemyDef(content, enemyId) {
   const e = content.enemies[enemyId];
   if (!e) fail('unknown_enemy', String(enemyId));
   return e;
+}
+
+/** maxHp + action table for the band where the fight happens (EN02 band 3, EN07 band 5 have their own blocks). */
+export function statsFor(content, enemyId, band) {
+  const e = enemyDef(content, enemyId);
+  const o = e.bandStats && e.bandStats[band];
+  return o ? { maxHp: o.maxHp, phases: o.phases } : { maxHp: e.maxHp, phases: e.phases };
 }
 
 function newMark(ctx, b, def, owner) {
@@ -68,13 +78,15 @@ export function startBattle(ctx, enemyId, params, origin, kindOverride) {
   const content = ctx.content;
   const def = enemyDef(content, enemyId);
   const kind = kindOverride || def.kind;
+  const band = bandOfPos(content, s.pos).id;
+  const stats = statsFor(content, enemyId, band);
   const b = {
     id: s.nextBattleId++,
     enemyId,
     kind,
-    band: bandOfPos(content, s.pos).id,
+    band,
     origin: clone(origin),
-    enemy: { id: enemyId, name: def.name, maxHp: def.maxHp, hp: def.maxHp },
+    enemy: { id: enemyId, name: def.name, maxHp: stats.maxHp, hp: stats.maxHp },
     phaseIdx: 0,
     cursor: 0,
     phaseChanged: false,
@@ -100,7 +112,7 @@ export function startBattle(ctx, enemyId, params, origin, kindOverride) {
   s.phase = 'battle';
   s.offer = null;
   discover(ctx, 'enemies', enemyId);
-  ctx.emit({ t: 'battleStart', enemyId, name: def.name, kind, maxHp: def.maxHp, die: s.turn.die, dieBonus: b.dieBonus ? { kind: b.dieBonus.kind, amount: b.dieBonus.amount } : null });
+  ctx.emit({ t: 'battleStart', enemyId, name: def.name, kind, band, maxHp: stats.maxHp, die: s.turn.die, dieBonus: b.dieBonus ? { kind: b.dieBonus.kind, amount: b.dieBonus.amount } : null });
 
   const f = params.field || {};
   if (f.enemyHp) {
@@ -148,8 +160,17 @@ export function startBattle(ctx, enemyId, params, origin, kindOverride) {
 }
 
 function beginFight(ctx) {
-  const b = ctx.s.battle;
+  const s = ctx.s;
+  const b = s.battle;
   b.stage = 'fight';
+  // CP04 (lantern): mana at the start of every fight, including a retry's start
+  for (const id of s.companions) {
+    const c = ctx.content.companions[id];
+    if (c && c.role === 'lantern') {
+      const got = changeMp(ctx, c.effect.restoreMp, undefined, { reason: 'companion' });
+      ctx.emit({ t: 'companion', id, role: 'lantern', amount: got });
+    }
+  }
   runHook(ctx, 'battleStart', {});
 }
 
@@ -196,7 +217,7 @@ function announce(ctx) {
   const s = ctx.s;
   const b = s.battle;
   const def = enemyDef(ctx.content, b.enemyId);
-  const phase = def.phases[b.phaseIdx];
+  const phase = statsFor(ctx.content, b.enemyId, b.band).phases[b.phaseIdx];
   const a = phase.actions[b.cursor];
   b.current = { ...a, phaseIdx: b.phaseIdx, phaseName: phase.name };
   b.rounds.push({
@@ -221,14 +242,14 @@ function announce(ctx) {
 
 function advance(ctx) {
   const b = ctx.s.battle;
-  const def = enemyDef(ctx.content, b.enemyId);
-  if (b.phaseChangePending && def.phases.length > 1) {
+  const phases = statsFor(ctx.content, b.enemyId, b.band).phases;
+  if (b.phaseChangePending && phases.length > 1) {
     b.phaseIdx = 1;
     b.cursor = 0;
     b.phaseChangePending = false;
   } else {
     b.phaseChangePending = false;
-    b.cursor = (b.cursor + 1) % def.phases[b.phaseIdx].actions.length;
+    b.cursor = (b.cursor + 1) % phases[b.phaseIdx].actions.length;
   }
   b.round += 1;
   announce(ctx);
@@ -507,12 +528,13 @@ function heroDirectHit(ctx, spec) {
 
 function spellCostFor(ctx, sp) {
   const s = ctx.s;
+  // job discount first (attack spells only), then gear/item savings, then the minimum
   let cost = sp.mpCost;
   const j = jobDef(ctx.content, s);
-  if (sp.kind === 'attack' && j.attackSpellMpDiscount) cost = Math.max(1, cost - j.attackSpellMpDiscount);
+  if (sp.isAttackSpell && j.attackSpellMpDiscount) cost -= j.attackSpellMpDiscount;
   const hook = { spellCost: cost, attackKind: 'spell' };
   runHook(ctx, 'spellCost', hook);
-  return Math.max(sp.mpCost > 0 ? 1 : 0, hook.spellCost);
+  return Math.max(sp.mpCost > 0 ? (j.minimumMpCost || 1) : 0, hook.spellCost);
 }
 
 export function battleSpellCost(content, s, spellId) {
@@ -521,6 +543,8 @@ export function battleSpellCost(content, s, spellId) {
   const ctx = { content, s: probe, fx: [], emit() {}, forced: [], draw: () => 0.5, drawInt: () => 0 };
   return spellCostFor(ctx, content.spells[spellId]);
 }
+
+export const spellPower = (sp, s) => sp.power + (sp.powerPerLevel || 0) * s.level;
 
 function heroAct(ctx, action) {
   const s = ctx.s;
@@ -547,19 +571,29 @@ function heroAct(ctx, action) {
       const cost = spellCostFor(ctx, sp);
       if (s.mp < cost) fail('insufficient_mp', `${id} needs ${cost}`);
       if (sp.kind === 'heal' && s.hp >= maxHpOf(content, s)) fail('hp_full');
+      if (sp.kind === 'guard' && b.marks.some((m) => m.unique === `spell:${id}`)) fail('spell_active', id);
       changeMp(ctx, -cost, 0, { reason: 'spell' });
       rec.action = { type: 'spell', spellId: id, spellKind: sp.kind, cost, target: action.target === undefined ? null : action.target };
       ctx.emit({ t: 'spellCast', id, kind: sp.kind, cost });
-      if (sp.kind === 'attack') heroDirectHit(ctx, { kind: 'spell', base: sp.power, boostable: true, target: action.target });
-      else if (sp.kind === 'finisher') {
-        const base = b.current.kind === '大技' ? sp.power : Math.ceil(sp.power / 2);
-        heroDirectHit(ctx, { kind: 'spell', base, boostable: true, target: action.target });
+      if (sp.kind === 'attack') {
+        // fixed damage (4 + 2 x level for SP01), the enemy's defense does not matter
+        heroDirectHit(ctx, { kind: 'spell', base: spellPower(sp, s), boostable: true, target: action.target });
+      } else if (sp.kind === 'finisher') {
+        // normal-attack damage x2 against an announced 大技, x1 otherwise
+        const normal = Math.max(1, attackOf(content, s) - b.current.defense);
+        const mult = b.current.kind === '大技' ? sp.power : sp.otherwiseMultiplier || 1;
+        heroDirectHit(ctx, { kind: 'spell', base: normal * mult, boostable: true, target: action.target });
       } else if (sp.kind === 'heal') {
-        const hook = { damage: sp.power };
+        const hook = { damage: spellPower(sp, s) };
         runHook(ctx, 'spellHeal', hook);
         changeHp(ctx, hook.damage, undefined, { reason: 'spell' });
       } else if (sp.kind === 'guard') {
-        b.marks.push(newMark(ctx, b, { hook: 'enemyDamage', stage: 'shield', effects: [{ op: 'reduceDamage', amount: sp.power }], uses: 1, expires: { enemyActions: 1 }, label: id }, `spell:${id}`));
+        // blocks up to `power` of the next hit that lands (1+ damage); stays until then; does not stack
+        b.marks.push(newMark(ctx, b, {
+          id: `${id}-wall`, hook: 'enemyDamage', stage: 'wall', unique: `spell:${id}`, label: id, uses: 1,
+          when: { gt: [{ ref: 'battle.damage' }, 0] },
+          effects: [{ op: 'absorbDamage', amount: sp.power }],
+        }, `spell:${id}`));
       }
       break;
     }
@@ -594,7 +628,7 @@ function companionShield(ctx, hook, rec) {
   for (const id of s.companions) {
     const c = ctx.content.companions[id];
     if (c && c.role === 'shield' && rec.enemyAction.kind === '大技' && hook.damage > 0) {
-      const red = Math.min(hook.damage, c.effect.reduce);
+      const red = Math.min(hook.damage, c.effect.reduceDamage);
       hook.damage -= red;
       hook.reduced = (hook.reduced || 0) + red;
       ctx.emit({ t: 'companion', id, role: 'shield', amount: red });
@@ -619,7 +653,9 @@ function enemyAct(ctx) {
       hook.damage = Math.ceil(hook.damage / 2);
       hook.reduced += base - hook.damage;
     }
+    // order: guard -> 石の衣 (stage wall) -> shield companion -> other gear/marks -> small die -> card
     runHook(ctx, 'enemyDamage', hook, { stage: 'guard' });
+    runHook(ctx, 'enemyDamage', hook, { stage: 'wall' });
     companionShield(ctx, hook, rec);
     runHook(ctx, 'enemyDamage', hook, { stage: 'shield' });
     runHook(ctx, 'enemyDamage', hook, { stage: 'gear' });
@@ -666,6 +702,20 @@ function checkEnd(ctx) {
   return false;
 }
 
+/** CP03 (thrower): on an 反撃の隙 turn, if the enemy survived the hero's action, 6 damage ignoring defense. */
+function companionsAfterHero(ctx) {
+  const s = ctx.s;
+  const b = s.battle;
+  const rec = b.rounds[b.round - 1];
+  for (const id of s.companions) {
+    const c = ctx.content.companions[id];
+    if (!c || c.role !== 'thrower' || b.current.kind !== '反撃の隙' || b.enemy.hp <= 0) continue;
+    const dealt = b.current.immune ? 0 : damageEnemy(ctx, c.effect.damage);
+    ctx.emit({ t: 'companion', id, role: 'thrower', amount: dealt });
+    rec.companionActed = [...(rec.companionActed || []), id];
+  }
+}
+
 function companionsEndOfRound(ctx) {
   const s = ctx.s;
   const b = s.battle;
@@ -674,7 +724,7 @@ function companionsEndOfRound(ctx) {
     const c = ctx.content.companions[id];
     if (c && c.role === 'medic' && !b.flags[`medic:${id}`] && s.hp > 0 && s.hp * 2 <= maxHpOf(ctx.content, s)) {
       b.flags[`medic:${id}`] = true;
-      const got = changeHp(ctx, c.effect.heal, undefined, { reason: 'companion' });
+      const got = changeHp(ctx, c.effect.healHp, undefined, { reason: 'companion' });
       ctx.emit({ t: 'companion', id, role: 'medic', amount: got });
       rec.companionActed = [...(rec.companionActed || []), id];
     }
@@ -692,6 +742,8 @@ export function battleAction(ctx, action) {
     return;
   }
   heroAct(ctx, action);
+  if (checkEnd(ctx)) return;
+  companionsAfterHero(ctx);
   if (checkEnd(ctx)) return;
   // the hero turn is over: tick hero-turn based marks only after the whole round (see below)
   enemyAct(ctx);

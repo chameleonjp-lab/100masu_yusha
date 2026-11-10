@@ -7,8 +7,6 @@ import { loadContent } from './index.js';
 export function createBrowserLoader(baseUrl = './', fetchImpl = globalThis.fetch) {
   const url = (rel) => new URL(rel, new URL(baseUrl, globalThis.location ? globalThis.location.href : 'http://localhost/')).href;
   return {
-    // data/tuning.json first; the fixture stub only exists in dev checkouts.
-    tuningPaths: ['data/tuning.json', 'tests/fixtures/tuning.stub.json'],
     async readJson(rel, opts = {}) {
       const res = await fetchImpl(url(rel));
       if (!res.ok) {

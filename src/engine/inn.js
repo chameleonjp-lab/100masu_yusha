@@ -61,11 +61,18 @@ export function newInnState(ctx, bandId) {
 
 // ---- arrival ---------------------------------------------------------------------
 
+/**
+ * Two candidates: the band's pair from tuning.taverns minus current companions, refilled in
+ * tuning.tavernFallbackOrder (never a current companion, never a duplicate). Fixed on first entry.
+ */
 export function tavernCandidates(ctx, bandId) {
   const c = ctx.content;
-  const order = [...((c.taverns && c.taverns[String(bandId)]) || [])];
-  for (const id of Object.keys(c.companions)) if (!order.includes(id)) order.push(id);
-  return order.filter((id) => c.companions[id] && !ctx.s.companions.includes(id)).slice(0, 2);
+  const out = [];
+  const ok = (id) => c.companions[id] && !ctx.s.companions.includes(id) && !out.includes(id);
+  for (const id of (c.taverns && c.taverns[String(bandId)]) || []) if (ok(id) && out.length < 2) out.push(id);
+  const fallback = c.tuning.tavernFallbackOrder || Object.keys(c.companions);
+  for (const id of fallback) if (ok(id) && out.length < 2) out.push(id);
+  return out;
 }
 
 export function arriveAtInn(ctx, pos) {

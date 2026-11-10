@@ -108,4 +108,5 @@ export const OP_NAMES = Object.keys(OPS);
 
 export const COST_KEYS = ['gold', 'hp', 'mp', 'items', 'trapLoss'];
 export const RULE_KEYS = ['id', 'hook', 'when', 'limit', 'stage', 'effects', 'expires', 'uses', 'unique', 'label'];
-export const STAGES = ['guard', 'shield', 'gear', 'die', 'card'];
+// enemyDamage stages in order: guard (built-in halving) -> wall (石の衣) -> shield (companion, built-in) -> gear -> die (built-in small die) -> card (AT02)
+export const STAGES = ['guard', 'wall', 'shield', 'gear', 'die', 'card'];
