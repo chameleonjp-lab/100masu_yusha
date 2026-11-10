@@ -1,0 +1,42 @@
+{
+  "format": "equipment-scripts-1",
+  "_note": "Reference conversions written by game-implementation. Base stat comes from data/adventure-content.json (baseStat/statType); a script only carries the extra effects as rules. See docs/dev/script-format.md.",
+  "equipment": {
+    "SW01": { "rules": [] },
+    "AR01": { "rules": [] },
+    "SW07": {
+      "rules": [
+        { "id": "riposte", "hook": "heroAttackDamage",
+          "when": { "and": [ { "eq": [ { "ref": "battle.attackKind" }, "attack" ] }, { "gt": [ { "ref": "battle.hpLost", "offset": -1 }, 0 ] } ] },
+          "limit": { "perBattle": 1 },
+          "effects": [ { "op": "addDamage", "amount": 3 } ] }
+      ]
+    },
+    "SW50": {
+      "rules": [
+        { "id": "dawn-strike", "hook": "heroAttackDamage",
+          "when": { "and": [
+            { "eq": [ { "ref": "battle.attackKind" }, "attack" ] },
+            { "actions": { "rounds": [-2, -1], "anyOrder": ["attack", "guard"] } } ] },
+          "limit": { "perBattle": 1 },
+          "effects": [ { "op": "addDamage", "amount": 9 }, { "op": "hp", "delta": 4 } ] }
+      ]
+    },
+    "AR07": {
+      "rules": [
+        { "id": "one-step-brooch", "hook": "moveConfirm",
+          "when": { "eq": [ { "ref": "move.die" }, 1 ] },
+          "limit": { "perMove": 1 },
+          "effects": [ { "op": "hp", "delta": 2 } ] }
+      ]
+    },
+    "AR29": {
+      "rules": [
+        { "id": "safety-belt", "hook": "victory",
+          "when": { "lte": [ { "mul": [ { "ref": "hp" }, 4 ] }, { "ref": "maxHp" } ] },
+          "limit": { "perBattle": 1 },
+          "effects": [ { "op": "hp", "delta": 7 } ] }
+      ]
+    }
+  }
+}
