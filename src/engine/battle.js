@@ -639,7 +639,8 @@ function enemyAct(ctx) {
     rec.enemyHit = true;
     ctx.emit({ t: 'hit', target: 'hero', amount: hook.damage, base, blocked: Math.max(0, base - hook.damage), guarded: rec.guarded, hp: s.hp, maxHp: maxHpOf(content, s), enemyKind: cur.kind });
   }
-  if (s.hp > 0) runHook(ctx, 'afterEnemyAction', { hpLost: rec.hpLost, enemyKind: cur.kind });
+  // counters run even when the hero fell: mutual KO is a loss (checkEnd), rules that need a survivor say so in `when`
+  runHook(ctx, 'afterEnemyAction', { hpLost: rec.hpLost, enemyKind: cur.kind });
   // enemy-action based expiry
   for (const m of [...b.marks]) {
     if (m.enemyActionsLeft !== null) {

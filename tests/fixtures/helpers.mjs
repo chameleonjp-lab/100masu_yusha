@@ -77,3 +77,28 @@ export function landOnEvent(content, s, contentId, { pos = 10, die = 1, patch = 
   for (const p of t.board.innPositions) if (p < pos) t.inns[p].visited = true; // never stop early at an inn on the way
   return walk(content, t, die);
 }
+
+/** A content variant with extra/overridden scripts (fixtures for rules the real data does not exercise yet). */
+export function withScripts(content, { events = {}, items = {}, equipment = {} } = {}) {
+  return {
+    ...content,
+    scripts: {
+      events: { ...content.scripts.events, ...events },
+      items: { ...content.scripts.items, ...items },
+      equipment: { ...content.scripts.equipment, ...equipment },
+    },
+  };
+}
+
+/**
+ * Start a battle against `enemyId` by landing on a scripted fixture event. Returns { content, state, effects }.
+ * die: the landing die (1-3 softens the first hit taken, 4-6 boosts the first direct hit).
+ */
+export function startBattle(content, base, enemyId, { die = 2, patch = {}, rules, optional, pos = 10 } = {}) {
+  const op = { op: 'battle', enemy: enemyId };
+  if (rules) op.rules = rules;
+  if (optional) op.optional = true;
+  const c2 = withScripts(content, { events: { 'M1-22': { onLand: [op] } } });
+  const r = landOnEvent(c2, base, 'M1-22', { pos, die, patch });
+  return { content: c2, state: r.state, effects: r.effects };
+}
