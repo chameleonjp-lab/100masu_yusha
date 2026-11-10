@@ -572,3 +572,93 @@ test('M4 traps: 48 rein 160G or root hp-5; 49 hp-4; 50 mp-4 (needs 4) or cloth h
   const m = choose(land('M4-50', { patch: { mp: 4, hp: 20 } }).state, 'mark').state;
   assert.equal(m.mp, 0); assert.equal(m.hp, 20);
 });
+
+// ---- band 5 ----
+
+test('M5 gold events pay the source amount (M5-01 600, M5-06 800, M5-15 860, M5-16 1000, M5-03 580)', () => {
+  for (const [id, amt] of [['M5-01', 600], ['M5-06', 800], ['M5-15', 860], ['M5-16', 1000], ['M5-03', 580]]) {
+    const r = land(id, { patch: { gold: 3 } });
+    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+    assert.equal(only.length, 1, id);
+    const w = choose(r.state, only[0].optionId);
+    assert.equal(w.state.gold, 3 + amt, id);
+    assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
+  }
+});
+
+test('M5 gear gifts: SW41 AR42 SW48 AR50 free; M5-19 SW45 or AR45; M5-42 830G or SW43', () => {
+  for (const [id, gid] of [['M5-17', 'SW41'], ['M5-18', 'AR42'], ['M5-20', 'SW48'], ['M5-21', 'AR50']]) {
+    const r = land(id);
+    const o = view(content, r.state).actions.find((a) => a.type === 'chooseOption');
+    const w = choose(r.state, o.optionId).state;
+    assert.ok(ownsGear(w, gid), id);
+    assert.equal(gearOf(w, gid).paidGold, null);
+  }
+  let r = land('M5-19');
+  const s = choose(r.state, 'sword').state; assert.ok(ownsGear(s, 'SW45') && !ownsGear(s, 'AR45'));
+  const a = choose(r.state, 'armor').state; assert.ok(ownsGear(a, 'AR45') && !ownsGear(a, 'SW45'));
+  r = land('M5-42', { patch: { gold: 20 } });
+  const g = choose(r.state, 'gold'); assert.equal(g.state.gold, 850); assert.ok(!ownsGear(g.state, 'SW43'));
+  assert.deepEqual(goldFx(g.effects), [[830, 'award']]);
+  const sw = choose(r.state, 'sword').state; assert.ok(ownsGear(sw, 'SW43')); assert.equal(sw.gold, 20);
+});
+
+test('M5 battles: EN07 (22/24/26), EN08 (23/27), patched EN13 (25)', () => {
+  for (const [id, en] of [['M5-22', 'EN07'], ['M5-23', 'EN08'], ['M5-24', 'EN07'], ['M5-25', 'EN13'], ['M5-26', 'EN07'], ['M5-27', 'EN08']]) {
+    const r = land(id);
+    assert.equal(r.state.phase, 'battle', id);
+    assert.equal(r.state.battle.enemyId, en, id);
+  }
+});
+
+test('M5 item gifts and recovery squares', () => {
+  for (const [id, it] of [['M5-28', 'BD41'], ['M5-29', 'AT42'], ['M5-30', 'HE43'], ['M5-31', 'BD46'], ['M5-32', 'AT47'], ['M5-33', 'HE49']]) {
+    const r = land(id, { patch: { bag: [] } });
+    const o = view(content, r.state).actions.find((a) => a.type === 'chooseOption');
+    assert.deepEqual(choose(r.state, o.optionId).state.bag, [it], id);
+  }
+  for (const [id, hp1, mp1] of [['M5-34', 34, 3], ['M5-35', 20, 10], ['M5-36', 31, 5], ['M5-37', 27, 8]]) {
+    const s = land(id, { patch: { hp: 20, mp: 3 } }).state;
+    assert.equal(s.hp, hp1, id); assert.equal(s.mp, mp1, id);
+  }
+});
+
+test('M5-43/46/47 choices', () => {
+  let r = land('M5-43', { patch: { hp: 20, mp: 1 } });
+  assert.equal(choose(r.state, 'skewer').state.hp, 34); assert.equal(choose(r.state, 'tea').state.mp, 9);
+  r = land('M5-46', { patch: { bag: [] } });
+  assert.deepEqual(choose(r.state, 'battle').state.bag, ['AT49']); assert.deepEqual(choose(r.state, 'heal').state.bag, ['HE48']);
+  r = land('M5-47', { patch: { bag: [], hp: 20, mp: 3 } });
+  assert.deepEqual(choose(r.state, 'guide').state.bag, ['BD50']);
+  const m = choose(r.state, 'medic').state; assert.equal(m.hp, 30); assert.equal(m.mp, 6);
+});
+
+test('M5-44: 260G buys BD48; unaffordable or leaving changes nothing', () => {
+  let r = land('M5-44', { patch: { gold: 260, bag: [] } });
+  const b = choose(r.state, 'buy').state; assert.equal(b.gold, 0); assert.deepEqual(b.bag, ['BD48']);
+  r = land('M5-44', { patch: { gold: 259, bag: [] } });
+  assert.equal(actionOf(r.state, 'buy').reason, 'insufficientGold');
+  const n = choose(r.state, 'leave').state; assert.equal(n.gold, 259); assert.deepEqual(n.bag, []);
+});
+
+test('M5-45: pulling costs 5 hp (floor 1) and pays 900G; tasting heals 7', () => {
+  let r = land('M5-45', { patch: { hp: 20, gold: 0 } });
+  const w = choose(r.state, 'pull'); assert.equal(w.state.hp, 15); assert.equal(w.state.gold, 900);
+  assert.deepEqual(goldFx(w.effects), [[900, 'award']]);
+  const t = choose(r.state, 'taste').state; assert.equal(t.hp, 27); assert.equal(t.gold, 0);
+  assert.equal(choose(land('M5-45', { patch: { hp: 4 } }).state, 'pull').state.hp, 1);
+});
+
+test('M5 traps: 48 guard 190G or stoop hp-6; 49 hp-5; 50 mp-4 (needs 4) or post hp-6', () => {
+  let r = land('M5-48', { patch: { gold: 189, hp: 20 } });
+  assert.equal(actionOf(r.state, 'guard').enabled, false);
+  assert.equal(choose(r.state, 'stoop').state.hp, 14);
+  assert.equal(choose(land('M5-48', { patch: { gold: 190 } }).state, 'guard').state.gold, 0);
+  assert.equal(choose(land('M5-49', { patch: { hp: 20 } }).state, 'leap').state.hp, 15);
+  assert.equal(choose(land('M5-49', { patch: { hp: 5 } }).state, 'leap').state.hp, 1);
+  r = land('M5-50', { patch: { mp: 3, hp: 20 } });
+  assert.equal(actionOf(r.state, 'mark').reason, 'insufficientMp');
+  assert.equal(choose(r.state, 'post').state.hp, 14);
+  const m = choose(land('M5-50', { patch: { mp: 4, hp: 20 } }).state, 'mark').state;
+  assert.equal(m.mp, 0); assert.equal(m.hp, 20);
+});

@@ -1,0 +1,722 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "M5-01": {
+      "options": [
+        {
+          "id": "line",
+          "label": "戸の開く広さだけ白い線を引き、列の先を横の壁へ移す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 600
+            }
+          ]
+        }
+      ]
+    },
+    "M5-02": {
+      "options": [
+        {
+          "id": "plume",
+          "label": "棒にあたる一番上の飾りだけ抜き、門の内側で差し直す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 660
+            }
+          ]
+        }
+      ]
+    },
+    "M5-03": {
+      "options": [
+        {
+          "id": "napkin",
+          "label": "重なった布の間を開き、包まれていたさじを空の席へ置く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 580
+            }
+          ]
+        }
+      ]
+    },
+    "M5-04": {
+      "options": [
+        {
+          "id": "count",
+          "label": "積み終えた列を奥から一列ずつ数え直し、倉番の帳面と合わせる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 710
+            }
+          ]
+        }
+      ]
+    },
+    "M5-05": {
+      "options": [
+        {
+          "id": "blue",
+          "label": "試し紙をほりの水と同じ日陰に移し、紙と水の青を比べてもらう",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 680
+            }
+          ]
+        }
+      ]
+    },
+    "M5-06": {
+      "options": [
+        {
+          "id": "turn",
+          "label": "前後の二人に同じ合図を出し、広場で向きを変えてから路地へ入る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 800
+            }
+          ]
+        }
+      ]
+    },
+    "M5-07": {
+      "options": [
+        {
+          "id": "invite",
+          "label": "封を開けずに広場を回り、同じ印の店へ一通ずつ届ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 650
+            }
+          ]
+        }
+      ]
+    },
+    "M5-08": {
+      "options": [
+        {
+          "id": "cushion",
+          "label": "前の列に低い座布団を敷き、大人のいすを後ろへ回す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 720
+            }
+          ]
+        }
+      ]
+    },
+    "M5-09": {
+      "options": [
+        {
+          "id": "chain",
+          "label": "模型を寝かせ、外れた輪をまっすぐにして小さな歯車に戻す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 740
+            }
+          ]
+        }
+      ]
+    },
+    "M5-10": {
+      "options": [
+        {
+          "id": "margin",
+          "label": "余りの紙を注文書の下に細い帯のように折り込む",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 630
+            }
+          ]
+        }
+      ]
+    },
+    "M5-11": {
+      "options": [
+        {
+          "id": "flag",
+          "label": "曲の始まりだけ白い旗を上げてもらい、楽師に目で合図を合わせてもらう",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 780
+            }
+          ]
+        }
+      ]
+    },
+    "M5-12": {
+      "options": [
+        {
+          "id": "box",
+          "label": "高い箱の内側へ菓子とふるいを入れ、前だけ開けて仕上げる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 610
+            }
+          ]
+        }
+      ]
+    },
+    "M5-13": {
+      "options": [
+        {
+          "id": "tilt",
+          "label": "店主に客の位置から見てもらい、盾の台を下向きに一段傾ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 690
+            }
+          ]
+        }
+      ]
+    },
+    "M5-14": {
+      "options": [
+        {
+          "id": "arch",
+          "label": "橋の横の階段から見える石のアーチを指でなぞり、線の続き方を教える",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 750
+            }
+          ]
+        }
+      ]
+    },
+    "M5-15": {
+      "options": [
+        {
+          "id": "window",
+          "label": "通りの印から見本の絵と比べ、直す窓へ白い手ぬぐいで合図する",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 860
+            }
+          ]
+        }
+      ]
+    },
+    "M5-16": {
+      "options": [
+        {
+          "id": "bread",
+          "label": "学校は通路へ、工房は荷車へ、門番は詰め所へ振り分け、最後の箱まで届ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 1000
+            }
+          ]
+        }
+      ]
+    },
+    "M5-17": {
+      "options": [
+        {
+          "id": "tally",
+          "label": "手の札を棚の札に合わせ、つながる棚を開けてもらう",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW41"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-18": {
+      "options": [
+        {
+          "id": "step",
+          "label": "木箱を段の前に置き、低い二段の台にして来客を案内する",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR42"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-19": {
+      "options": [
+        {
+          "id": "sword",
+          "label": "剣の職人に荷を運ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW45"
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具の職人の棚を空ける",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR45"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-20": {
+      "options": [
+        {
+          "id": "cloth",
+          "label": "白い紙の横に黒い布を張り、刃の輪郭を見られるようにする",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW48"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-21": {
+      "options": [
+        {
+          "id": "plug",
+          "label": "持ち手を倒し、その下の小さな栓を抜く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR50"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M5-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN08"
+        }
+      ]
+    },
+    "M5-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M5-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN13"
+        }
+      ]
+    },
+    "M5-26": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07"
+        }
+      ]
+    },
+    "M5-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN08"
+        }
+      ]
+    },
+    "M5-28": {
+      "options": [
+        {
+          "id": "stick",
+          "label": "裏側から細い棒で古い紙を押し出し、旗を立てる",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD41"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-29": {
+      "options": [
+        {
+          "id": "sieve",
+          "label": "目の粗いふるいを使い、通らずに残るふたを店主へ渡す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT42"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-30": {
+      "options": [
+        {
+          "id": "mirror",
+          "label": "鏡を床に置いて札の絵を読み、同じ絵の包みを渡す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE43"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-31": {
+      "options": [
+        {
+          "id": "paper",
+          "label": "両側の折り目を押し、底のつめがはまるまで四角く起こす",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD46"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-32": {
+      "options": [
+        {
+          "id": "signal",
+          "label": "赤と白の旗が重なったとき、訓練係に声をかけてふたを開けてもらう",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT47"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-33": {
+      "options": [
+        {
+          "id": "cup",
+          "label": "茶わんを台にしてふたを乗せ、薬師の手を空ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE49"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-34": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 14
+        }
+      ]
+    },
+    "M5-35": {
+      "onLand": [
+        {
+          "op": "mp",
+          "delta": 8
+        }
+      ]
+    },
+    "M5-36": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 11
+        },
+        {
+          "op": "mp",
+          "delta": 2
+        }
+      ]
+    },
+    "M5-37": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 7
+        },
+        {
+          "op": "mp",
+          "delta": 5
+        }
+      ]
+    },
+    "M5-38": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M5-39": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M5-40": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M5-41": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M5-42": {
+      "options": [
+        {
+          "id": "gold",
+          "label": "金貨を描いた絵を見せる（830G）",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 830
+            }
+          ]
+        },
+        {
+          "id": "sword",
+          "label": "剣を描いた絵を見せる（SW43）",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW43"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-43": {
+      "options": [
+        {
+          "id": "skewer",
+          "label": "肉団子の串と引き換える（体力14回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 14
+            }
+          ]
+        },
+        {
+          "id": "tea",
+          "label": "青い茶の一杯と引き換える（魔力8回復）",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 8
+            }
+          ]
+        }
+      ]
+    },
+    "M5-44": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "260Gを払って小箱を引き取る（BD48）",
+          "cost": {
+            "gold": 260
+          },
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD48"
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "箱を店に残す",
+          "effects": []
+        }
+      ]
+    },
+    "M5-45": {
+      "options": [
+        {
+          "id": "pull",
+          "label": "旗の綱を引く（体力5を使う。最低1。900G）",
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 900
+            }
+          ]
+        },
+        {
+          "id": "taste",
+          "label": "試食の席へ行く（体力7回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "M5-46": {
+      "options": [
+        {
+          "id": "battle",
+          "label": "戦いの備えを選ぶ（AT49）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT49"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "回復の備えを選ぶ（HE48）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE48"
+            }
+          ]
+        }
+      ]
+    },
+    "M5-47": {
+      "options": [
+        {
+          "id": "guide",
+          "label": "案内人に道具を見せてもらう（BD50）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD50"
+            }
+          ]
+        },
+        {
+          "id": "medic",
+          "label": "手当て係に肩をほぐしてもらう（体力10・魔力3回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "M5-48": {
+      "options": [
+        {
+          "id": "guard",
+          "label": "門の係に190Gを払って外してもらう",
+          "cost": {
+            "gold": 190,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "stoop",
+          "label": "かがんで袋を抜く（体力6を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 6,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M5-49": {
+      "options": [
+        {
+          "id": "leap",
+          "label": "熱い石から離れ、日陰で靴の底を冷ます（体力5を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M5-50": {
+      "options": [
+        {
+          "id": "mark",
+          "label": "青い印に力を通す（魔力4を使う）",
+          "cost": {
+            "mp": {
+              "amount": 4,
+              "strict": true
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "post",
+          "label": "柱をつかんで風を抜ける（体力6を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 6,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    }
+  }
+}
