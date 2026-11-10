@@ -12,11 +12,12 @@ INK = P['ink']
 
 
 class Pen:
-    def __init__(self, mode='main', outline=3.0, cut_extra=6.0, line_scale=1.0):
+    def __init__(self, mode='main', outline=3.0, cut_extra=6.0, line_scale=1.0, ink=None):
         self.mode = mode
         self.ow = outline
         self.ce = cut_extra
         self.ls = line_scale
+        self.ink = ink or INK
 
     @property
     def cut(self):
@@ -29,7 +30,7 @@ class Pen:
                 return ' fill="none"'
             return (f' fill="{P["cut"] if fill != "none" else "none"}" stroke="{P["cut"]}" '
                     f'stroke-width="{sw + self.ce:.1f}" stroke-linejoin="round" stroke-linecap="round"')
-        st = stroke or INK
+        st = stroke or self.ink
         if sw == 0:
             return f' fill="{fill}" {extra}'
         return (f' fill="{fill}" stroke="{st}" stroke-width="{sw:.1f}" stroke-linejoin="round" '
@@ -54,7 +55,7 @@ class Pen:
         sw *= self.ls
         if self.cut:
             return f'<path d="{d}" fill="none" stroke="{P["cut"]}" stroke-width="{sw + self.ce:.1f}" stroke-linecap="round" stroke-linejoin="round"/>'
-        return (f'<path d="{d}" fill="none" stroke="{stroke or INK}" stroke-width="{sw:.1f}" '
+        return (f'<path d="{d}" fill="none" stroke="{stroke or self.ink}" stroke-width="{sw:.1f}" '
                 f'stroke-linecap="round" stroke-linejoin="round" {extra}/>')
 
     def detail(self, svg):
@@ -155,16 +156,17 @@ def face(pen, kind, eyes, er=4.0, mouth=None, look=-1.0, brow=True, sweat=None, 
     return f'<g data-part="face-{kind}">{"".join(o)}</g>'
 
 
-def render(fn, pose, x=0, y=0, scale=1.0, flip=False, prefix='', margin=True, opacity=None, dashed=False):
+def render(fn, pose, x=0, y=0, scale=1.0, flip=False, prefix='', margin=True, opacity=None, dashed=False, pen_kw=None):
     """Place a character: cut pass (margin) under main pass, same transforms."""
+    pen_kw = pen_kw or {}
     fx = f' translate({fn.W} 0) scale(-1 1)' if flip else ''
     op = f' opacity="{opacity}"' if opacity is not None else ''
     out = [f'<g class="char {prefix}" transform="translate({x} {y}) scale({scale}){fx}"{op}>']
     if margin and not dashed:
         out.append(f'<g class="cut-pass">{fn(Pen("cut"), pose)}</g>')
     if dashed:
-        out.append(f'<g class="ghost" fill-opacity="0.18" stroke-dasharray="7 5">{fn(Pen("main"), pose)}</g>')
+        out.append(f'<g class="ghost" fill-opacity="0.18" stroke-dasharray="7 5">{fn(Pen("main", **pen_kw), pose)}</g>')
     else:
-        out.append(f'<g class="main-pass">{fn(Pen("main"), pose)}</g>')
+        out.append(f'<g class="main-pass">{fn(Pen("main", **pen_kw), pose)}</g>')
     out.append('</g>')
     return ''.join(out)

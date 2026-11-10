@@ -23,10 +23,10 @@ def en01(pose='idle'):
         W, arm, lean, crouch, ear, foot = -30, 0, 0, 1.0, 0, 0
         if p == 'attack':
             W, arm, lean = -78, -12, -7
-        elif p == 'big':      # 剣先を後ろに隠す -> 踏み込み斬り
-            W, arm, crouch, ear, foot = 150, 38, .9, 35, -10
-        elif p == 'guard':
-            W, arm, ear = -95, -55, 25
+        elif p == 'big':      # 剣先を後ろに隠す -> 踏み込み斬り (arm drawn BEHIND the body)
+            W, arm, crouch, ear, foot = -60, -150, .9, 35, -10
+        elif p == 'guard':    # 剣を顔の前で横に
+            W, arm, ear = -150, 60, 25
         elif p == 'open':     # 息をつく: 剣先を地面に
             W, arm, lean = -160, 14, 7
         rapier = (pen.path('M-2 -6V-64L0 -73L2 -64V-6Z', '#E8EEF2', 2) + pen.circle(0, -4, 7, P['gold'], 2)
@@ -43,6 +43,8 @@ def en01(pose='idle'):
              part('ear-front', pen.circle(76, 62, 18, '#A99383') + pen.detail('<circle cx="76" cy="62" r="10" fill="#E8A7A0"/>'), rot=ear, pivot=(84, 78)),
              part('arm-front', f'<g data-part="weapon" transform="translate(76 144) rotate({W})">{rapier}</g>'
                   + pen.ellipse(88, 136, 7, 14, '#A99383', 2.5, rot=50) + pen.circle(76, 144, 6, '#C98B7A', 2.5), rot=arm, pivot=(100, 128))]
+        if p == 'big':        # z-order: the sword arm goes behind the body so the blade disappears
+            o.insert(2, o.pop())
         return part('EN01', ''.join(o), rot=lean, pivot=(112, 186), sy=crouch, sx=1.0)
     return _mk(fn, 200, 200)
 

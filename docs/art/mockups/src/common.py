@@ -232,6 +232,8 @@ def icon_defs():
         f'<ellipse cx="12" cy="7.5" rx="3" ry="4" fill="#6E8C70" {common}/>'
         f'<ellipse cx="20" cy="7.5" rx="3" ry="4" fill="#6E8C70" {common}/>'
         f'<ellipse cx="25.5" cy="13.5" rx="3" ry="4" fill="#6E8C70" {common}/>')
+    for n in range(1, 7):   # die faces d-1 .. d-6
+        sym(f'd-{n}', die_face(2, 2, 28, n))
     sym('r-H', f'<path d="M11 8h10l2 4H9z" fill="#5E7F98" {common}/>'
         f'<path d="M10 12h12v13H10z" fill="#FBE7A6" {common}/>'
         f'<path d="M16 23c-3 0-4-2-4-4 0-3 4-5 4-8 1 3 4 5 4 8 0 2-1 4-4 4z" fill="#F29A3A" {cm(1.4)}/>'
