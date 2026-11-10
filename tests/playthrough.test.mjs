@@ -154,23 +154,25 @@ function play(route, seed, { strong = false, maxSteps = 4000 } = {}) {
   return { s, steps: log.length, log };
 }
 
+const SEEDS = Number(process.env.FUZZ_SEEDS || 6); // FUZZ_SEEDS=60 node --test tests/playthrough.test.mjs for a longer soak
+
 for (const route of ['M', 'F', 'B', 'H']) {
   test(`playthrough ${route}: bot runs reach the end without errors, invariants hold at every step`, () => {
     let finished = 0;
     let victories = 0;
-    for (let seed = 1; seed <= 6; seed++) {
+    for (let seed = 1; seed <= SEEDS; seed++) {
       const { s } = play(route, seed);
       if (s.phase === 'finished') finished++;
       assert.equal(s.phase, 'finished', `${route} seed ${seed} did not finish (phase ${s.phase} pos ${s.pos})`);
       if (s.result.defeated) victories++;
     }
-    assert.equal(finished, 6);
+    assert.equal(finished, SEEDS);
     void victories;
   });
 
   test(`playthrough ${route}: a strong hero can win; the result and the reward flow are consistent`, () => {
     let wins = 0;
-    for (let seed = 1; seed <= 4; seed++) {
+    for (let seed = 1; seed <= Math.max(4, SEEDS / 2); seed++) {
       const { s } = play(route, seed, { strong: true });
       assert.equal(s.phase, 'finished');
       if (s.result.defeated) {
