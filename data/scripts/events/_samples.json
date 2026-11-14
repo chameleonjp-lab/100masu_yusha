@@ -1,0 +1,155 @@
+{
+  "format": "event-scripts-1",
+  "_note": "Reference conversions written by game-implementation (game-engine role). Files named _samples* are overridden by real per-band files that define the same id. See docs/dev/script-format.md.",
+  "events": {
+    "M1-01": {
+      "options": [
+        { "id": "match", "label": "ヒナギクの絵を白い花に、スミレの絵を紫の花に結ぶ",
+          "effects": [ { "op": "awardGold", "amount": 100 } ] }
+      ]
+    },
+    "M1-42": {
+      "options": [
+        { "id": "wage", "label": "給金をもらう（150G）", "effects": [ { "op": "awardGold", "amount": 150 } ] },
+        { "id": "lunch", "label": "温かい昼食を食べる（体力7回復）", "effects": [ { "op": "hp", "delta": 7 } ] }
+      ]
+    },
+    "M1-48": {
+      "options": [
+        { "id": "hire", "label": "荷運びに60Gを払う", "cost": { "gold": 60, "trapLoss": true }, "effects": [] },
+        { "id": "push", "label": "自分で丸太を押す（体力3を使う。最低1）", "cost": { "hp": { "amount": 3, "floor": 1 }, "trapLoss": true }, "effects": [] }
+      ]
+    },
+    "B2-02": {
+      "options": [
+        { "id": "wait", "label": "合流点で待ってびくを返す", "effects": [ { "op": "awardGold", "amount": 240 } ] },
+        { "id": "rope", "label": "岸の綱で引く（体力2を使う。最低1）",
+          "cost": { "hp": { "amount": 2, "floor": 1 } },
+          "effects": [ { "op": "awardGold", "amount": 240 }, { "op": "reveal", "info": "nextBattleEnemy" } ] }
+      ]
+    },
+    "B2-43": {
+      "options": [
+        { "id": "blow", "label": "笛を吹いて戦う", "effects": [ { "op": "battle", "enemy": "EN03" } ] },
+        { "id": "release", "label": "川へ返す（魔力3回復）", "effects": [ { "op": "mp", "delta": 3 } ] }
+      ]
+    },
+    "B2-48": {
+      "options": [
+        { "id": "pole", "label": "100Gで棒を借りる", "cost": { "gold": 100, "trapLoss": true }, "effects": [] },
+        { "id": "stone", "label": "ぬれた岸石を渡る",
+          "effects": [
+            { "op": "if", "cond": { "lte": [ { "ref": "die" }, 3 ] },
+              "then": [ { "op": "hp", "delta": -2, "floor": 1, "trapLoss": true } ],
+              "else": [ { "op": "hp", "delta": -4, "floor": 1, "trapLoss": true } ] }
+          ] }
+      ]
+    },
+    "F5-13": {
+      "options": [
+        { "id": "buy", "label": "3000Gで名剣（百歩の夜明けの剣）を買う", "cost": { "gold": 3000 },
+          "effects": [ { "op": "giveGear", "id": "SW50", "paidGold": 3000 } ] },
+        { "id": "inspect", "label": "模擬の的で検品する（体力2を失う。最低1）", "cost": { "hp": { "amount": 2, "floor": 1 } },
+          "effects": [ { "op": "giveGear", "id": "SW42" } ] }
+      ]
+    },
+    "H1-37": {
+      "inn": {
+        "services": [
+          { "id": "wash", "label": "畑主の洗い場を使う（体力2回復）", "once": true, "effects": [ { "op": "hp", "delta": 2 } ] }
+        ]
+      }
+    },
+    "M1-18": {
+      "options": [
+        { "id": "tie", "label": "ひもを輪に通して結ぶ", "effects": [ { "op": "giveGear", "id": "AR03" } ] }
+      ]
+    },
+    "B3-26": {
+      "options": [
+        { "id": "answer", "label": "合計7になる数を選ぶ",
+          "input": { "var": "n", "type": "int", "min": 1, "max": 6 },
+          "effects": [
+            { "op": "if", "cond": { "eq": [ { "add": [ { "ref": "die" }, { "ref": "var.n" } ] }, 7 ] },
+              "then": [ { "op": "battle", "enemy": "EN05", "field": { "enemyHp": { "delta": -5, "min": 1 } } } ],
+              "else": [ { "op": "mp", "delta": -2, "floor": 0 }, { "op": "battle", "enemy": "EN05" } ] }
+          ] }
+      ]
+    },
+    "B5-30": {
+      "onLand": [
+        { "op": "battle", "enemy": "MB03", "optional": true,
+          "rules": [
+            { "id": "first-footprint", "hook": "heroAttackDamage",
+              "when": { "and": [ { "eq": [ { "ref": "battle.attackKind" }, "attack" ] }, { "eq": [ { "ref": "battle.round" }, 1 ] } ] },
+              "limit": { "perBattle": 1 },
+              "effects": [ { "op": "addDamage", "amount": 6 } ] }
+          ] }
+      ]
+    },
+    "F1-12": {
+      "options": [
+        { "id": "sharpen", "label": "車軸を直して自分で研ぐ（体力2を失う。最低1）", "cost": { "hp": { "amount": 2, "floor": 1 } },
+          "effects": [ { "op": "giveGear", "id": "SW09" } ] },
+        { "id": "hire", "label": "職人に90Gで頼む", "cost": { "gold": 90 },
+          "effects": [ { "op": "giveGear", "id": "SW09", "paidGold": 90 } ] }
+      ]
+    },
+    "H3-46": {
+      "options": [
+        { "id": "heel", "label": "かかとで知らせる（体力2を使う。魔力6回復）", "cost": { "hp": { "amount": 2, "floor": 1 } },
+          "effects": [ { "op": "mp", "delta": 6 } ] },
+        { "id": "mallet", "label": "備えの木づちを80Gで買って鳴らす", "cost": { "gold": 80 },
+          "effects": [ { "op": "giveGear", "id": "SW29", "paidGold": 80 } ] },
+        { "id": "pass", "label": "どちらもせず通る", "effects": [] }
+      ]
+    },
+    "F2-20": {
+      "options": [
+        { "id": "paid", "label": "検品代180Gを払って防具を受け取る", "cost": { "gold": 180 },
+          "effects": [ { "op": "giveGear", "id": "AR20", "paidGold": 180 } ] },
+        { "id": "plain", "label": "検品済みの普通の品にする", "effects": [ { "op": "giveGear", "id": "AR12" } ] }
+      ]
+    },
+    "M3-44": {
+      "options": [
+        { "id": "buy", "label": "420Gで剣を買う", "cost": { "gold": 420 },
+          "effects": [ { "op": "giveGear", "id": "SW27", "paidGold": 420 } ] },
+        { "id": "pass", "label": "買わずに峠をたどる", "effects": [] }
+      ]
+    },
+    "M1-24": { "onLand": [ { "op": "battle", "enemy": "EN09" } ] },
+    "H2-11": { "onLand": [ { "op": "battle", "enemy": "EN10" } ] },
+    "F3-27": { "onLand": [ { "op": "battle", "enemy": "EN11" } ] },
+    "B4-27": { "onLand": [ { "op": "battle", "enemy": "EN12" } ] },
+    "M5-25": { "onLand": [ { "op": "battle", "enemy": "EN13" } ] },
+    "B3-36": {
+      "options": [
+        { "id": "left", "label": "左の湯を飲む（魔力5回復）", "effects": [ { "op": "mp", "delta": 5 } ] },
+        { "id": "right", "label": "右の湯で洗う（体力8回復）", "effects": [ { "op": "hp", "delta": 8 } ] },
+        { "id": "mix", "label": "二つを混ぜる（体力4・魔力3回復）", "effects": [ { "op": "hp", "delta": 4 }, { "op": "mp", "delta": 3 } ] }
+      ]
+    },
+    "H4-25": {
+      "onLand": [
+        { "op": "if", "cond": { "gte": [ { "ref": "hp" }, { "ref": "maxHp" } ] },
+          "then": [ { "op": "giveItem", "id": "HE37" } ],
+          "else": [ { "op": "hp", "delta": 7 } ] }
+      ]
+    },
+    "B3-32": {
+      "options": [
+        { "id": "free", "label": "BD21を無料でもらう", "effects": [ { "op": "giveItem", "id": "BD21" } ] },
+        { "id": "paid", "label": "83GでBD22を手配する", "cost": { "gold": 83 }, "effects": [ { "op": "giveItem", "id": "BD22" } ] }
+      ]
+    },
+    "B3-46": {
+      "options": [
+        { "id": "swap", "label": "AT27を1個出してBD27を2個もらう", "cost": { "items": [ "AT27" ] },
+          "requires": [ { "when": { "gte": [ { "ref": "bagFree" }, 1 ] }, "reason": "bagFull" } ],
+          "effects": [ { "op": "giveItem", "id": "BD27" }, { "op": "giveItem", "id": "BD27" } ] },
+        { "id": "pass", "label": "交換を見送る", "effects": [] }
+      ]
+    }
+  }
+}

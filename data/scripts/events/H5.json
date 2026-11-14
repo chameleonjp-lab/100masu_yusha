@@ -1,0 +1,5204 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "H5-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "城門の知らせが全戸に届くよう、玉石に落ちた分を束ねて配る。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 650
+            }
+          ]
+        }
+      ]
+    },
+    "H5-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "パン籠を長縄につけ、岸から鍵の輪をすくい上げる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 720
+            }
+          ]
+        }
+      ]
+    },
+    "H5-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "広場の店を一軒ずつ回り、扉の鈴を順番に鳴らしてもらう。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 840
+            }
+          ]
+        }
+      ]
+    },
+    "H5-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "板を石段に渡し、布で速さを抑えながら箱を一つずつ降ろす。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 780
+            }
+          ]
+        }
+      ]
+    },
+    "H5-05": {
+      "options": [
+        {
+          "id": "help",
+          "label": "子どもの手が届く位置に目印を引き、練習用の棚を下げる。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW41",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H5-06": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR41",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR41",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR43",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR43",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H5-07": {
+      "options": [
+        {
+          "id": "one",
+          "label": "SW44",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW44",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR44",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR44",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H5-08": {
+      "options": [
+        {
+          "id": "one",
+          "label": "SW46",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW46",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "SW48",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW48",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H5-09": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "桶を横へ送って人を下げ、水のない石段に敵を向ける。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "wet",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "capDamage",
+                      "amount": {
+                        "max": [
+                          0,
+                          {
+                            "sub": [
+                              6,
+                              {
+                                "ref": "battle.hpLost"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-10": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "門を棒で支え、巣から飛び出した敵に向き直る。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "nest",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-11": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "旗ざおを屋根から外し、空の中庭に敵を降ろす。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "cloth",
+                  "hook": "heroHit",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "spell"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addMark",
+                      "mark": {
+                        "id": "cloth-block",
+                        "hook": "enemyDamage",
+                        "effects": [
+                          {
+                            "op": "halveDamage"
+                          }
+                        ],
+                        "expires": {
+                          "enemyActions": 1
+                        }
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-12": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "馬房を閉め、空き鞍を投げて糸をからめ取る。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "saddle",
+                  "hook": "afterHeroAction",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.heroAction"
+                      },
+                      "guard"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addMark",
+                      "mark": {
+                        "id": "saddle-pool",
+                        "hook": "enemyDamage",
+                        "effects": [
+                          {
+                            "op": "absorbDamage",
+                            "amount": 5
+                          }
+                        ],
+                        "expires": {
+                          "enemyActions": 1
+                        }
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-13": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "手拍子を避難の合図に変え、全員を物陰へ通してから向かう。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "cheer",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                },
+                {
+                  "id": "guard",
+                  "hook": "afterHeroAction",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "mp",
+                      "delta": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-14": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT41",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT41"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD41",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD41"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-15": {
+      "options": [
+        {
+          "id": "item",
+          "label": "HE41",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE41"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "満杯なら体力6",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ],
+          "requires": {
+            "eq": [
+              {
+                "ref": "bagCount"
+              },
+              6
+            ]
+          }
+        }
+      ]
+    },
+    "H5-16": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE42",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE42"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "HE43",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE43"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-17": {
+      "options": [
+        {
+          "id": "board",
+          "label": "BD42",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD42"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "魔力半分未満ならHE44",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE44"
+            }
+          ],
+          "requires": {
+            "lt": [
+              {
+                "mul": [
+                  {
+                    "ref": "mp"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "maxMp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H5-18": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT42",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT42"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "HE45",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE45"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-19": {
+      "options": [
+        {
+          "id": "board",
+          "label": "BD43",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD43"
+            }
+          ]
+        },
+        {
+          "id": "attack",
+          "label": "仲間2人ならAT43",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT43"
+            }
+          ],
+          "requires": {
+            "eq": [
+              {
+                "ref": "companionCount"
+              },
+              2
+            ]
+          }
+        }
+      ]
+    },
+    "H5-20": {
+      "options": [
+        {
+          "id": "one",
+          "label": "BD44",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD44"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD45",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD45"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-21": {
+      "options": [
+        {
+          "id": "help",
+          "label": "二人で旗をぴんと張り、洗った布を高い竿へ揚げる。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 4,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "giveItem",
+              "id": "HE46"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-22": {
+      "options": [
+        {
+          "id": "item",
+          "label": "AT44",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT44"
+            }
+          ]
+        },
+        {
+          "id": "mp",
+          "label": "魔力5",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "H5-23": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT45",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT45"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD46",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD46"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-24": {
+      "options": [
+        {
+          "id": "help",
+          "label": "受領欄を床の板へ写し、犬に肉球の印を押してもらう。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "HE47"
+                },
+                {
+                  "op": "giveItem",
+                  "id": "BD47"
+                }
+              ],
+              "else": [
+                {
+                  "op": "giveItem",
+                  "id": "HE47"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-25": {
+      "options": [
+        {
+          "id": "meal",
+          "label": "食事",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "bag",
+          "label": "備蓄",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE48"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-26": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "段を一往復して痛む側を伝え、靴底に薄布を挟む。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "die"
+                  },
+                  4
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H5-27": {
+      "options": [
+        {
+          "id": "stage",
+          "label": "舞台",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "seat",
+          "label": "客席",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 9,
+              "floor": 1
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-27",
+              "label": "H5-27",
+              "rules": [
+                {
+                  "id": "H5-27",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-28": {
+      "options": [
+        {
+          "id": "blue",
+          "label": "青白い炎",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "max": [
+                  0,
+                  {
+                    "sub": [
+                      6,
+                      {
+                        "sub": [
+                          {
+                            "ref": "maxMp"
+                          },
+                          {
+                            "ref": "mp"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "orange",
+          "label": "橙の炎",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H5-29": {
+      "options": [
+        {
+          "id": "tea",
+          "label": "飲む",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            },
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "trade",
+          "label": "交換",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD48"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-30": {
+      "options": [
+        {
+          "id": "sit",
+          "label": "座る",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "ref": "maxHp"
+                  },
+                  3
+                ]
+              },
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "push",
+          "label": "押す",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H5-31": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "手を借りて額を冷やし、自分の番が終われば次の人を呼ぶ。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "unique": "H5-31",
+                  "label": "H5-31",
+                  "rules": [
+                    {
+                      "id": "H5-31",
+                      "hook": "heroAttackDamage",
+                      "when": {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "spell"
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "addDamage",
+                          "amount": 4
+                        }
+                      ],
+                      "limit": {
+                        "perBattle": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        }
+      ]
+    },
+    "H5-32": {
+      "options": [
+        {
+          "id": "eat",
+          "label": "食べる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 11,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "wood",
+          "label": "薪を運ぶ",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-32",
+              "label": "H5-32",
+              "rules": [
+                {
+                  "id": "H5-32",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-33": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "布の中へ入り、入口の音が聞こえなくなるまで待つ。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "gte": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  },
+                  {
+                    "gte": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "AT46"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H5-34": {
+      "options": [
+        {
+          "id": "hp",
+          "label": "体力12",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 12,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "mp",
+          "label": "魔力7",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 7
+            }
+          ]
+        },
+        {
+          "id": "later",
+          "label": "治療を後へ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE49"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-35": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "片膝を置き、まだ上っている人に呼吸を合わせる。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": {
+                    "mul": [
+                      2,
+                      {
+                        "ref": "companionCount"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-36": {
+      "options": [
+        {
+          "id": "heal",
+          "label": "治療",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "maxHp"
+                      },
+                      {
+                        "ref": "hp"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              },
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "wave",
+          "label": "手を振る",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-36",
+              "label": "H5-36",
+              "rules": [
+                {
+                  "id": "H5-36",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-37": {
+      "inn": {
+        "services": [
+          {
+            "id": "charm",
+            "label": "結び方を習う",
+            "effects": [
+              {
+                "op": "reserve",
+                "slot": "nextBattle",
+                "filter": "any",
+                "unique": "H5-37",
+                "label": "H5-37",
+                "rules": [
+                  {
+                    "id": "H5-37",
+                    "hook": "afterHeroAction",
+                    "when": {
+                      "eq": [
+                        {
+                          "ref": "battle.heroAction"
+                        },
+                        "guard"
+                      ]
+                    },
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 4
+                      }
+                    ],
+                    "limit": {
+                      "perBattle": 1
+                    }
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H5-38": {
+      "inn": {
+        "services": [
+          {
+            "id": "extra",
+            "label": "湯上がりの手当て",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "hp",
+                    "label": "体力5",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      }
+                    ],
+                    "requires": {
+                      "gte": [
+                        {
+                          "sub": [
+                            {
+                              "ref": "maxHp"
+                            },
+                            {
+                              "ref": "hp"
+                            }
+                          ]
+                        },
+                        {
+                          "sub": [
+                            {
+                              "ref": "maxMp"
+                            },
+                            {
+                              "ref": "mp"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "mp",
+                    "label": "魔力5",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "requires": {
+                      "gte": [
+                        {
+                          "sub": [
+                            {
+                              "ref": "maxMp"
+                            },
+                            {
+                              "ref": "mp"
+                            }
+                          ]
+                        },
+                        {
+                          "sub": [
+                            {
+                              "ref": "maxHp"
+                            },
+                            {
+                              "ref": "hp"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H5-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "振る舞いを選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "heal",
+                    "label": "HE50",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE50"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "attack",
+                    "label": "AT47",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "AT47"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H5-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "letters",
+            "label": "便りを仕分ける",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "shield",
+                    "label": "次戦軽減",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextBattle",
+                        "filter": "any",
+                        "unique": "H5-40",
+                        "label": "H5-40",
+                        "rules": [
+                          {
+                            "id": "H5-40",
+                            "hook": "enemyDamage",
+                            "when": {
+                              "gt": [
+                                {
+                                  "ref": "battle.damage"
+                                },
+                                0
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "op": "reduceDamage",
+                                "amount": 4
+                              }
+                            ],
+                            "limit": {
+                              "perBattle": 1
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mp",
+                    "label": "魔力4",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H5-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "trade",
+            "label": "盤面用品を交換",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "BD01",
+                    "label": "BD01を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD01"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD02",
+                    "label": "BD02を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD02"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD03",
+                    "label": "BD03を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD03"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD04",
+                    "label": "BD04を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD04"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD05",
+                    "label": "BD05を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD05"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD06",
+                    "label": "BD06を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD06"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD07",
+                    "label": "BD07を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD07"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD08",
+                    "label": "BD08を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD08"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD09",
+                    "label": "BD09を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD09"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD10",
+                    "label": "BD10を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD10"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD11",
+                    "label": "BD11を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD11"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD12",
+                    "label": "BD12を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD12"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD13",
+                    "label": "BD13を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD13"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD14",
+                    "label": "BD14を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD14"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD15",
+                    "label": "BD15を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD15"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD16",
+                    "label": "BD16を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD16"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD17",
+                    "label": "BD17を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD17"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD18",
+                    "label": "BD18を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD18"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD19",
+                    "label": "BD19を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD19"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD20",
+                    "label": "BD20を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD20"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD21",
+                    "label": "BD21を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD21"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD22",
+                    "label": "BD22を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD22"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD23",
+                    "label": "BD23を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD23"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD24",
+                    "label": "BD24を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD24"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD25",
+                    "label": "BD25を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD25"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD26",
+                    "label": "BD26を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD26"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD27",
+                    "label": "BD27を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD27"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD28",
+                    "label": "BD28を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD28"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD29",
+                    "label": "BD29を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD29"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD30",
+                    "label": "BD30を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD30"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD31",
+                    "label": "BD31を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD31"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD32",
+                    "label": "BD32を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD32"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD33",
+                    "label": "BD33を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD33"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD34",
+                    "label": "BD34を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD34"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD35",
+                    "label": "BD35を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD35"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD36",
+                    "label": "BD36を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD36"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD37",
+                    "label": "BD37を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD37"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD38",
+                    "label": "BD38を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD38"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD39",
+                    "label": "BD39を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD39"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD40",
+                    "label": "BD40を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD40"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD41",
+                    "label": "BD41を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD41"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD42",
+                    "label": "BD42を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD42"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD43",
+                    "label": "BD43を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD43"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD44",
+                    "label": "BD44を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD44"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD45",
+                    "label": "BD45を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD45"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD46",
+                    "label": "BD46を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD46"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD47",
+                    "label": "BD47を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD47"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD48",
+                    "label": "BD48を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD48"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD49",
+                    "label": "BD49を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD49"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "BD50",
+                    "label": "BD50を渡す",
+                    "effects": [
+                      {
+                        "op": "choice",
+                        "options": [
+                          {
+                            "id": "attack",
+                            "label": "AT48",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "AT48"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "heal",
+                            "label": "HE50",
+                            "effects": [
+                              {
+                                "op": "giveItem",
+                                "id": "HE50"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "BD50"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "requires": {
+              "or": [
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD01"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD02"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD03"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD04"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD05"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD06"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD07"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD08"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD09"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD10"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD11"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD12"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD13"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD14"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD15"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD16"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD17"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD18"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD19"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD20"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD21"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD22"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD23"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD24"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD25"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD26"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD27"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD28"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD29"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD30"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD31"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD32"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD33"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD34"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD35"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD36"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD37"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD38"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD39"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD40"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD41"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD42"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD43"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD44"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD45"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD46"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD47"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD48"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD49"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "BD50"
+                    },
+                    0
+                  ]
+                }
+              ]
+            },
+            "once": true
+          }
+        ]
+      }
+    },
+    "H5-42": {
+      "options": [
+        {
+          "id": "once",
+          "label": "一度鳴らす",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-42",
+              "label": "H5-42",
+              "rules": [
+                {
+                  "id": "H5-42",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "twice",
+          "label": "二度鳴らす",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "H5-43": {
+      "options": [
+        {
+          "id": "repair",
+          "label": "作り直す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 900
+            }
+          ]
+        },
+        {
+          "id": "search",
+          "label": "影を探す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR48",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H5-44": {
+      "options": [
+        {
+          "id": "carry",
+          "label": "石を運ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW49",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "carve",
+          "label": "型を彫る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD49"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-45": {
+      "options": [
+        {
+          "id": "rescue",
+          "label": "救護班",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "label": "伝令",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-45",
+              "label": "H5-45",
+              "rules": [
+                {
+                  "id": "H5-45",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-46": {
+      "options": [
+        {
+          "id": "listen",
+          "label": "聴く",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H5-46",
+              "label": "H5-46",
+              "rules": [
+                {
+                  "id": "H5-46",
+                  "hook": "spellCost",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.spellCost"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceCost",
+                      "amount": 3,
+                      "min": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "label": "荷を支える",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT49"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-47": {
+      "options": [
+        {
+          "id": "self",
+          "label": "自分",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 12,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "companion",
+          "label": "仲間",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "mul": [
+                  3,
+                  {
+                    "ref": "companionCount"
+                  }
+                ]
+              },
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "mul": [
+                  3,
+                  {
+                    "ref": "companionCount"
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "companionCount"
+              },
+              0
+            ]
+          }
+        },
+        {
+          "id": "later",
+          "label": "後の人",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD50"
+            }
+          ]
+        }
+      ]
+    },
+    "H5-48": {
+      "options": [
+        {
+          "id": "rail",
+          "label": "手すり",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 6,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "item",
+          "label": "戦闘用品を差し込む",
+          "effects": [
+            {
+              "op": "choice",
+              "options": [
+                {
+                  "id": "AT01",
+                  "label": "AT01",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT01"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT02",
+                  "label": "AT02",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT02"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT03",
+                  "label": "AT03",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT03"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT04",
+                  "label": "AT04",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT04"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT05",
+                  "label": "AT05",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT05"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT06",
+                  "label": "AT06",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT06"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT07",
+                  "label": "AT07",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT07"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT08",
+                  "label": "AT08",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT08"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT09",
+                  "label": "AT09",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT09"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT10",
+                  "label": "AT10",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT10"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT11",
+                  "label": "AT11",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT11"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT12",
+                  "label": "AT12",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT12"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT13",
+                  "label": "AT13",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT13"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT14",
+                  "label": "AT14",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT14"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT15",
+                  "label": "AT15",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT15"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT16",
+                  "label": "AT16",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT16"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT17",
+                  "label": "AT17",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT17"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT18",
+                  "label": "AT18",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT18"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT19",
+                  "label": "AT19",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT19"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT20",
+                  "label": "AT20",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT20"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT21",
+                  "label": "AT21",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT21"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT22",
+                  "label": "AT22",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT22"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT23",
+                  "label": "AT23",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT23"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT24",
+                  "label": "AT24",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT24"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT25",
+                  "label": "AT25",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT25"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT26",
+                  "label": "AT26",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT26"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT27",
+                  "label": "AT27",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT27"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT28",
+                  "label": "AT28",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT28"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT29",
+                  "label": "AT29",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT29"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT30",
+                  "label": "AT30",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT30"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT31",
+                  "label": "AT31",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT31"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT32",
+                  "label": "AT32",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT32"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT33",
+                  "label": "AT33",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT33"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT34",
+                  "label": "AT34",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT34"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT35",
+                  "label": "AT35",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT35"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT36",
+                  "label": "AT36",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT36"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT37",
+                  "label": "AT37",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT37"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT38",
+                  "label": "AT38",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT38"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT39",
+                  "label": "AT39",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT39"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT40",
+                  "label": "AT40",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT40"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT41",
+                  "label": "AT41",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT41"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT42",
+                  "label": "AT42",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT42"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT43",
+                  "label": "AT43",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT43"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT44",
+                  "label": "AT44",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT44"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT45",
+                  "label": "AT45",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT45"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT46",
+                  "label": "AT46",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT46"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT47",
+                  "label": "AT47",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT47"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT48",
+                  "label": "AT48",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT48"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT49",
+                  "label": "AT49",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT49"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "AT50",
+                  "label": "AT50",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "AT50"
+                    ],
+                    "trapLoss": true
+                  }
+                }
+              ]
+            }
+          ],
+          "requires": {
+            "or": [
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT01"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT02"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT03"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT04"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT05"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT06"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT07"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT08"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT09"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT10"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT11"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT12"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT13"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT14"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT15"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT16"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT17"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT18"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT19"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT20"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT21"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT22"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT23"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT24"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT25"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT26"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT27"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT28"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT29"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT30"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT31"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT32"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT33"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT34"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT35"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT36"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT37"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT38"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT39"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT40"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT41"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT42"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT43"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT44"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT45"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT46"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT47"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT48"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT49"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "AT50"
+                  },
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H5-49": {
+      "options": [
+        {
+          "id": "boat",
+          "label": "助け舟150G",
+          "effects": [],
+          "cost": {
+            "gold": 150,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "down",
+          "label": "降りる",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  2
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": -3,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": -6,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H5-50": {
+      "options": [
+        {
+          "id": "magic",
+          "label": "魔力4で浮かす",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 4,
+              "strict": true
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "support",
+          "label": "重りを支える",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    }
+  }
+}

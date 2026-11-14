@@ -1,0 +1,1809 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "H4-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "筒から枝を抜き、見えない向こうで迷子が合図を返すまで待つ。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 510
+            }
+          ]
+        }
+      ]
+    },
+    "H4-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "ぬらした葉に乗り換えてもらい、切手を乾かして台帳へ戻す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 460
+            }
+          ]
+        }
+      ]
+    },
+    "H4-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "車輪の向きを直し、声に合わせて木馬車を迎えに押す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 590
+            }
+          ]
+        }
+      ]
+    },
+    "H4-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "足元の石に麻布を巻き、二人で反物を岸へ上げる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 540
+            }
+          ]
+        }
+      ]
+    },
+    "H4-05": {
+      "options": [
+        {
+          "id": "help",
+          "label": "布を巻いた枝を鞘に差し、鳥が持つ本当の届け先を追う。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW31",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H4-06": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR31",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR31",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR33",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR33",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H4-07": {
+      "options": [
+        {
+          "id": "help",
+          "label": "低く身をかがめ、兜の緒だけを長い小刀で切る。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR34",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H4-08": {
+      "options": [
+        {
+          "id": "one",
+          "label": "SW35",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW35",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR35",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR35",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H4-09": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "杖の人を石に座らせ、枝先に結んだ白い布を目印に追う。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "cloth",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-10": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "空の桶を離れた場所で鳴らし、貯めた水をこぼさず敵を呼ぶ。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "bucket",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-11": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "本当の二人に手をつないでもらい、影の足元へ石を転がす。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "stone",
+                  "hook": "afterEnemyAction",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "dealDamage",
+                      "amount": 4,
+                      "leave": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-12": {
+      "options": [
+        {
+          "id": "hp",
+          "label": "体力3で開始",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": []
+            }
+          ]
+        },
+        {
+          "id": "mp",
+          "label": "魔力2で開始",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            },
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "H4-13": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "本当の灯を低く掲げて旅人を戻し、残った影を照らす。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "light",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 5
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-14": {
+      "options": [
+        {
+          "id": "item",
+          "label": "HE31",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE31"
+            }
+          ]
+        },
+        {
+          "id": "hp",
+          "label": "体力6",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H4-15": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT31",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT31"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD31",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD31"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-16": {
+      "options": [
+        {
+          "id": "help",
+          "label": "薄皮を折ってしおりを作り、本を元の高さに戻す。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD32"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-17": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE32",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE32"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "HE33",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE33"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-18": {
+      "options": [
+        {
+          "id": "attack",
+          "label": "AT32",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT32"
+            }
+          ]
+        },
+        {
+          "id": "board",
+          "label": "同行者がいればBD33",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD33"
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "companionCount"
+              },
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "H4-19": {
+      "options": [
+        {
+          "id": "help",
+          "label": "苔の下の継ぎ目を探し、若木を傷めず車を押し出す。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "BD34"
+                },
+                {
+                  "op": "giveItem",
+                  "id": "HE34"
+                }
+              ],
+              "else": [
+                {
+                  "op": "giveItem",
+                  "id": "BD34"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-20": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT33",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT33"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "HE35",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE35"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-21": {
+      "options": [
+        {
+          "id": "help",
+          "label": "皿を一枚ずつ空け、荷札を受け皿の外に留める。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "mp"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "giveItem",
+              "id": "BD35"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-22": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE36",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE36"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD36",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD36"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-23": {
+      "options": [
+        {
+          "id": "item",
+          "label": "AT34",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT34"
+            }
+          ]
+        },
+        {
+          "id": "prepare",
+          "label": "被害軽減を準備",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H4-23",
+              "label": "H4-23",
+              "rules": [
+                {
+                  "id": "H4-23",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-24": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT35",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT35"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD37",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD37"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-25": {
+      "onLand": [
+        {
+          "op": "if",
+          "cond": {
+            "gte": [
+              {
+                "ref": "hp"
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          },
+          "then": [
+            {
+              "op": "giveItem",
+              "id": "HE37"
+            }
+          ],
+          "else": [
+            {
+              "op": "hp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "H4-26": {
+      "options": [
+        {
+          "id": "light",
+          "label": "まねして木の上の光を見つけ、子どもへ方角を知らせる。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "unique": "H4-26",
+                  "label": "H4-26",
+                  "rules": [
+                    {
+                      "id": "H4-26",
+                      "hook": "spellCost",
+                      "when": {
+                        "gt": [
+                          {
+                            "ref": "battle.spellCost"
+                          },
+                          0
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "reduceCost",
+                          "amount": 2,
+                          "min": 1
+                        }
+                      ],
+                      "limit": {
+                        "perBattle": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H4-27": {
+      "options": [
+        {
+          "id": "head",
+          "label": "額",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "id": "cloak",
+          "label": "外套",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H4-27",
+              "label": "H4-27",
+              "rules": [
+                {
+                  "id": "H4-27",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-28": {
+      "options": [
+        {
+          "id": "sweet",
+          "label": "小粒",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "help",
+          "label": "手伝う",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "H4-29": {
+      "options": [
+        {
+          "id": "stream",
+          "label": "小川側",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "maxHp"
+                      },
+                      {
+                        "ref": "hp"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              },
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "root",
+          "label": "根側",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "maxMp"
+                      },
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "H4-30": {
+      "options": [
+        {
+          "id": "hp",
+          "label": "体力10",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "mp",
+          "label": "魔力6",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "item",
+          "label": "両方満タンならHE38",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE38"
+            }
+          ],
+          "requires": {
+            "and": [
+              {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H4-31": {
+      "options": [
+        {
+          "id": "light",
+          "label": "灯守に代わり、火を消さないようにそっと粉を払う。",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            },
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 5,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H4-32": {
+      "options": [
+        {
+          "id": "self",
+          "label": "自分から",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "give",
+          "label": "譲る",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            },
+            {
+              "op": "giveItem",
+              "id": "AT36"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-33": {
+      "options": [
+        {
+          "id": "dry",
+          "label": "乾いた側",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "id": "wet",
+          "label": "湿った側",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 1,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "H4-34": {
+      "options": [
+        {
+          "id": "read",
+          "label": "読む",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        },
+        {
+          "id": "reply",
+          "label": "返事",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H4-35": {
+      "options": [
+        {
+          "id": "warm",
+          "label": "手袋を乾かしてはめ、残った布で自分の腕を温める。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "ref": "maxHp"
+                  },
+                  4
+                ]
+              },
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "ref": "die"
+                  },
+                  3
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H4-36": {
+      "options": [
+        {
+          "id": "center",
+          "label": "真ん中",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H4-36",
+              "label": "H4-36",
+              "rules": [
+                {
+                  "id": "H4-36",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "edge",
+          "label": "端",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "H4-37": {
+      "inn": {
+        "services": [
+          {
+            "id": "extra",
+            "label": "追加手当て",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "hp",
+                    "label": "体力4",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 4,
+                        "floor": 1
+                      }
+                    ],
+                    "requires": {
+                      "not": {
+                        "gte": [
+                          {
+                            "ref": "hp"
+                          },
+                          {
+                            "ref": "maxHp"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "id": "mp",
+                    "label": "魔力4",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 4
+                      }
+                    ],
+                    "requires": {
+                      "not": {
+                        "gte": [
+                          {
+                            "ref": "mp"
+                          },
+                          {
+                            "ref": "maxMp"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "id": "item",
+                    "label": "両方満タンならBD38",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "BD38"
+                      }
+                    ],
+                    "requires": {
+                      "and": [
+                        {
+                          "gte": [
+                            {
+                              "ref": "hp"
+                            },
+                            {
+                              "ref": "maxHp"
+                            }
+                          ]
+                        },
+                        {
+                          "gte": [
+                            {
+                              "ref": "mp"
+                            },
+                            {
+                              "ref": "maxMp"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H4-38": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "お礼の品",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "attack",
+                    "label": "AT37",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "AT37"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "heal",
+                    "label": "HE39",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE39"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H4-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "prepare",
+            "label": "初手防御の準備",
+            "effects": [
+              {
+                "op": "reserve",
+                "slot": "nextBattle",
+                "filter": "any",
+                "unique": "H4-39",
+                "label": "H4-39",
+                "rules": [
+                  {
+                    "id": "H4-39",
+                    "hook": "afterHeroAction",
+                    "when": {
+                      "and": [
+                        {
+                          "eq": [
+                            {
+                              "ref": "battle.round"
+                            },
+                            1
+                          ]
+                        },
+                        {
+                          "eq": [
+                            {
+                              "ref": "battle.heroAction"
+                            },
+                            "guard"
+                          ]
+                        }
+                      ]
+                    },
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 3
+                      }
+                    ],
+                    "limit": {
+                      "perBattle": 1
+                    }
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H4-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "stone",
+            "label": "温石を借りる",
+            "effects": [
+              {
+                "op": "hp",
+                "delta": 4,
+                "floor": 1
+              },
+              {
+                "op": "if",
+                "cond": {
+                  "eq": [
+                    {
+                      "ref": "companionCount"
+                    },
+                    0
+                  ]
+                },
+                "then": [
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "else": []
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H4-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "BD39を受け取る",
+            "effects": [
+              {
+                "op": "giveItem",
+                "id": "BD39"
+              }
+            ],
+            "requires": {
+              "gt": [
+                {
+                  "ref": "bagFree"
+                },
+                0
+              ]
+            },
+            "once": true
+          }
+        ]
+      }
+    },
+    "H4-42": {
+      "options": [
+        {
+          "id": "staff",
+          "label": "二本の杖",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW38",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "hanger",
+          "label": "荷掛け",
+          "effects": [
+            {
+              "op": "choice",
+              "options": [
+                {
+                  "id": "heal",
+                  "label": "HE40",
+                  "effects": [
+                    {
+                      "op": "giveItem",
+                      "id": "HE40"
+                    }
+                  ]
+                },
+                {
+                  "id": "board",
+                  "label": "BD40",
+                  "effects": [
+                    {
+                      "op": "giveItem",
+                      "id": "BD40"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-43": {
+      "options": [
+        {
+          "id": "box",
+          "label": "巣の箱",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 630
+            }
+          ]
+        },
+        {
+          "id": "house",
+          "label": "小屋を90Gで借りる",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H4-43",
+              "label": "H4-43",
+              "rules": [
+                {
+                  "id": "H4-43",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "cost": {
+            "gold": 90
+          }
+        }
+      ]
+    },
+    "H4-44": {
+      "options": [
+        {
+          "id": "search",
+          "label": "探す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR38",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "play",
+          "label": "演奏",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            },
+            {
+              "op": "giveItem",
+              "id": "AT38"
+            }
+          ]
+        }
+      ]
+    },
+    "H4-45": {
+      "options": [
+        {
+          "id": "release",
+          "label": "群れを帰す",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        },
+        {
+          "id": "carry",
+          "label": "小屋へ",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H4-45",
+              "label": "H4-45",
+              "rules": [
+                {
+                  "id": "H4-45",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 5
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H4-46": {
+      "options": [
+        {
+          "id": "ride",
+          "label": "100Gで乗せる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            }
+          ],
+          "cost": {
+            "gold": 100
+          }
+        },
+        {
+          "id": "pull",
+          "label": "引く",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT39"
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "walk",
+          "label": "歩く",
+          "effects": []
+        }
+      ]
+    },
+    "H4-47": {
+      "options": [
+        {
+          "id": "sew",
+          "label": "縫う",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            },
+            {
+              "op": "hp",
+              "delta": 2,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "light",
+          "label": "魔力2で照らす",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT40"
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 2,
+              "strict": true
+            }
+          }
+        }
+      ]
+    },
+    "H4-48": {
+      "options": [
+        {
+          "id": "hang",
+          "label": "根にぶら下がる",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "bag",
+          "label": "消耗品1個を手放す",
+          "effects": [
+            {
+              "op": "loseItem",
+              "choose": true
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "bagCount"
+              },
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "H4-49": {
+      "options": [
+        {
+          "id": "slow",
+          "label": "自力",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "magic",
+          "label": "水紋",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 3,
+              "strict": true
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "H4-50": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "手すり120G",
+          "effects": [],
+          "cost": {
+            "gold": 120,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "search",
+          "label": "板を探す",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "in": [
+                  {
+                    "ref": "die"
+                  },
+                  [
+                    2,
+                    4,
+                    6
+                  ]
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": -2,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": -5,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

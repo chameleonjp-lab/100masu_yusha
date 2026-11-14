@@ -1,0 +1,185 @@
+{
+  "tuningVersion": "tuning-1",
+  "baseContentSha256": "817740b5b7980c90efea435e116ab686d6e65a558fab43eca36fae8fa36adcd9",
+  "baseSettingsVersion": "balance-draft-2",
+  "note": "正本と balance-draft-2 に数値がない値だけを置く。根拠と計算例は docs/dev/tuning.md。ダメージ計算は balance-draft-2 の bossBattlePolicy（max(1, 攻撃−防御)、防御中は半分を切り上げ）に従う。",
+
+  "normalEnemies": {
+    "EN01": {
+      "name": "野ネズミ剣士", "bands": [1],
+      "maxHp": 15, "baseAttack": 9, "baseDefense": 2,
+      "actions": [
+        { "order": 1, "name": "小剣で突く", "attack": 9, "defense": 2, "kind": "通常攻撃", "tell": "小さな剣をまっすぐ構える。" },
+        { "order": 2, "name": "踏み込み斬り", "attack": 13, "defense": 2, "kind": "大技", "tell": "剣先を後ろに隠した。踏み込み斬りが来る。" },
+        { "order": 3, "name": "息をつく", "attack": 0, "defense": 1, "kind": "反撃の隙", "tell": "肩で息をついている。攻撃は来ない。" }
+      ]
+    },
+    "EN02": {
+      "name": "鎧モグラ", "bands": [1, 3],
+      "maxHp": 14, "baseAttack": 11, "baseDefense": 3,
+      "actions": [
+        { "order": 1, "name": "土けむりの体当たり", "attack": 11, "defense": 3, "kind": "通常攻撃", "tell": "土をけって、頭を低くする。" },
+        { "order": 2, "name": "丸まって転がる", "attack": 15, "defense": 8, "kind": "大技", "tell": "鼻を土に埋め、背の鎧を丸めた。かたくなって転がってくる。" },
+        { "order": 3, "name": "鎧が開く", "attack": 0, "defense": 1, "kind": "反撃の隙", "tell": "転がり終えて、鎧が開いている。攻撃は来ない。" }
+      ],
+      "bandOverrides": {
+        "3": {
+          "maxHp": 20, "baseAttack": 20, "baseDefense": 8,
+          "actions": [
+            { "order": 1, "name": "土けむりの体当たり", "attack": 20, "defense": 8, "kind": "通常攻撃", "tell": "土をけって、頭を低くする。" },
+            { "order": 2, "name": "丸まって転がる", "attack": 26, "defense": 16, "kind": "大技", "tell": "鼻を土に埋め、背の鎧を丸めた。かたくなって転がってくる。" },
+            { "order": 3, "name": "鎧が開く", "attack": 0, "defense": 4, "kind": "反撃の隙", "tell": "転がり終えて、鎧が開いている。攻撃は来ない。" }
+          ]
+        }
+      }
+    },
+    "EN03": {
+      "name": "浅瀬ガニ", "bands": [2],
+      "maxHp": 18, "baseAttack": 15, "baseDefense": 6,
+      "actions": [
+        { "order": 1, "name": "片ばさみで挟む", "attack": 15, "defense": 6, "kind": "通常攻撃", "tell": "はさみを片方だけ持ち上げる。" },
+        { "order": 2, "name": "泡のはさみ打ち", "attack": 22, "defense": 6, "kind": "大技", "tell": "泡が片方のはさみに集まった。重い挟み打ちが来る。" },
+        { "order": 3, "name": "両ばさみが下がる", "attack": 0, "defense": 2, "kind": "反撃の隙", "tell": "両方のはさみが下がっている。攻撃は来ない。" }
+      ]
+    },
+    "EN04": {
+      "name": "灯りコウモリ", "bands": [2],
+      "maxHp": 20, "baseAttack": 17, "baseDefense": 4,
+      "actions": [
+        { "order": 1, "name": "羽ではたく", "attack": 17, "defense": 4, "kind": "通常攻撃", "tell": "羽を広げて、横から近づく。" },
+        { "order": 2, "name": "光の輪の急降下", "attack": 25, "defense": 4, "kind": "大技", "tell": "しっぽの光が細い輪を描いた。輪が閉じると急降下する。" },
+        { "order": 3, "name": "低く飛ぶ", "attack": 0, "defense": 1, "kind": "反撃の隙", "tell": "低いところをふらふら飛んでいる。攻撃は来ない。" }
+      ]
+    },
+    "EN05": {
+      "name": "磁石ゴーレム", "bands": [3],
+      "maxHp": 25, "baseAttack": 23, "baseDefense": 9,
+      "actions": [
+        { "order": 1, "name": "磁石の引き寄せ", "attack": 23, "defense": 9, "kind": "通常攻撃", "tell": "胸の磁石が光り、剣を引き寄せようとする。" },
+        { "order": 2, "name": "鉄粉の振り下ろし", "attack": 31, "defense": 13, "kind": "大技", "tell": "両腕に鉄粉が積もった。次の振り下ろしは重い。" },
+        { "order": 3, "name": "鉄粉が落ちる", "attack": 0, "defense": 4, "kind": "反撃の隙", "tell": "腕の鉄粉がぱらぱら落ちている。攻撃は来ない。" }
+      ]
+    },
+    "EN06": {
+      "name": "霧ギツネ", "bands": [4],
+      "maxHp": 33, "baseAttack": 28, "baseDefense": 10,
+      "actions": [
+        { "order": 1, "name": "霧のかみつき", "attack": 28, "defense": 10, "kind": "通常攻撃", "tell": "霧の中から鼻先が見える。" },
+        { "order": 2, "name": "残像の飛びかかり", "attack": 35, "defense": 16, "kind": "大技", "tell": "尻尾をほどき、左右に残像を散らした。" },
+        { "order": 3, "name": "輪郭が戻る", "attack": 0, "defense": 5, "kind": "反撃の隙", "tell": "残像が消えて、輪郭が戻った。攻撃は来ない。" }
+      ]
+    },
+    "EN07": {
+      "name": "茨グモ", "bands": [4, 5],
+      "maxHp": 32, "baseAttack": 30, "baseDefense": 11,
+      "actions": [
+        { "order": 1, "name": "茨の前脚", "attack": 30, "defense": 11, "kind": "通常攻撃", "tell": "とげのある前脚を振り上げる。" },
+        { "order": 2, "name": "糸を張って突進", "attack": 38, "defense": 11, "kind": "大技", "tell": "前脚を寄せて糸を張った。次は突進だ。" },
+        { "order": 3, "name": "糸が切れる", "attack": 0, "defense": 5, "kind": "反撃の隙", "tell": "張った糸がぷつりと切れた。攻撃は来ない。" }
+      ],
+      "bandOverrides": {
+        "5": {
+          "maxHp": 40, "baseAttack": 35, "baseDefense": 13,
+          "actions": [
+            { "order": 1, "name": "茨の前脚", "attack": 35, "defense": 13, "kind": "通常攻撃", "tell": "とげのある前脚を振り上げる。" },
+            { "order": 2, "name": "糸を張って突進", "attack": 44, "defense": 13, "kind": "大技", "tell": "前脚を寄せて糸を張った。次は突進だ。" },
+            { "order": 3, "name": "糸が切れる", "attack": 0, "defense": 7, "kind": "反撃の隙", "tell": "張った糸がぷつりと切れた。攻撃は来ない。" }
+          ]
+        }
+      }
+    },
+    "EN08": {
+      "name": "城壁ガーゴイル", "bands": [5],
+      "maxHp": 41, "baseAttack": 37, "baseDefense": 15,
+      "actions": [
+        { "order": 1, "name": "石の爪", "attack": 37, "defense": 15, "kind": "通常攻撃", "tell": "石の爪を研ぐ音がする。" },
+        { "order": 2, "name": "高台から飛び込む", "attack": 47, "defense": 24, "kind": "大技", "tell": "翼が石の板のように閉じた。高台から飛び込んでくる。" },
+        { "order": 3, "name": "翼を広げ直す", "attack": 0, "defense": 8, "kind": "反撃の隙", "tell": "着地して、翼を広げ直している。攻撃は来ない。" }
+      ]
+    }
+  },
+
+  "spells": {
+    "SP01": {
+      "name": "火花", "mpCost": 4, "kind": "attack", "isAttackSpell": true,
+      "power": 4, "powerPerLevel": 2, "powerUnit": "固定ダメージ（4＋レベル×2）",
+      "ignoresDefense": true,
+      "text": "魔力4。敵の守りに関係なく、4＋レベル×2のダメージ。"
+    },
+    "SP02": {
+      "name": "露の手当て", "mpCost": 5, "kind": "heal", "isAttackSpell": false,
+      "power": 10, "powerPerLevel": 1, "powerUnit": "一行の体力の回復量（10＋レベル）",
+      "text": "魔力5。仲間と分け合う体力を、10＋レベルだけ戻す。"
+    },
+    "SP03": {
+      "name": "石の衣", "mpCost": 4, "kind": "guard", "isAttackSpell": false,
+      "power": 20, "powerUnit": "次に受ける敵の一撃から防ぐ量の上限",
+      "lasts": "次に1以上の被害を受けるまで。戦闘が終われば消える",
+      "stacks": false,
+      "text": "魔力4。次に受ける敵の一撃を、20まで防ぐ。その手に攻撃が来なければ、次の攻撃まで残る。"
+    },
+    "SP04": {
+      "name": "暁の一閃", "mpCost": 7, "kind": "finisher", "isAttackSpell": true,
+      "power": 2, "powerUnit": "通常攻撃のダメージの倍率（大技を予告している敵に）",
+      "otherwiseMultiplier": 1,
+      "text": "魔力7。大技を構えている敵に、通常攻撃の2倍のダメージ。ほかの時は通常攻撃と同じ。"
+    }
+  },
+
+  "jobs": {
+    "JB00": { "name": "旅人", "text": "特別な力はない。レベル・装備・呪文はどの職でも同じように使える。" },
+    "JB01": { "name": "戦士", "guardThenAttackBonus": 6, "text": "防御した次の手に通常攻撃を当てると、その一撃が6強くなる。" },
+    "JB02": { "name": "魔法使い", "attackSpellMpDiscount": 2, "minimumMpCost": 1, "text": "攻撃の呪文（火花・暁の一閃）に使う魔力が2少なくてすむ。最低1。" },
+    "JB03": { "name": "旅芸人", "chestChoices": 3, "text": "宝箱の中身を3つ見て、1つ選べる。" }
+  },
+
+  "companions": {
+    "CP01": {
+      "name": "なべぶた盾のゴンタ", "role": "shield",
+      "trigger": "enemyBigMoveHit",
+      "triggerText": "敵の大技が一行に当たる直前（毎回）",
+      "effect": { "reduceDamage": 5 },
+      "perBattleLimit": null,
+      "line": "大技が来たら前に出て、受ける被害を5へらす。"
+    },
+    "CP02": {
+      "name": "くすりばこのミント", "role": "medic",
+      "trigger": "roundEndPartyHpAtMostHalf",
+      "triggerText": "一行も敵も生きているラウンドの終わりに、体力が最大の半分以下なら（1戦1回）",
+      "effect": { "healHp": 15 },
+      "perBattleLimit": 1,
+      "line": "体力が半分以下になったら、1回だけ体力を15回復。"
+    },
+    "CP03": {
+      "name": "石なげのコロ", "role": "thrower",
+      "trigger": "enemyShowsOpening",
+      "triggerText": "敵が「反撃の隙」を見せている手で、勇者の行動の後も敵が生きていれば（毎回）",
+      "effect": { "damage": 6, "ignoresDefense": true },
+      "perBattleLimit": null,
+      "line": "敵にすきができたら、石を投げて6ダメージ。"
+    },
+    "CP04": {
+      "name": "ランタンのルゥ", "role": "lantern",
+      "trigger": "battleStart",
+      "triggerText": "戦闘が始まった時（再戦の開始も含む）",
+      "effect": { "restoreMp": 3 },
+      "perBattleLimit": 1,
+      "line": "戦いが始まると、灯りをともして魔力を3回復。"
+    }
+  },
+
+  "taverns": {
+    "1": ["CP01", "CP02"],
+    "2": ["CP03", "CP04"],
+    "3": ["CP02", "CP03"],
+    "4": ["CP01", "CP04"],
+    "5": ["CP01", "CP03"]
+  },
+  "tavernFallbackOrder": ["CP01", "CP02", "CP03", "CP04"],
+
+  "dieBonus": {
+    "basis": "戦闘が起きたマスに着地したときの調整後の目",
+    "small": { "dice": [1, 2, 3], "firstPositiveDamageReduction": { "1": 6, "2": 5, "3": 4 } },
+    "big": { "dice": [4, 5, 6], "firstDirectHitBonus": { "4": 4, "5": 5, "6": 6 } }
+  }
+}

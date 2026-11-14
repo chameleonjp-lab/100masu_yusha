@@ -1,0 +1,2937 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "H3-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "昼番の間だけ炉を見て、熱が上がりすぎたら窓を開ける。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 410
+            }
+          ]
+        }
+      ]
+    },
+    "H3-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "長靴の柄を手掛かりに、三人の札を本人へ返す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 350
+            }
+          ]
+        }
+      ]
+    },
+    "H3-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "好物の皮を綱から離れた所に置き、最後の車両まで通す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 420
+            }
+          ]
+        }
+      ]
+    },
+    "H3-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "布で石をこすり、白い紋が現れる印石だけを帳場へ運ぶ。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 390
+            }
+          ]
+        }
+      ]
+    },
+    "H3-05": {
+      "options": [
+        {
+          "id": "help",
+          "label": "石を水にひたし、親方の合図で刃の表裏を返す。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW21",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H3-06": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR21",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR21",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR22",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR22",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H3-07": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR24",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR24",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "SW24",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW24",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H3-08": {
+      "options": [
+        {
+          "id": "one",
+          "label": "SW26",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW26",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "SW28",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW28",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H3-09": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "木の寝台へ患者を移し、空いた鉄枠を敵の前に出す。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN05",
+              "rules": [
+                {
+                  "id": "frame",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-10": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "箱を持ち主に返してから空桶を下ろし、足場を固める。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN02",
+              "rules": [
+                {
+                  "id": "bucket",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "item"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-11": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "そりを木の車止めへ向け、勢いが止まってから剣を取る。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN05",
+              "rules": [],
+              "field": {
+                "enemyHp": {
+                  "delta": -4,
+                  "min": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "H3-12": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "静かに車輪を止め、壁をたたいて敵の顔を線路の外へ向ける。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN02",
+              "rules": [
+                {
+                  "id": "guard",
+                  "hook": "afterHeroAction",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addMark",
+                      "mark": {
+                        "id": "guard-next",
+                        "hook": "heroAttackDamage",
+                        "when": {
+                          "eq": [
+                            {
+                              "ref": "battle.attackKind"
+                            },
+                            "attack"
+                          ]
+                        },
+                        "uses": 1,
+                        "effects": [
+                          {
+                            "op": "addDamage",
+                            "amount": 4
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-13": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "砂から離れて木の作業台に乗り、火の粉をかぶらない位置で構える。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN05",
+              "rules": [
+                {
+                  "id": "sparks",
+                  "hook": "spellCost",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.spellKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceCost",
+                      "amount": 2,
+                      "min": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-14": {
+      "options": [
+        {
+          "id": "attack",
+          "label": "AT21",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT21"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "魔力半分以下ならHE21",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE21"
+            }
+          ],
+          "requires": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "mp"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "maxMp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H3-15": {
+      "options": [
+        {
+          "id": "item",
+          "label": "HE22",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE22"
+            }
+          ]
+        },
+        {
+          "id": "mp",
+          "label": "魔力を回復",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H3-16": {
+      "options": [
+        {
+          "id": "help",
+          "label": "箱の蓋の絵を見て、色の帯が続くように三枚の石を戻す。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD21"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-17": {
+      "options": [
+        {
+          "id": "one",
+          "label": "BD22",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD22"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD23",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD23"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-18": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE23",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE23"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT22",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT22"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-19": {
+      "options": [
+        {
+          "id": "attack",
+          "label": "AT23",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT23"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "体力半分以下ならHE24",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE24"
+            }
+          ],
+          "requires": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "hp"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H3-20": {
+      "options": [
+        {
+          "id": "help",
+          "label": "そりを後ろから支え、封書の下へ紙板を滑らせる。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD24"
+            },
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "HE25"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H3-21": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT24",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT24"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT25",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT25"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-22": {
+      "options": [
+        {
+          "id": "item",
+          "label": "HE26",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE26"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "袋が満杯なら体力4",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            }
+          ],
+          "requires": {
+            "eq": [
+              {
+                "ref": "bagCount"
+              },
+              6
+            ]
+          }
+        }
+      ]
+    },
+    "H3-23": {
+      "options": [
+        {
+          "id": "one",
+          "label": "BD25",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD25"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD26",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD26"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-24": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE27",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE27"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT26",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT26"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-25": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "くぼみに背を合わせ、肩ひもが緩むまで休む。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  6
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H3-26": {
+      "options": [
+        {
+          "id": "drink",
+          "label": "長い声で飲み、短い声で隣へ渡す。",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H3-27": {
+      "options": [
+        {
+          "id": "fingers",
+          "label": "指",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "id": "feet",
+          "label": "足",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "ref": "hp"
+                  },
+                  4
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 9,
+                  "floor": 1
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 7,
+                  "floor": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-28": {
+      "options": [
+        {
+          "id": "egg",
+          "label": "玉子",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "id": "kit",
+          "label": "救急箱",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE28"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-29": {
+      "options": [
+        {
+          "id": "feet",
+          "label": "足湯",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "ref": "maxHp"
+                  },
+                  3
+                ]
+              },
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "drink",
+          "label": "飲み口",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "ref": "maxMp"
+                  },
+                  2
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "H3-30": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "灯を伏せて座り、遠くの足音と自分の呼吸を数える。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "unique": "H3-30",
+                  "label": "H3-30",
+                  "rules": [
+                    {
+                      "id": "H3-30",
+                      "hook": "enemyDamage",
+                      "when": {
+                        "gt": [
+                          {
+                            "ref": "battle.damage"
+                          },
+                          0
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "reduceDamage",
+                          "amount": 3
+                        }
+                      ],
+                      "limit": {
+                        "perBattle": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "H3-31": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "一人ずつ切り株に腰を掛け、汗を風で乾かす。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "add": [
+                  4,
+                  {
+                    "mul": [
+                      2,
+                      {
+                        "ref": "companionCount"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H3-32": {
+      "options": [
+        {
+          "id": "hand",
+          "label": "手形",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "polish",
+          "label": "磨く",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 2,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H3-33": {
+      "options": [
+        {
+          "id": "soup",
+          "label": "汁",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "id": "dumpling",
+          "label": "すいとん",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "item",
+          "label": "両方満タンならBD27",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD27"
+            }
+          ],
+          "requires": {
+            "and": [
+              {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H3-34": {
+      "options": [
+        {
+          "id": "hp",
+          "label": "体力6",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ],
+          "requires": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              {
+                "mul": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "mp",
+          "label": "魔力6",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ],
+          "requires": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "mul": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H3-35": {
+      "options": [
+        {
+          "id": "draw",
+          "label": "描く",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H3-35",
+              "label": "H3-35",
+              "rules": [
+                {
+                  "id": "H3-35",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "laugh",
+          "label": "笑う",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H3-36": {
+      "options": [
+        {
+          "id": "together",
+          "label": "並ぶ",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        },
+        {
+          "id": "alone",
+          "label": "端",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H3-37": {
+      "inn": {
+        "services": [
+          {
+            "id": "cat",
+            "label": "山猫の手当て",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "hp",
+                    "label": "体力4",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 4,
+                        "floor": 1
+                      }
+                    ]
+                  },
+                  {
+                    "id": "shield",
+                    "label": "次戦被害3軽減",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextBattle",
+                        "filter": "any",
+                        "unique": "H3-37",
+                        "label": "H3-37",
+                        "rules": [
+                          {
+                            "id": "H3-37",
+                            "hook": "enemyDamage",
+                            "when": {
+                              "gt": [
+                                {
+                                  "ref": "battle.damage"
+                                },
+                                0
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "op": "reduceDamage",
+                                "amount": 3
+                              }
+                            ],
+                            "limit": {
+                              "perBattle": 1
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H3-38": {
+      "inn": {
+        "services": [
+          {
+            "id": "trade",
+            "label": "戦闘用品1個をHE29へ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "AT01",
+                    "label": "AT01",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT01"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT02",
+                    "label": "AT02",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT02"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT03",
+                    "label": "AT03",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT03"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT04",
+                    "label": "AT04",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT04"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT05",
+                    "label": "AT05",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT05"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT06",
+                    "label": "AT06",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT06"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT07",
+                    "label": "AT07",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT07"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT08",
+                    "label": "AT08",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT08"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT09",
+                    "label": "AT09",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT09"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT10",
+                    "label": "AT10",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT10"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT11",
+                    "label": "AT11",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT11"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT12",
+                    "label": "AT12",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT12"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT13",
+                    "label": "AT13",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT13"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT14",
+                    "label": "AT14",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT14"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT15",
+                    "label": "AT15",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT15"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT16",
+                    "label": "AT16",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT16"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT17",
+                    "label": "AT17",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT17"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT18",
+                    "label": "AT18",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT18"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT19",
+                    "label": "AT19",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT19"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT20",
+                    "label": "AT20",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT20"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT21",
+                    "label": "AT21",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT21"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT22",
+                    "label": "AT22",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT22"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT23",
+                    "label": "AT23",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT23"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT24",
+                    "label": "AT24",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT24"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT25",
+                    "label": "AT25",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT25"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT26",
+                    "label": "AT26",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT26"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT27",
+                    "label": "AT27",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT27"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT28",
+                    "label": "AT28",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT28"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT29",
+                    "label": "AT29",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT29"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT30",
+                    "label": "AT30",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT30"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT31",
+                    "label": "AT31",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT31"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT32",
+                    "label": "AT32",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT32"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT33",
+                    "label": "AT33",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT33"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT34",
+                    "label": "AT34",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT34"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT35",
+                    "label": "AT35",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT35"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT36",
+                    "label": "AT36",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT36"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT37",
+                    "label": "AT37",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT37"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT38",
+                    "label": "AT38",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT38"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT39",
+                    "label": "AT39",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT39"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT40",
+                    "label": "AT40",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT40"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT41",
+                    "label": "AT41",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT41"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT42",
+                    "label": "AT42",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT42"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT43",
+                    "label": "AT43",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT43"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT44",
+                    "label": "AT44",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT44"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT45",
+                    "label": "AT45",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT45"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT46",
+                    "label": "AT46",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT46"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT47",
+                    "label": "AT47",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT47"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT48",
+                    "label": "AT48",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT48"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT49",
+                    "label": "AT49",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT49"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "AT50",
+                    "label": "AT50",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE29"
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "AT50"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "requires": {
+              "or": [
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT01"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT02"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT03"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT04"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT05"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT06"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT07"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT08"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT09"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT10"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT11"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT12"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT13"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT14"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT15"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT16"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT17"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT18"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT19"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT20"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT21"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT22"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT23"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT24"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT25"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT26"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT27"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT28"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT29"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT30"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT31"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT32"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT33"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT34"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT35"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT36"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT37"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT38"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT39"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT40"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT41"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT42"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT43"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT44"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT45"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT46"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT47"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT48"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT49"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "AT50"
+                    },
+                    0
+                  ]
+                }
+              ]
+            },
+            "once": true
+          }
+        ]
+      }
+    },
+    "H3-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "extra",
+            "label": "追加の一品",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "tea",
+                    "label": "お茶",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 3
+                      }
+                    ]
+                  },
+                  {
+                    "id": "barley",
+                    "label": "焼き麦",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 3,
+                        "floor": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H3-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "箱の品を選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "attack",
+                    "label": "AT27",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "AT27"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "board",
+                    "label": "BD28",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "BD28"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H3-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "table",
+            "label": "卓を囲む",
+            "effects": [
+              {
+                "op": "mp",
+                "delta": {
+                  "min": [
+                    3,
+                    {
+                      "add": [
+                        1,
+                        {
+                          "ref": "companionCount"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H3-42": {
+      "options": [
+        {
+          "id": "share",
+          "label": "割って配る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE30"
+            }
+          ]
+        },
+        {
+          "id": "watch",
+          "label": "見張りへ",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H3-42",
+              "label": "H3-42",
+              "rules": [
+                {
+                  "id": "H3-42",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-43": {
+      "options": [
+        {
+          "id": "ore",
+          "label": "鉱脈",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 480
+            }
+          ]
+        },
+        {
+          "id": "path",
+          "label": "抜け道",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD29"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-44": {
+      "options": [
+        {
+          "id": "nest",
+          "label": "巣",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "id": "bed",
+          "label": "寝床",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR29",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H3-45": {
+      "options": [
+        {
+          "id": "red",
+          "label": "赤い綱",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H3-45",
+              "label": "H3-45",
+              "rules": [
+                {
+                  "id": "H3-45",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "white",
+          "label": "白い綱",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT28"
+            }
+          ]
+        }
+      ]
+    },
+    "H3-46": {
+      "options": [
+        {
+          "id": "heel",
+          "label": "かかとで知らせる（体力2を使う。魔力6回復）",
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "mallet",
+          "label": "備えの木づちを80Gで買って鳴らす",
+          "cost": {
+            "gold": 80
+          },
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW29",
+              "paidGold": 80
+            }
+          ]
+        },
+        {
+          "id": "pass",
+          "label": "どちらもせず通る",
+          "effects": []
+        }
+      ]
+    },
+    "H3-47": {
+      "options": [
+        {
+          "id": "sun",
+          "label": "太陽",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "moon",
+          "label": "月形",
+          "effects": [
+            {
+              "op": "choice",
+              "options": [
+                {
+                  "id": "attack",
+                  "label": "AT29",
+                  "effects": [
+                    {
+                      "op": "giveItem",
+                      "id": "AT29"
+                    }
+                  ]
+                },
+                {
+                  "id": "board",
+                  "label": "BD30",
+                  "effects": [
+                    {
+                      "op": "giveItem",
+                      "id": "BD30"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H3-48": {
+      "options": [
+        {
+          "id": "jump",
+          "label": "飛ぶ",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "bag",
+          "label": "袋で受ける",
+          "effects": [
+            {
+              "op": "loseItem",
+              "choose": true
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "bagCount"
+              },
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "H3-50": {
+      "options": [
+        {
+          "id": "jump",
+          "label": "跳ぶ",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "magic",
+          "label": "魔力で足場",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 2,
+              "strict": true
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "H3-49": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "照明代80G",
+          "cost": {
+            "gold": 80,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "crawl",
+          "label": "身を縮めてくぐる",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "ref": "hasEquippedArmor"
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": -2,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": -5,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

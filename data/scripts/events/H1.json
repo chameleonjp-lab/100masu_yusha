@@ -1,0 +1,1413 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "H1-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "耳の模様と名札の刺しゅうを見比べ、持ち主の柵に掛ける。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 150
+            }
+          ]
+        }
+      ]
+    },
+    "H1-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "空の毛布を担架にして、蜂箱を乾いた石の上へ運ぶ。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 220
+            }
+          ]
+        }
+      ]
+    },
+    "H1-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "手紙の束を村ごとの木箱へ配り、最後の箱で受領印を押す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 180
+            }
+          ]
+        }
+      ]
+    },
+    "H1-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "輪の中を歩いて水を送り、最後の畝まで水が届いたら降りる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 260
+            }
+          ]
+        }
+      ]
+    },
+    "H1-05": {
+      "options": [
+        {
+          "id": "help",
+          "label": "巣のある列を残して外側だけ刈り、刃をきれいに拭く。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW01",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H1-06": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR01を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR01",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR02を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR02",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H1-07": {
+      "options": [
+        {
+          "id": "help",
+          "label": "石のくさびで格子の幅を広げ、角を通したらくさびを抜く。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW03",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H1-08": {
+      "options": [
+        {
+          "id": "help",
+          "label": "旗ざおを自分の背に結び、見送り席まで一緒に歩く。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR04",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H1-09": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "空袋を振って粉を舞わせ、袋車から敵を離す。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN01",
+              "rules": [
+                {
+                  "id": "powder",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-10": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "鍬の柄で空き地をたたき、苗のない土に敵を誘い出す。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN02",
+              "rules": [
+                {
+                  "id": "soil",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-11": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "音を頼りに追いつき、牛たちのいない囲いで迎える。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN01",
+              "rules": [
+                {
+                  "id": "guard",
+                  "hook": "afterHeroAction",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "mp",
+                      "delta": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-12": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "全員が布を下りるのを待ち、布の四隅を持ち上げる。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN02",
+              "rules": [
+                {
+                  "id": "cloth",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "halveDamage"
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-13": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "車を草に寝かせ、空いた手で車軸から攻撃を受け止める。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN01",
+              "rules": [
+                {
+                  "id": "wheel",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "capDamage",
+                      "amount": 0
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-14": {
+      "options": [
+        {
+          "id": "help",
+          "label": "芽を傷めず苗床へ戻し、園丁から小包を受け取る。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE01"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-15": {
+      "options": [
+        {
+          "id": "heal",
+          "label": "HE02",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE02"
+            }
+          ]
+        },
+        {
+          "id": "board",
+          "label": "BD01",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD01"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-16": {
+      "options": [
+        {
+          "id": "help",
+          "label": "袖に空の木の実をつるし、風で鳴る鳥よけを作る。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT02"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-17": {
+      "options": [
+        {
+          "id": "heal",
+          "label": "HE03",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE03"
+            }
+          ]
+        },
+        {
+          "id": "board",
+          "label": "魔力満タンならBD02",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD02"
+            }
+          ],
+          "requires": {
+            "gte": [
+              {
+                "ref": "mp"
+              },
+              {
+                "ref": "maxMp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H1-18": {
+      "options": [
+        {
+          "id": "help",
+          "label": "標識を子どもの目の高さまで上げ、土台に石を詰める。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD03"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-19": {
+      "options": [
+        {
+          "id": "attack",
+          "label": "AT03",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT03"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "HE04",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE04"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-20": {
+      "options": [
+        {
+          "id": "one",
+          "label": "BD04",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD04"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD05",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD05"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-21": {
+      "options": [
+        {
+          "id": "help",
+          "label": "板を外し、昔の井戸番が残した包みの乾いた側を開ける。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "giveItem",
+              "id": "HE05"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-22": {
+      "options": [
+        {
+          "id": "help",
+          "label": "鐘の綱をう回して上り、無色の小窓だけを開ける。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD06"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-23": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT04",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT04"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT05",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT05"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-24": {
+      "options": [
+        {
+          "id": "help",
+          "label": "小馬ににんじんを見せる間に、緩んだ腹帯を締め直す。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "HE06"
+                },
+                {
+                  "op": "giveItem",
+                  "id": "BD07"
+                }
+              ],
+              "else": [
+                {
+                  "op": "giveItem",
+                  "id": "HE06"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-25": {
+      "options": [
+        {
+          "id": "eat",
+          "label": "かゆ",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "bag",
+          "label": "持ち歩く品",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE07"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-26": {
+      "options": [
+        {
+          "id": "dew",
+          "label": "帽子のつばを傾けて杯に露を分け、最初の一杯を飲む。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "HE08"
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-27": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "泥を落として裸足を風に当て、靴ひもを緩く結び直す。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H1-28": {
+      "options": [
+        {
+          "id": "sun",
+          "label": "ひなた",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "shade",
+          "label": "日陰",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "H1-29": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "輪に入って丘を一度だけ転がり、平らな所で息を整える。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "gte": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  },
+                  {
+                    "gte": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "BD08"
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 2,
+                  "floor": 1
+                },
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-30": {
+      "options": [
+        {
+          "id": "water",
+          "label": "差し口を支えて水をくんでもらい、傷のある人から回す。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "floorDiv": [
+                  {
+                    "ref": "maxHp"
+                  },
+                  4
+                ]
+              },
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H1-31": {
+      "options": [
+        {
+          "id": "now",
+          "label": "今使う",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "keep",
+          "label": "しまう",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H1-31",
+              "label": "H1-31",
+              "rules": [
+                {
+                  "id": "H1-31",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-32": {
+      "options": [
+        {
+          "id": "sing",
+          "label": "続きを小声で歌いながら歩き、窓から同じ歌が返る家を探す。",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            },
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H1-33": {
+      "options": [
+        {
+          "id": "salt",
+          "label": "塩",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "leaf",
+          "label": "葉",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 2,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "H1-34": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "荷を下ろし、門の横木に手を掛けて背をゆっくり伸ばす。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  4
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H1-35": {
+      "options": [
+        {
+          "id": "well",
+          "label": "花を踏まずに井戸を一周し、最後に水面を静かにのぞく。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  2
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": {
+                    "sub": [
+                      3,
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 4,
+                  "floor": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H1-36": {
+      "options": [
+        {
+          "id": "white",
+          "label": "白い面",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "id": "thick",
+          "label": "厚い面",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H1-37": {
+      "inn": {
+        "services": [
+          {
+            "id": "wash",
+            "label": "畑主の洗い場を使う（体力2回復）",
+            "once": true,
+            "effects": [
+              {
+                "op": "hp",
+                "delta": 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "H1-38": {
+      "inn": {
+        "services": [
+          {
+            "id": "letter",
+            "label": "宿の便りを読む",
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "nextBattleEnemy"
+              }
+            ],
+            "once": false
+          }
+        ]
+      }
+    },
+    "H1-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "sample",
+            "label": "靴屋のBD09をもらう",
+            "effects": [
+              {
+                "op": "giveItem",
+                "id": "BD09"
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H1-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "portrait",
+            "label": "板に顔を描く",
+            "effects": [
+              {
+                "op": "mp",
+                "delta": 2
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H1-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "二つの箱から一つ選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "heal",
+                    "label": "HE09",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE09"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "attack",
+                    "label": "AT06",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "AT06"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H1-42": {
+      "options": [
+        {
+          "id": "escort",
+          "label": "家まで送る",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "map",
+          "label": "地図を描く",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD10"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-43": {
+      "options": [
+        {
+          "id": "magic",
+          "label": "魔力1で火を起こす",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 200
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 1,
+              "strict": true
+            }
+          }
+        },
+        {
+          "id": "hands",
+          "label": "手で火種を残す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT07"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-44": {
+      "options": [
+        {
+          "id": "lamb",
+          "label": "子羊を先に",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "cart",
+          "label": "荷車を先に",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE10"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-45": {
+      "options": [
+        {
+          "id": "tie",
+          "label": "ひもを結ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR08",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "label": "脚立を支える",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT08"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-46": {
+      "options": [
+        {
+          "id": "siblings",
+          "label": "きょうだいへ",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H1-46",
+              "label": "H1-46",
+              "rules": [
+                {
+                  "id": "H1-46",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "grandfather",
+          "label": "おじいさんへ",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "H1-47": {
+      "options": [
+        {
+          "id": "spring",
+          "label": "泉を描く",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "tracks",
+          "label": "足跡を描く",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT10"
+            }
+          ]
+        }
+      ]
+    },
+    "H1-48": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "板代30G",
+          "effects": [],
+          "cost": {
+            "gold": 30,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "lift",
+          "label": "持ち上げる",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "H1-49": {
+      "options": [
+        {
+          "id": "bag",
+          "label": "袋で受ける",
+          "effects": [
+            {
+              "op": "loseItem",
+              "choose": true
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "bagCount"
+              },
+              0
+            ]
+          }
+        },
+        {
+          "id": "avoid",
+          "label": "草へ身を投げる",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "H1-50": {
+      "options": [
+        {
+          "id": "around",
+          "label": "大回り",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "smoke",
+          "label": "煙",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 1,
+              "strict": true
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    }
+  }
+}
