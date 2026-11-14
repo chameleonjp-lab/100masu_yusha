@@ -42,6 +42,17 @@ function makeBot(seed) {
         case 'rolled':
           return { type: 'move' };
         case 'event': {
+          if(s.prompt?.kind==='gearConfirm')return {type:'confirmGear'};
+          if(s.prompt?.kind==='recoveryConfirm')return {type:'confirmRecovery'};
+          if (s.event?.puzzle?.pendingWrong !== null && s.event?.puzzle?.pendingWrong !== undefined) return {type:'commitPuzzleWrong'};
+          if (s.prompt?.kind === 'puzzle') {
+            // Follow the two authored source instructions, not hidden answer metadata.
+            if(s.event.eventId==='M1-01') return {type:'answerPuzzle',answer:{daisy:'white',violet:'purple'}};
+            if(s.event.eventId==='M1-02') return {type:'answerPuzzle',answer:['layBag','coverHole','tieRope']};
+            if(s.event.eventId==='M3-08') return {type:'answerPuzzle',answer:4}; // new visible four-cup implementation sample
+            if(s.event.eventId==='M5-15') return {type:'answerPuzzle',answer:'r0c1'}; // visible 3x3 sample has one changed window
+            throw new Error('bot needs an explicit authored puzzle fixture');
+          }
           if (v.event && v.event.unscripted) return { type: 'skipUnscripted' };
           if (v.prompt && v.prompt.kind === 'pickBagItem') return { type: 'pickBagItem', index: 0 };
           const opts = of('chooseOption');
@@ -52,10 +63,12 @@ function makeBot(seed) {
           return act;
         }
         case 'chest':
+          if(s.prompt?.kind==='gearConfirm')return {type:'confirmGear'};
           return rnd() < 0.9 ? { type: 'pickChest', index: Math.floor(rnd() * v.chest.candidates.length) } : { type: 'skipChest' };
         case 'bagFull':
           return rnd() < 0.5 ? { type: 'bagSwap', index: Math.floor(rnd() * 6) } : { type: 'bagDecline' };
         case 'inn': {
+          if (v.prompt && v.prompt.kind === 'pickBagItem') return { type: 'pickBagItem', index: 0 };
           if (v.prompt && v.prompt.kind === 'choice') return { type: 'chooseOption', optionId: pick(of('chooseOption')).optionId };
           if (lastInn !== s.event.pos) {
             lastInn = s.event.pos;
@@ -68,7 +81,7 @@ function makeBot(seed) {
           if (c.type === 'service' && c.input) return { type: 'leaveInn' };
           if (c.type === 'equip') return { type: 'equip', iid: c.iid };
           if (c.type === 'recruit') return { type: 'recruit', companionId: c.companionId, ...(c.needsReplace ? { replaceId: s.companions[0] } : {}) };
-          return Object.fromEntries(Object.entries(c).filter(([k]) => ['type', 'slot', 'index', 'serviceId', 'jobId', 'iid'].includes(k)));
+          return Object.fromEntries(Object.entries(c).filter(([k]) => ['type', 'slot', 'index', 'serviceId', 'jobId', 'iid', 'choiceId'].includes(k)));
         }
         case 'bossOffer':
           return { type: rnd() < 0.5 ? 'challenge' : 'skip' };
@@ -80,8 +93,8 @@ function makeBot(seed) {
           if (b.canFlee && v.hero.hp < v.hero.maxHp * 0.3 && rnd() < 0.5) return { type: 'flee' };
           const sp = b.spells.find((x) => x.enabled && (x.kind === 'attack' || x.kind === 'finisher'));
           if (sp && rnd() < 0.4) return { type: 'spell', spellId: sp.id, ...(target !== undefined ? { target } : {}) };
-          if (b.telegraph.kind === '大技' && rnd() < 0.8) return { type: 'guard' };
-          return { type: 'attack', ...(target !== undefined ? { target } : {}) };
+          if (b.telegraph.kind === '大技' && rnd() < 0.8) return { type: 'guard', ...(of('guard')[0]?.choiceId ? {choiceId:of('guard')[0].choiceId} : {}) };
+          return { type: 'attack', ...(of('attack')[0]?.choiceId ? {choiceId:of('attack')[0].choiceId} : {}), ...(target !== undefined ? { target } : {}) };
         }
         case 'battleReward':
           return { type: 'continue' };
@@ -120,7 +133,7 @@ function checkInvariants(s, step) {
 }
 
 function play(route, seed, { strong = false, maxSteps = 4000 } = {}) {
-  let s = createRun(content, { route, seed });
+  let s = createRun(content, { runId: 'deterministic-fixture', route, seed });
   if (strong) {
     // a hero that can plausibly win: level 20, good gear, healing items
     s.level = 20;

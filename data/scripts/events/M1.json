@@ -13,7 +13,36 @@
             }
           ]
         }
-      ]
+      ],
+      "puzzle": {
+        "id": "M1-01",
+        "kind": "matching",
+        "candidates": [
+          "daisy",
+          "violet"
+        ],
+        "targets": [
+          "white",
+          "purple"
+        ],
+        "labels": {
+          "daisy": "ヒナギクの絵",
+          "violet": "スミレの絵",
+          "white": "白い花",
+          "purple": "紫の花"
+        },
+        "answer": {
+          "daisy": "white",
+          "violet": "purple"
+        },
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 100
+          }
+        ],
+        "onWrong": []
+      }
     },
     "M1-02": {
       "options": [
@@ -27,7 +56,33 @@
             }
           ]
         }
-      ]
+      ],
+      "puzzle": {
+        "id": "M1-02",
+        "kind": "sequence",
+        "candidates": [
+          "layBag",
+          "coverHole",
+          "tieRope"
+        ],
+        "labels": {
+          "layBag": "袋を横にする",
+          "coverHole": "穴に布を当てる",
+          "tieRope": "荷ひもで押さえる"
+        },
+        "answer": [
+          "layBag",
+          "coverHole",
+          "tieRope"
+        ],
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 160
+          }
+        ],
+        "onWrong": []
+      }
     },
     "M1-03": {
       "options": [

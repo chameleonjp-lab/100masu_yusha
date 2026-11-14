@@ -84,13 +84,13 @@ for (const [name, make] of Object.entries(backends)) {
     const s1 = dispatch(content, run0, { type: 'roll' }, { rolls: [0.5] }).state;
     const meta2 = { ...createMeta(), settings: { volume: 3 } };
     h.failNext();
-    await assert.rejects(store.commit({ run: s1, meta: meta2, expectedRevision: 0, opId: 'x' }));
+    await assert.rejects(store.commit({ run: s1, meta: meta2, expectedMetaRevision: 1, expectedRevision: 0, opId: 'x' }));
     if (h.clearFault) h.clearFault();
     const loaded = await store.load();
     assert.equal(loaded.run.revision, 0);
     assert.deepEqual(loaded.meta.settings, {});
     // the operation can simply be retried
-    assert.deepEqual(await store.commit({ run: s1, meta: meta2, expectedRevision: 0, opId: 'x' }), { ok: true, revision: 1 });
+    assert.deepEqual(await store.commit({ run: s1, meta: meta2, expectedMetaRevision: 1, expectedRevision: 0, opId: 'x' }), { ok: true, revision: 1 });
     assert.deepEqual((await store.load()).meta.settings, { volume: 3 });
   });
 
@@ -117,7 +117,7 @@ for (const [name, make] of Object.entries(backends)) {
     await store.commit({ run: first, meta: createMeta(), expectedRevision: null });
     const second = { ...exampleRun(content, 'F', 2), runId: 'r-new' };
     await assert.rejects(store.startNew({ run: second }), (e) => e.code === 'replace_unconfirmed');
-    await store.startNew({ run: second, meta: createMeta(), confirmReplace: true });
+    await store.startNew({ run: second, meta: createMeta(), expectedMetaRevision: 1, confirmReplace: true });
     assert.equal((await store.load()).run.runId, 'r-new');
     assert.equal((await store.loadBackup()).run.runId, first.runId);
     const step = dispatch(content, first, { type: 'roll' }, { rolls: [0.5] }).state;
@@ -135,7 +135,7 @@ for (const [name, make] of Object.entries(backends)) {
     // "close the tab" and come back
     const back = await store.load();
     const paid = dispatch(content, back.run, { type: 'chooseOption', optionId: 'wage', opId: 'p1' });
-    await store.commit({ run: paid.state, meta, expectedRevision: back.revision, opId: 'p1' });
+    await store.commit({ run: paid.state, meta, expectedMetaRevision: back.metaRevision, expectedRevision: back.revision, opId: 'p1' });
     // a double tap / second tab sends the same operation again: it is not applied twice
     const again = await store.commit({ run: paid.state, expectedRevision: back.revision, opId: 'p1' });
     assert.equal(again.replay, true);
@@ -145,7 +145,60 @@ for (const [name, make] of Object.entries(backends)) {
     // dex / bests
     const m = applyRunToMeta(meta, after.run);
     meta = m.meta;
-    await store.saveMeta(meta);
+    await store.saveMeta(meta, {expectedMetaRevision:after.metaRevision});
     assert.deepEqual((await store.load()).meta.dex.gear, ['SW01', 'AR01']);
   });
+
+  test(`[${name}] stale metadata rejects saveMeta, commit and startNew atomically`, async () => {
+    const { store } = make();
+    const first = exampleRun(content, 'M');
+    await store.commit({run:first, meta:createMeta()});
+    const stale = await store.load();
+    const progress = applyRunToMeta(stale.meta, first).meta;
+    await store.saveMeta(progress, {expectedMetaRevision:stale.metaRevision});
+    const before = await store.load();
+    const next = dispatch(content, first, {type:'roll', opId:'next'}, {rolls:[.5]}).state;
+    const rejectsStale = e => e.code === 'stale_meta_revision';
+    await assert.rejects(store.saveMeta(stale.meta, {expectedMetaRevision:stale.metaRevision}), rejectsStale);
+    await assert.rejects(store.saveMeta(stale.meta), rejectsStale);
+    await assert.rejects(store.commit({run:next, meta:stale.meta, expectedRevision:before.revision, expectedMetaRevision:stale.metaRevision}), rejectsStale);
+    await assert.rejects(store.startNew({run:exampleRun(content,'F'), meta:stale.meta, confirmReplace:true, expectedMetaRevision:stale.metaRevision}), rejectsStale);
+    assert.deepEqual(await store.load(), before);
+    assert.equal(await store.loadBackup(), undefined);
+    // Freshly recomputed settings apply without discarding discoveries.
+    const fresh = await store.load();
+    fresh.meta.settings.volume = .25;
+    await store.saveMeta(fresh.meta, {expectedMetaRevision:fresh.metaRevision});
+    const after = await store.load();
+    assert.deepEqual(after.meta.dex, progress.dex);
+    assert.equal(after.meta.settings.volume, .25);
+    assert.equal(after.metaRevision, before.metaRevision + 1);
+  });
+
+  test(`[${name}] another run with the same operation ID is never a replay`, async () => {
+    const { store } = make();
+    const a = exampleRun(content,'M');
+    await store.commit({run:a});
+    const a1 = dispatch(content,a,{type:'roll',opId:'one'},{rolls:[.5]}).state;
+    await store.commit({run:a1,expectedRevision:0,opId:'one'});
+    const b = exampleRun(content,'F');
+    await store.startNew({run:b,confirmReplace:true});
+    const b1 = dispatch(content,b,{type:'roll',opId:'one'},{rolls:[.5]}).state;
+    await store.commit({run:b1,expectedRevision:0,opId:'one'});
+    const before=await store.load();
+    await assert.rejects(store.commit({run:a1,expectedRevision:0,opId:'one'}),e=>e.code==='run_replaced');
+    assert.deepEqual(await store.load(),before);
+  });
+
+  test(`[${name}] malformed format 1 is retained exactly after two replacements`, async () => {
+    const h=make(), store=h.store;
+    const raw={format:1,revision:0,run:{runId:'old',revision:0}};
+    await h.seed('current',raw);
+    assert.equal((await store.load()).status,'unsupported');
+    await assert.rejects(store.commit({run:exampleRun(content,'M')}),e=>e.code==='unsupported_record');
+    await store.startNew({run:exampleRun(content,'M'),confirmReplace:true});
+    await store.startNew({run:exampleRun(content,'F'),confirmReplace:true});
+    assert.deepEqual(await store.loadBackup('unsupported-1'),raw);
+  });
+
 }

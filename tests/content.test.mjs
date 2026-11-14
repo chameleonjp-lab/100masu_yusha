@@ -103,7 +103,11 @@ test('the browser loader builds the same content through fetch + manifest', asyn
 });
 
 test('coverage lists what has no script, per kind; isScripted agrees', () => {
-  const cov = coverage(content);
+  // Deliberately remove a script in a fixture; real coverage grows as content is implemented.
+  const events = { ...content.scripts.events };
+  delete events['M1-02'];
+  const partial = { ...content, scripts: { ...content.scripts, events } };
+  const cov = coverage(partial);
   assert.equal(cov.events.total, 1000);
   assert.equal(cov.items.total, 150);
   assert.equal(cov.equipment.total, 100);
@@ -111,7 +115,7 @@ test('coverage lists what has no script, per kind; isScripted agrees', () => {
   for (const id of ['M1-42', 'B3-26', 'B5-30', 'H1-37']) assert.ok(isScripted(content, 'event', id));
   for (const id of ['HE01', 'AT02', 'BD50']) assert.ok(isScripted(content, 'item', id));
   for (const id of ['SW01', 'SW50', 'AR29']) assert.ok(isScripted(content, 'gear', id));
-  assert.ok(!isScripted(content, 'event', 'M1-02'));
+  assert.ok(!isScripted(partial, 'event', 'M1-02'));
   assert.equal(cov.events.unscripted.includes('M1-42'), false);
   assert.equal(cov.complete, false);
 });

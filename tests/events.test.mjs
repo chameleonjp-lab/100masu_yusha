@@ -319,17 +319,20 @@ test('H1-37 inn: the wash (hp+2) and the free rest are separate one-time actions
 });
 
 test('unscripted events are visible as unscripted: the engine never invents a behaviour for them', () => {
-  const base = exampleRun(content, 'M');
+  const scripts = { events: { ...content.scripts.events }, items: { ...content.scripts.items }, equipment: { ...content.scripts.equipment } };
+  delete scripts.events['M1-02']; delete scripts.items.HE03; delete scripts.equipment.SW02;
+  const partial = { ...content, scripts };
+  const base = exampleRun(partial, 'M');
   const id = 'M1-02';
-  assert.equal(isScripted(content, 'event', id), false);
-  const r = landOnEvent(content, base, id, { pos: 10, die: 3 });
-  const v = view(content, r.state);
+  assert.equal(isScripted(partial, 'event', id), false);
+  const r = landOnEvent(partial, base, id, { pos: 10, die: 3 });
+  const v = view(partial, r.state);
   assert.equal(v.event.unscripted, true);
   assert.deepEqual(v.actions.map((a) => a.type), ['skipUnscripted']);
   assert.deepEqual(r.state.unscripted, [id]);
   assert.ok(fxOf(r.effects, 'unscripted').length === 1);
   assert.equal(r.state.gold, 200);
-  const cov = coverage(content);
+  const cov = coverage(partial);
   assert.equal(cov.events.total, 1000);
   assert.ok(cov.events.unscripted.includes(id));
   assert.ok(!cov.events.unscripted.includes('M1-42'));
@@ -339,11 +342,13 @@ test('unscripted events are visible as unscripted: the engine never invents a be
 });
 
 test('unscripted items cannot be used and say so', () => {
-  const base = exampleRun(content, 'M');
+  const items = { ...content.scripts.items }; delete items.HE03;
+  const partial = { ...content, scripts: { ...content.scripts, items } };
+  const base = exampleRun(partial, 'M');
   const t = place(base, 10, { bag: ['HE03', 'HE01'] });
-  const acts = view(content, t).actions.filter((a) => a.type === 'useItem');
+  const acts = view(partial, t).actions.filter((a) => a.type === 'useItem');
   assert.equal(acts.find((a) => a.itemId === 'HE03').reason, 'unscripted');
-  assert.throws(() => dispatch(content, t, { type: 'useItem', itemId: 'HE03' }), /item_unscripted/);
+  assert.throws(() => dispatch(partial, t, { type: 'useItem', itemId: 'HE03' }), /item_unscripted/);
 });
 
 test('script validation catches an award that does not match the event, unknown ops/refs and a bare event', () => {

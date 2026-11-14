@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { dispatch, itemStatus, view } from '../src/engine/index.js';
-import { cl, exampleRun, getContent, place, rollDie, startBattle, walk } from './fixtures/helpers.mjs';
+import { cl, exampleRun, getContent, place, rollDie, startBattle, walk, withScripts } from './fixtures/helpers.mjs';
 
 const content = await getContent();
 const base = exampleRun(content, 'M');
@@ -89,18 +89,24 @@ test('BD50: a correct sum books heal 18 / mana 6 for arriving on the next stop w
   // too close (distance < 3): not usable
   assert.throws(() => A(content, place(base, 45, { bag: ['BD50'] }), { type: 'useItem', itemId: 'BD50', params: { nums: [1, 1] } }), /item_(notNow|inputInvalid)/);
   // not reaching it in time: the booking lapses after 6 moves (distance 15 needs more than 6 rolls of 1)
-  let s = A(content, place(base, 32, { bag: ['BD50'], hp: 20 }), { type: 'useItem', itemId: 'BD50', params: { nums: [6, 5, 4] } }).state;
+  // Isolate movement expiry from production event rewards/battles, which evolve independently.
+  const expiryBase = cl(base);
+  const neutralEvents = {};
+  for (let pos = 33; pos <= 39; pos++) neutralEvents[expiryBase.board.squares[pos - 1].contentId] = { onLand: [] };
+  const expiryContent = withScripts(content, { events: neutralEvents });
+  let s = A(expiryContent, place(expiryBase, 32, { bag: ['BD50'], hp: 20 }), { type: 'useItem', itemId: 'BD50', params: { nums: [6, 5, 4] } }).state;
   assert.equal(s.reservations.length, 1);
   const settle = (st) => {
     let x = st;
-    for (let k = 0; k < 4 && x.phase !== 'board'; k++) x = A(content, x, x.phase === 'chest' ? { type: 'skipChest' } : { type: 'skipUnscripted' }).state;
+    if (x.phase === 'chest') x = A(expiryContent, x, { type: 'skipChest' }).state;
+    assert.equal(x.phase, 'board', 'neutral event must settle without gameplay side effects');
     return x;
   };
   for (let i = 0; i < 6; i++) {
-    s = settle(walk(content, s, 1).state);
+    s = settle(walk(expiryContent, s, 1).state);
     assert.equal(s.reservations.length, 1, `still booked after move ${i + 1}`);
   }
-  const lapsed = walk(content, s, 1);
+  const lapsed = walk(expiryContent, s, 1);
   assert.ok(lapsed.state.pos > 38);
   assert.equal(lapsed.state.reservations.length, 0);
   assert.ok(lapsed.effects.some((e) => e.t === 'reservationExpired'));

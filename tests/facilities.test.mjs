@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { dispatch, gearSellPrice, itemSellPrice, view } from '../src/engine/index.js';
-import { cl, exampleRun, fxOf, getContent, landOnEvent, place, walk } from './fixtures/helpers.mjs';
+import { cl, exampleRun, fxOf, getContent, landOnEvent, place, walk, withScripts } from './fixtures/helpers.mjs';
 
 const content = await getContent();
 const reload = (s) => JSON.parse(JSON.stringify(s));
@@ -134,8 +134,15 @@ test('discounted cash purchases resell for what was paid: SW09 bought for 90 sel
   assert.equal(sold.state.gold, 200);
   assert.throws(() => act(sold.state, { type: 'sellGear', iid: sw09.iid }), /not_owned/);
   assert.ok(sold.state.discovered.gear.includes('SW09'));
-  // a self-made (helped) SW09 has no cash cap
-  const helped = dispatch(content, land.state, { type: 'chooseOption', optionId: 'sharpen' }).state;
+  // A self-made SW09 has no cash cap. Exercise the acquisition rule with an
+  // explicit fixture, not an old sample option superseded by the real F1 script.
+  const craftContent = withScripts(content, { events: { 'F1-12': { options: [{
+    id: 'fixture-craft', label: 'Fixture: craft SW09 without paying gold',
+    cost: { hp: { amount: 2, floor: 1 } },
+    effects: [{ op: 'giveGear', id: 'SW09' }],
+  }] } } });
+  const craftLand = landOnEvent(craftContent, base, 'F1-12', { pos: 10, die: 2 });
+  const helped = dispatch(craftContent, craftLand.state, { type: 'chooseOption', optionId: 'fixture-craft' }).state;
   assert.equal(helped.gear.find((g) => g.id === 'SW09').paidGold, null);
   assert.equal(gearSellPrice(content, helped.gear.find((g) => g.id === 'SW09')), 210);
   // the cap never raises the price above the standard one

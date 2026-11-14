@@ -15,6 +15,7 @@ export const RULES_VERSION = 'rules-1';
  * Returns the initial state (phase 'board', pos 1).
  */
 export function createRun(content, opts = {}) {
+  if (typeof opts.runId !== 'string' || !opts.runId.trim()) fail('bad_run_id', 'caller must provide a unique adventure ID');
   const route = opts.route;
   if (!content.routes[route]) fail('bad_route', String(route));
   const seed = opts.seed === undefined ? 1 : opts.seed >>> 0;
@@ -22,7 +23,7 @@ export function createRun(content, opts = {}) {
     schema: SCHEMA_VERSION,
     rulesVersion: RULES_VERSION,
     contentVersion: content.version,
-    runId: opts.runId || `r-${seed.toString(16)}`,
+    runId: opts.runId,
     route,
     seed,
     revision: 0,

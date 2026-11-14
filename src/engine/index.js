@@ -1,3 +1,5 @@
+import {prepareTrapItem} from './trap-items.js';
+import {tickInfoMarks} from './info-items.js';
 // Engine entry: createRun / dispatch / view. See docs/dev/engine-api.md.
 
 import { EngineError, clone, fail } from './util.js';
@@ -13,6 +15,7 @@ import {
   slotOfGear,
 } from './core.js';
 import { moveTarget } from './board.js';
+import { normCost } from './options.js';
 import { evalCond } from './expr.js';
 import {
   acceptRetry,
@@ -29,6 +32,10 @@ import {
   bagDecline,
   bagSwap,
   chooseOption,
+  confirmRecovery,
+  confirmGear,
+  answerPuzzle,
+  commitPuzzleWrong,
   finishEvent,
   landOn,
   pickBagItem,
@@ -127,6 +134,12 @@ function doMove(ctx, action) {
     keep.push(r);
   }
   s.reservations = keep;
+  s.reveals = s.reveals.filter(rec => {
+    if (rec.remainingMoves === undefined) return true;
+    rec.remainingMoves -= 1;
+    return rec.remainingMoves > 0;
+  });
+  tickInfoMarks(ctx.content,s,to);
   s.lastDie = die;
   landOn(ctx, to);
 }
@@ -163,7 +176,7 @@ function doUseItem(ctx, action) {
   if (s.phase === 'battle') return battleAction(ctx, { type: 'item', itemId: action.itemId, params: action.params, target: action.target });
   const where = whereOf(s);
   if (!where) fail('illegal_action', `cannot use items in phase ${s.phase}`);
-  if (where !== 'trap') noPrompt(s);
+  if (!['trap','puzzle','puzzleWrong'].includes(where)) noPrompt(s);
   ctx.negateTrap = false;
   const { status } = applyItemUse(ctx, action.itemId, action.params || {}, where);
   if (status !== 'done') fail('item_prompt', action.itemId);
@@ -182,22 +195,96 @@ const ACTIONS = {
   useItem: (ctx, a) => doUseItem(ctx, a),
   equip: (ctx, a) => doEquip(ctx, a.iid),
   setSpells: (ctx, a) => doSetSpells(ctx, a.ids),
-  chooseOption: (ctx, a) => chooseOption(ctx, a.optionId, a.input),
+  chooseOption: (ctx, a) => {
+    if(['BD19','BD20','BD25'].includes(a.itemId)){
+      const original=ctx.s.prompt?.options?.find(o=>o.id===a.optionId);
+      if(!ctx.s.prompt?.top)fail('trap_item_not_now');
+      prepareTrapItem(ctx,original);
+      const used=applyItemUse(ctx,a.itemId,a.params || {},'trapChoice');
+      if(used.status!=='done')fail('item_prompt');
+      ctx.s.prompt.options=ctx.s.prompt.options.map(o=>o.id===a.optionId?ctx.pendingTrap.option:o);
+    } else if(a.itemId === 'BD06'){
+      if(!ctx.s.prompt || ctx.s.prompt.kind!=='choice')fail('receipt_not_now');
+      ctx.receiptAction=true;
+      const used=applyItemUse(ctx,'BD06',a.params || {},'receiveItem');
+      if(used.status!=='done')fail('item_prompt');
+    } else if(a.itemId === 'BD36') {
+      const original=ctx.s.prompt?.options?.find(o=>o.id===a.optionId);
+      ctx.pendingTrade={original};
+      const used=applyItemUse(ctx,'BD36',a.params || {},'trade');
+      if(used.status!=='done' || !ctx.pendingTrade.option) fail('trade_not_applied');
+      ctx.s.prompt.options=ctx.s.prompt.options.map(o=>o.id===a.optionId?ctx.pendingTrade.option:o);
+      delete ctx.pendingTrade;
+    } else if(a.itemId) {
+      const option=ctx.s.prompt?.options?.find(o=>o.id===a.optionId);
+      const cost=normCost(option?.cost);
+      if(ctx.s.event?.kind!=='罠' || !ctx.s.prompt?.top || !cost.hp) fail('trap_item_not_now');
+      ctx.trapAid=hook=>{
+        if(hook.loss<=0) fail('trap_no_loss');
+        const result=applyItemUse(ctx,a.itemId,{...(a.params || {}),trapLoss:hook.loss,trapHasOtherCost:!!(cost.gold || cost.mp || cost.items?.length)},'trapLoss');
+        if(result.status!=='done') fail('item_prompt');
+      };
+    }
+    const result=chooseOption(ctx,a.optionId,a.input);
+    if(ctx.trapAid || ctx.pendingTrap) fail('trap_item_not_applied');
+    if(ctx.receiptAction && !ctx.pendingReceipt?.used)fail('receipt_not_applied');
+    return result;
+  },
+  confirmGear: (ctx,a) => {
+    if(a.itemId){
+      if(a.itemId!=='BD28')fail('gear_receipt_bad_item');
+      const result=applyItemUse(ctx,'BD28',a.params || {},'receiveGear');
+      if(result.status!=='done')fail('item_prompt');
+    }
+    return confirmGear(ctx);
+  },
+  confirmRecovery: (ctx,a) => {
+    const p=ctx.s.prompt;
+    if(ctx.s.phase!=='event'||p?.kind!=='recoveryConfirm')fail('recovery_not_now');
+    ctx.pendingRecovery={delta:p.amount};
+    if(a.itemId){
+      if(!['BD17','BD38'].includes(a.itemId))fail('recovery_bad_item');
+      const result=applyItemUse(ctx,a.itemId,a.params || {},'recoveryConfirm');
+      if(result.status!=='done')fail('item_prompt');
+      ctx.s.event.recoveryItemUsed=true;
+    }
+    const delta=ctx.pendingRecovery.delta;delete ctx.pendingRecovery;
+    return confirmRecovery(ctx,delta);
+  },
+  answerPuzzle: (ctx,a) => answerPuzzle(ctx,a.answer),
+  commitPuzzleWrong: (ctx) => commitPuzzleWrong(ctx),
   pickBagItem: (ctx, a) => pickBagItem(ctx, a.index),
   skipUnscripted: (ctx) => skipUnscripted(ctx),
-  pickChest: (ctx, a) => pickChest(ctx, a.index),
+  pickChest: (ctx, a) => {
+    if(a.itemId){
+      if(a.itemId!=='BD06')fail('receipt_bad_item');
+      ctx.receiptAction=true;
+      const used=applyItemUse(ctx,'BD06',a.params || {},'receiveItem');
+      if(used.status!=='done')fail('item_prompt');
+    }
+    const result=pickChest(ctx,a.index);
+    if(ctx.receiptAction && !ctx.pendingReceipt?.used)fail('receipt_not_applied');
+    return result;
+  },
   skipChest: (ctx) => skipChest(ctx),
   bagSwap: (ctx, a) => bagSwap(ctx, a.index),
   bagDecline: (ctx) => bagDecline(ctx),
   // inn
-  rest: (ctx) => doRest(ctx),
+  rest: (ctx,a) => doRest(ctx,a),
   buy: (ctx, a) => doBuy(ctx, a.slot),
   sellItem: (ctx, a) => doSellItem(ctx, a.index),
   sellGear: (ctx, a) => doSellGear(ctx, a.iid),
   changeJob: (ctx, a) => doChangeJob(ctx, a.jobId),
-  recruit: (ctx, a) => doRecruit(ctx, a.companionId, a.replaceId),
+  recruit: (ctx, a) => doRecruit(ctx, a.companionId, a.replaceId, a),
   service: (ctx, a) => {
+    if(a.itemId){
+      if(a.itemId!=='BD06')fail('receipt_bad_item');
+      ctx.receiptAction=true;
+      const used=applyItemUse(ctx,'BD06',a.params || {},'receiveItem');
+      if(used.status!=='done')fail('item_prompt');
+    }
     const r = doService(ctx, a.serviceId, a.input);
+    if(ctx.receiptAction && !ctx.pendingReceipt?.used)fail('receipt_not_applied');
     void r;
   },
   leaveInn: (ctx) => {
@@ -205,14 +292,22 @@ const ACTIONS = {
     finishEvent(ctx);
   },
   // battle
-  challenge: (ctx) => challengeOffer(ctx),
+  challenge: (ctx,a) => {
+    if(a.itemId){
+      if(a.itemId!=='BD46')fail('challenge_bad_item');
+      ctx.challengeItemAction=true;
+      const result=applyItemUse(ctx,'BD46',a.params || {},'challengeConfirm');
+      if(result.status!=='done')fail('item_prompt');
+    }
+    return challengeOffer(ctx);
+  },
   skip: (ctx) => skipOffer(ctx),
   challengeKing: (ctx) => challengeKing(ctx),
-  attack: (ctx, a) => battleAction(ctx, { type: 'attack', target: a.target }),
-  guard: (ctx) => battleAction(ctx, { type: 'guard' }),
+  attack: (ctx, a) => battleAction(ctx, { type: 'attack', target: a.target, targets:a.targets, choiceId: a.choiceId }),
+  guard: (ctx,a) => battleAction(ctx, { type: 'guard', choiceId: a.choiceId }),
   spell: (ctx, a) => battleAction(ctx, { type: 'spell', spellId: a.spellId, target: a.target }),
   item: (ctx, a) => battleAction(ctx, { type: 'item', itemId: a.itemId, params: a.params, target: a.target }),
-  flee: (ctx) => battleAction(ctx, { type: 'flee' }),
+  flee: (ctx,a) => battleAction(ctx, { type: 'flee', itemId:a.itemId, params:a.params }),
   extra: (ctx, a) => battleAction(ctx, { type: 'extra', id: a.id }),
   continue: (ctx) => continueReward(ctx),
   retry: (ctx) => acceptRetry(ctx),
@@ -223,7 +318,7 @@ const ACTIONS = {
 const PHASE_OF = {
   roll: ['board'],
   move: ['rolled'],
-  chooseOption: ['event', 'inn'],
+  chooseOption: ['event', 'inn', 'gate'],
   pickBagItem: ['event', 'inn'],
   skipUnscripted: ['event'],
   pickChest: ['chest'],
@@ -269,6 +364,7 @@ export function dispatch(content, run, action, opts = {}) {
   if (allowed && !allowed.includes(run.phase)) fail('illegal_action', `${action.type} in phase ${run.phase}`);
   const s = clone(run);
   const ctx = makeCtx(content, s, opts);
+  if(action.type!=='useItem') delete s.afterRest;
   handler(ctx, action);
   s.revision += 1;
   if (action.opId) {

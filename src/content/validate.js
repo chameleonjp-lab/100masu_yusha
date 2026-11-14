@@ -2,6 +2,7 @@
 // Used by buildContent (errors make strict loading fail) and importable by tools/validate-content.mjs.
 
 import { COST_KEYS, EXPR_NODES, HOOKS, ITEM_WHERE, OPS, REFS, REF_PREFIXES, RULE_KEYS, STAGES } from '../engine/formats.js';
+import { validatePuzzle } from '../engine/puzzles.js';
 import { CUSTOM } from '../engine/custom/index.js';
 
 const isObj = (x) => x && typeof x === 'object' && !Array.isArray(x);
@@ -105,11 +106,44 @@ export function validateScripts(content, problems) {
           if (!op.choose && typeof op.id === 'string' && !content.items[op.id]) err('script-id', `${w}: unknown item ${op.id}`);
           if (typeof op.id === 'object') expr(op.id, w, c.scopeVars);
           break;
+        case 'setEnemyAction': {
+          const a=op.action || {};
+          for(const k of Object.keys(a)) if(!['name','tell','kind','attack','defense','heal','hits','rawDamage'].includes(k)) err('script-battle', `${w}: unknown enemy action field ${k}`);
+          for(const k of ['attack','defense','heal','rawDamage']) if(a[k] !== undefined && (!Number.isFinite(a[k]) || a[k]<0)) err('script-battle', `${w}: invalid enemy action ${k}`);
+          if(a.hits !== undefined && (!Number.isInteger(a.hits) || a.hits<1 || a.hits>10)) err('script-battle', `${w}: hits must be 1..10`);
+          break;
+        }
         case 'battle':
           if (!content.enemies[op.enemy]) err('script-id', `${w}: unknown enemy ${op.enemy}`);
           if (i !== list.length - 1) err('script-battle', `${w}: battle must be the last effect of its list`);
           (op.rules || []).forEach((r, j) => rule(r, `${w}.rules[${j}]`, true, c.scopeVars));
           if (op.onWin) effects(op.onWin, `${w}.onWin`, c);
+          if(op.scenario?.itemDisabledWhen)expr(op.scenario.itemDisabledWhen,w,c.scopeVars);
+          const scenarioRounds = new Set();
+          for(const entry of op.scenario?.announcements || []) {
+            if(!entry.id)err('script-battle', `${w}: announcement id required`);
+            if(entry.when !== undefined)expr(entry.when, `${w}.announcement.when`, c.scopeVars);
+          }
+          for (const entry of [...(op.scenario?.roundActions || []),...(op.scenario?.announcements || []).map((x,i)=>({...x,round:10000+i}))]) {
+            if (!Number.isInteger(entry.round) || entry.round < 1 || scenarioRounds.has(entry.round)) err('script-battle', `${w}: scenario round must be a unique positive integer`);
+            scenarioRounds.add(entry.round);
+            const a = entry.action || {};
+            if (a.hits !== undefined && (!Number.isInteger(a.hits) || a.hits < 1 || a.hits > 10)) err('script-battle', `${w}: hits must be 1..10`);
+            for (const k of Object.keys(a)) if (!['name','tell','kind','attack','defense','heal','hits','rawDamage'].includes(k)) err('script-battle', `${w}: unknown scenario action field ${k}`);
+            for (const k of ['attack','defense','heal','rawDamage']) if (a[k] !== undefined && (!Number.isFinite(a[k]) || a[k] < 0)) err('script-battle', `${w}: invalid scenario ${k}`);
+          }
+          for (const type of ['attack', 'guard']) {
+            const list = op.scenario?.[`${type}Choices`] || [];
+            const ids = new Set();
+            for (const ch of list) {
+              if (!ch.id || !ch.label || ids.has(ch.id)) err('script-battle', `${w}: scenario choices need unique id and label`);
+              ids.add(ch.id);
+              if (ch.damageMode !== undefined && !['normal', 'none', 'pierce'].includes(ch.damageMode)) err('script-battle', `${w}: unsupported scenario damageMode ${ch.damageMode}`);
+              if (ch.bonus !== undefined && !Number.isFinite(ch.bonus)) err('script-battle', `${w}: scenario bonus must be finite`);
+              if (ch.when !== undefined) expr(ch.when, `${w}.scenario.when`, c.scopeVars);
+              effects(ch.effects || [], `${w}.scenario.effects`, { ...c });
+            }
+          }
           for (const ex of op.extraActions || []) {
             if (!ex.id || !ex.label) err('script-battle', `${w}: extraActions need id and label`);
             if (ex.when !== undefined) expr(ex.when, `${w}.extra.when`, c.scopeVars);
@@ -129,22 +163,28 @@ export function validateScripts(content, problems) {
           else rule(op.mark, `${w}.mark`, true, c.scopeVars);
           break;
         case 'reserve':
-          if (!['thisMove', 'nextBattle', 'arrival'].includes(op.slot)) err('script-op', `${w}: reserve.slot must be thisMove|nextBattle|arrival`);
+          if(op.slot==='nextTrapLoss' && (!['hp','mp'].includes(op.resource) || !Number.isFinite(op.amount) || op.amount<0))err('script-op', `${w}: invalid trap resource/amount`);
+          if (!['thisMove', 'nextBattle', 'arrival', 'nextTrapLoss'].includes(op.slot)) err('script-op', `${w}: reserve.slot must be thisMove|nextBattle|arrival`);
           (op.rules || []).forEach((r, j) => (op.slot === 'thisMove' ? rule({ hook: 'moveConfirm', ...r }, `${w}.rules[${j}]`, false, c.scopeVars) : rule(r, `${w}.rules[${j}]`, true, c.scopeVars)));
           if (op.onStart) effects(op.onStart, `${w}.onStart`, c);
           if (op.effects) effects(op.effects, `${w}.effects`, { ...c });
           if (op.pos !== undefined) expr(op.pos, w, c.scopeVars);
           break;
         case 'reveal':
-          if (!['nextBattleEnemy', 'nearestBattles', 'nearestTraps', 'nextEnemyAction', 'squaresAhead', 'sixOutcomes'].includes(op.info)) err('script-op', `${w}: unknown reveal info "${op.info}"`);
+          if(op.expires && (!Number.isInteger(op.expires.moves) || op.expires.moves<1 || op.expires.moves>3)) err('script-op', `${w}: reveal expires.moves must be an integer 1..3`);
+          if(op.maxPos!==undefined && (!Number.isInteger(op.maxPos) || op.maxPos<1 || op.maxPos>100)) err('script-op', `${w}: reveal maxPos must be an integer 1..100`);
+          if (!['nextGold','nextInn','allBattles','nearestSquares','gearCandidates','battleHint','nextBattleEnemy', 'kingPhaseHint', 'remainingTraps', 'ownedArmorComparison', 'strongEnemiesAhead', 'nearestBattles', 'nearestTraps', 'nextEnemyAction', 'squaresAhead', 'sixOutcomes', 'nextGearInBand', 'nextTrapInBand', 'nextItemInBand', 'nextBattleInBand', 'ownedSwordComparison'].includes(op.info)) err('script-op', `${w}: unknown reveal info "${op.info}"`);
           break;
         case 'custom':
           if (!CUSTOM[op.id]) err('script-custom', `${w}: no custom handler "${op.id}" in src/engine/custom/`);
           break;
+        case 'healEnemy':
+        case 'enemyDefense':
         case 'hp':
         case 'mp':
         case 'addDamage':
         case 'subDamage':
+        case 'reduceTrapLoss':
         case 'reduceDamage':
         case 'increaseDamage':
         case 'absorbDamage':
@@ -155,7 +195,7 @@ export function validateScripts(content, problems) {
         case 'xp':
           if (op.delta !== undefined) expr(op.delta, w, c.scopeVars);
           if (op.amount !== undefined) expr(op.amount, w, c.scopeVars);
-          if (['addDamage', 'subDamage', 'reduceDamage', 'increaseDamage', 'dealDamage', 'payGold', 'xp'].includes(op.op) && op.amount === undefined) err('script-op', `${w}: ${op.op} needs amount`);
+          if (['reduceTrapLoss', 'addDamage', 'subDamage', 'reduceDamage', 'increaseDamage', 'dealDamage', 'payGold', 'xp'].includes(op.op) && op.amount === undefined) err('script-op', `${w}: ${op.op} needs amount`);
           if ((op.op === 'hp' || op.op === 'mp') && op.delta === undefined) err('script-op', `${w}: ${op.op} needs delta`);
           break;
         case 'adjustDie':
@@ -176,12 +216,18 @@ export function validateScripts(content, problems) {
     const ev = content.events[id];
     if (!ev) continue;
     const w = `event ${id}`;
-    for (const k of Object.keys(sc)) if (!['id', 'onLand', 'options', 'inn', 'notes', 'checks'].includes(k)) err('script-key', `${w}: unknown key "${k}"`);
-    if (!sc.onLand && !(sc.options && sc.options.length) && ev.kind !== '宿場') err('script-empty', `${w}: no onLand and no options (a bare "next" button is not allowed)`);
+    for (const k of Object.keys(sc)) if (!['id', 'onLand', 'options', 'inn', 'notes', 'checks', 'puzzle'].includes(k)) err('script-key', `${w}: unknown key "${k}"`);
+    if (!sc.puzzle && !sc.onLand && !(sc.options && sc.options.length) && ev.kind !== '宿場') err('script-empty', `${w}: no onLand and no options (a bare "next" button is not allowed)`);
     if (ev.kind === '宿場' && !sc.inn && !sc.onLand && !sc.options) warn('script-inn', `${w}: inn without services is fine but has no one-time perk`);
     if (sc.onLand) effects(sc.onLand, `${w}.onLand`, { ev, scopeVars: new Set() });
+    if (sc.puzzle) {
+      for (const message of validatePuzzle(sc.puzzle)) err('script-puzzle', `${w}: ${message}`);
+      effects(sc.puzzle.onCorrect || [], `${w}.puzzle.onCorrect`, {ev,scopeVars:new Set()});
+      effects(sc.puzzle.onWrong || [], `${w}.puzzle.onWrong`, {ev,scopeVars:new Set()});
+    }
     if (sc.options) options(sc.options, `${w}.options`, ev, new Set());
     if (sc.inn) {
+      if(sc.inn.restOptions)options(sc.inn.restOptions, `${w}.inn.restOptions`, ev, new Set());
       for (const [i, sv] of (sc.inn.services || []).entries()) {
         const sw = `${w}.inn.services[${i}]`;
         if (!sv.id || !sv.label) err('script-inn', `${sw}: id and label required`);
@@ -223,6 +269,8 @@ export function validateScripts(content, problems) {
         else if (!ITEM_WHERE[wh].wired) warn('script-where-unwired', `${uw}: where "${wh}" is reserved but not wired`);
       }
       const vars = new Set((u.inputs || []).map((x) => x.id));
+      if ((u.where || []).includes('restConfirm')) vars.add('restHpOverflow');
+      if ((u.where || []).includes('trapLoss')) { vars.add('trapLoss'); vars.add('trapHasOtherCost'); }
       for (const inp of u.inputs || []) if (!inp.id || !['int', 'enum', 'string', 'sequence', 'ints'].includes(inp.type)) err('script-item', `${uw}: bad input ${JSON.stringify(inp)}`);
       for (const r of u.requires || []) expr(r.when, `${uw}.requires`, vars);
       effects(u.effects || [], `${uw}.effects`, { scopeVars: vars });

@@ -33,11 +33,12 @@ const content = await loadContentInBrowser('./');       // 'data/…' を基準U
 import { createRun, dispatch, view, boardFromExample } from './src/engine/index.js';
 
 const run = createRun(content, { route: 'M', seed: 123456789, runId: 'r-…' });
-// 例の盤面（検査用）: createRun(content, { route:'M', seed:1, board: boardFromExample(content, content.base.exampleBoards[0]) })
+// 例の盤面（検査用）: createRun(content, { route:'M', seed:1, runId:'example-fixture', board: boardFromExample(content, content.base.exampleBoards[0]) })
 const { state, effects } = dispatch(content, run, { type: 'roll', opId: 'op-1' }, { rolls /* 検査用: 先に消費する0〜1の乱数の列 */ });
 const v = view(content, state);
 ```
 
+- `runId` は非空文字列で必須（省略・空欄は `bad_run_id`）。UIは新しい冒険ごとに `crypto.randomUUID()` 等で一意IDを発行し、保存からの再開時は元のIDを使う。同じseed・同じrouteでも別冒険のIDを再利用しない。エンジン内部では時計や乱数APIを呼ばない。
 - `dispatch` は**入力の状態を変えない**。不正な操作は `EngineError`（`.code`）を投げ、状態は変わらない。`view().actions` で `enabled` の操作だけを出す。
 - `opId` を付けると、同じ `opId` の再送は**何もしない**（`{state: 入力のまま, effects: [], replay: true}`）。直近120件を `state.ops` に持つ。確定操作ごとに `state.revision` が+1（再送では増えない）。
 - 乱数は `state.rng = {seed, pos}`（位置を進める数列。状態に入れるので保存・再開で振り直さない）。出目・盤面・宿の品・酒場の候補・宝箱・霧狼の本体・戦闘の抽選はすべて引いた時点で状態に残す。
@@ -109,15 +110,17 @@ const { meta, discoveries, newBest, recorded } = applyRunToMeta(meta, finishedOr
 import { createIndexedDbStore, createMemoryStore, SaveError } from './src/save/index.js';
 const store = createIndexedDbStore();           // ブラウザー。テストは createMemoryStore()
 
-const loaded = await store.load();              // {status:'empty'|'ok'|'unsupported', run, meta, revision, raw?}
-await store.commit({ run: state, meta, expectedRevision: loaded.revision, opId });
-await store.startNew({ run: newRun, meta, confirmReplace: true });   // 「はじめから」：現在地を見せて確認してから
-await store.saveMeta(meta);                     // 設定・図鑑だけの更新
+const loaded = await store.load();              // {status:'empty'|'ok'|'unsupported', run, meta, revision, metaRevision, raw?}
+await store.commit({ run: state, meta, expectedRevision: loaded.revision, expectedMetaRevision: loaded.metaRevision, opId });
+await store.startNew({ run: newRun, meta, expectedMetaRevision: loaded.metaRevision, confirmReplace: true });   // 「はじめから」：現在地を見せて確認してから
+await store.saveMeta(meta, { expectedMetaRevision: loaded.metaRevision });                     // 設定・図鑑だけの更新
 ```
 - `commit` は `{run, meta}` を**1つのトランザクション**で書く。失敗（容量不足など）は丸ごと取り消され、以前の記録が残る。呼び元は成功してから成功音・演出を出し、失敗なら同じ操作を再試行できる。
 - `expectedRevision` が保存済みの `revision` と違えば `SaveError('stale_revision')`（古いタブの拒否）。別の冒険に置き換わっていれば `run_replaced`（古いタブからの復活を防ぐ）。**最初の保存は `expectedRevision: null`**。
-- 同じ `opId` の再送は `{ok:true, replay:true}` で何も書かない。
+- metaを書く `commit`・`startNew`・`saveMeta` は、読込時の `metaRevision` を `expectedMetaRevision` として必ず渡す。初回meta未保存はnull。不一致や既存metaがあるのに省略すると `stale_meta_revision` でrun/meta/backup全体を未変更にする。成功後は再読込で新しいmetaと世代を取得する。古いmetaに新番号だけ付け直して再送せず、最新metaへ意図した変更のみ再計算する。上の呼出例はそれぞれ独立した操作例であり、連続操作では間に再読込を挟む。
+- 同じ冒険IDかつ同じ `opId` の再送は `{ok:true, replay:true}` で何も書かない。
 - **未知の版・壊れた記録は自動で消さない**: `load` は `status:'unsupported'` と `raw` を返し、`commit` は `unsupported_record` で拒否、`startNew` は確認つきで新しく始め、古い記録は `backup` に残す（`loadBackup('unsupported-1')` など）。旧冒険を置き換えた時も `loadBackup()`（`previous-run`）。
+- 保存の読取検査はformat/schema/rulesと中核構造の検査であり、全内容・全参照の完全なschema検証ではない。内容依存の整合性は別に確認する。
 - 互換: `checkCompat(content, run)`（`src/engine/index.js`）→ `{ok, contentChanged}`。内容の版が変わっても進行中の盤面・配置・箱・抽選は状態に入っているので維持される。
 
 ## 7. 主要なエラーコード（`EngineError.code`）
@@ -134,3 +137,31 @@ await store.saveMeta(meta);                     // 設定・図鑑だけの更�
 - 転職は無料で何度でも（宿場で）。
 - 宝箱は見送り（`skipChest`）もできる。袋が満杯で辞退した場合は箱に戻る。
 - 魔王戦の段階変更：体力が `phaseTwoThresholdHp`（62）以下になったラウンドの敵の予告はそのまま実行し、次の予告は後半の1番目。
+
+## 9. 個別戦闘・宿の追加契約（後続実装）
+
+これらは対象イベントの型付き定義で有効になる機構であり、敵マスターや通常戦闘のルールを一括変更しない。
+
+- `battle.scenario.attackChoices` / `guardChoices` は `id`, `label`, 任意の `when`, `effects`, `bonus`, `damageMode` を持つ。`damageMode` は `normal` / `none` / `pierce`。有効な候補がある手では `attack` / `guard` に `choiceId` が必要。未指定・不正選択は状態を変えず失敗する。`none` は通常攻撃命中や出目加勢消費に数えない。履歴には元の行動種別と選択 ID を残す。
+- `scenario.roundActions` は指定ラウンドだけの敵予告、`announcements` は条件付き予告。敵予告の `hits` は回数、`rawDamage` は防御力計算前の代わりに使う一撃分の基本損失であり、その後の防御・軽減は適用される。`heal` は生存中の敵の回復予定。シナリオと使用済み予告フラグは保存・複製・再開する。
+- `beforeEnemyAction` は敵行動直前、`afterEnemyHit` は各直撃後、`afterEnemyAction` は連撃全体の後に一度。途中の死亡・敵撃破で後続直撃を停止する。敵側 hit 通知の `amount` は実際に減った HP、`potentialDamage` は軽減後の潜在損失である。
+- `enemyHeal` の `damage` は最大 HP までの実回復可能量。`hpRestored` は正の実回復だけを通知し、`battle.restoreSource` は `spell` / `item` / `companion` を区別する。
+- 履歴参照 `battle.enemyActed`, `hitsTaken`, `guardShieldReduced` は `offset` / `abs` を受け付ける。`hitsTaken` は実 HP 損失があった直撃数。`guardShieldReduced` は防御行動と仲間の盾による実軽減だけで、装備・出目・その他の軽減は含めない。`battle.spellKind` は履歴指定時にその手の呪文種別を、指定がない時は現在の hook を参照する。
+- `inn.restOptions` がある宿の `rest` は `choiceId` を要求する。通常休憩・休憩確認処理の後に選択効果を実行し、通常休憩は一回だけ。休憩の選択と道具の指定は別々の入力である。
+- `reserve` の `nextTrapLoss` は `resource: hp|mp`, `amount` を持ち、次の該当する正の盤面罠損失だけを軽減する。違う資源、損失ゼロ、罠対処用道具の MP 支払では消費しない。MP の罠損失は `changeMp` の `meta.trapLoss` で明示する。
+- 情報取得 `revealPreview` は状態を変更しない。`nextGold`, `nextInn`, `allBattles`, `nearestSquares`, `gearCandidates`, `battleHint` は対象なしを明示する。装備候補に将来の出目条件がある場合、候補と条件を提示し、未確定の取得品を断定しない。
+
+限定実装と全イベント移行の完了は別である。個別シナリオの原文照合、実機受入、PR・CI・公開の検証状況は計画表で別途管理する。
+
+### 9.1 追加の道具・予測契約
+
+- `enemyHpDamage` は正の全種敵ダメージを HP に反映する直前、`enemyHpLost` は正の実 HP 減少直後。通常攻撃・呪文・道具だけでなく反射・仲間も含める。前者の `damage`、後者の `dealt` を区別する。
+- `roundSetup` は各ラウンドの予告・記録・候補を生成した後、プレイヤーへ返す前に一回実行する。表示に影響する敵防御変更はここで行い、`heroTurnStart` の既存道具寿命とは混同しない。
+- `battleActionPreview(content,state,action)` は状態と RNG を複製して具体的行動を実行し、実直撃合計・敵回復などだけを返す。候補や対象が未指定なら `available:false`。実状態・消費・保存は変更しない。
+- AT30 の `enemyActionForecast` は最大3予告の条件付き予測。勇者が追加ダメージ・道具を使わず指定防御姿勢を続ける仮定で、現在の状態から毎回計算する。未来の選択結果を確定情報として表示しない。
+- `assumeGuard` は道具使用履歴を消さず防御として扱う。`battle.heroAction` の防御判定と防御回数に加え、道具回数・種類数にも一度だけ数える。
+- `scoutDecoyTargets` は AT31 で先に除外する偽物と残候補を返す。AT44 は予約した次の手だけ `attack.targets` に異なる1〜2候補を受け付け、本体への命中は一度だけ。分身なしの場合の追加7と、対象選択の原子的拒否を分離する。
+- `pierceShellHit` は `reductionKind: shield|shell` と明示された軽減だけを合計6まで減らす。無印軽減、分身、完全無効は対象外。`weakenTemporaryDefense` は同フェーズ通常攻撃時の基礎防御を下限として、一時上昇部分を最大10だけ低く扱う。
+- BD19/20/25 は盤面罠の正規選択コストだけに適用する。BD19 は実金貨支払後、BD20 は一個だけの損失置換後に回復。BD25 は残額を払える場合のみ最大110割引。売買・寄付・通常交換へ流用しない。
+- BD27 の取り置きは通常休憩の実受取可能 HP のみ。宿固有効果や別道具の回復を取り置き元に含めない。BD45 は実際に新規加入した仲間 ID に結び付き、灯り・攻撃・盾・回復の自動支援を対象にする。いずれも期限と再戦の二重適用を別々に防ぐ。
+- 敵由来 MP 減少は `enemyMpLoss` で明示し、勇者の呪文や道具の支払と区別する。一時的能力低下・継続 HP 損失は識別 ID と寿命を持つ `temporaryStatuses` で表現する。未付与状態を解除したことにしない。

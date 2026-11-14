@@ -25,7 +25,7 @@ function roundRec(b, node) {
 }
 
 function actionType(rec) {
-  return rec && rec.action ? rec.action.type : null;
+  return rec && rec.action ? (rec.guarded ? 'guard' : rec.action.type) : null;
 }
 
 function countOf(b, what) {
@@ -35,7 +35,7 @@ function countOf(b, what) {
     const a = r.action && r.action.type;
     if (what === 'attackHits' && a === 'attack' && r.landed) n++;
     else if (what === 'attacks' && a === 'attack') n++;
-    else if (what === 'guards' && a === 'guard') n++;
+    else if (what === 'guards' && (a === 'guard' || r.guarded)) n++;
     else if (what === 'spells' && a === 'spell') n++;
     else if (what === 'items' && a === 'item') n++;
     else if (what === 'attackSpells' && a === 'spell' && r.action.spellKind === 'attack') n++;
@@ -74,7 +74,10 @@ function resolveRef(env, node) {
     case 'bagCount': return s.bag.length;
     case 'bagFree': return bagFree(s);
     case 'companionCount': return s.companions.length;
-    case 'itemCount': return itemCount(s, node.id);
+    case 'itemCount': return itemCount(s, evalExpr(env, node.id));
+    case 'hasEquippedArmor': return !!s.equipped?.armor && s.gear.some(g => g.iid === s.equipped.armor);
+    case 'battle.enemyHit': { const r = roundRec(b, node); return r ? !!r.enemyHit : false; }
+    case 'battle.hpAfterEnemy': { const r = roundRec(b, node); return r?.hpAfterEnemy ?? null; }
     case 'hasGear': return ownsGear(s, node.id);
     case 'hasSpell': return knowsSpell(s, node.id);
     case 'die': return currentDie(s);
@@ -94,10 +97,21 @@ function resolveRef(env, node) {
     case 'battle.isKing': return !!b && b.kind === 'king';
     case 'battle.isOptional': return !!b && b.kind === 'optional';
     case 'battle.enemyId': return b ? b.enemy.id : null;
+    case 'battleFlag': return b ? b.flags[`scenario:${node.key}`] ?? false : false;
+    case 'battle.guardShieldReduced': return roundRec(b,node)?.guardShieldReduced || 0;
+    case 'battle.announcement': return b?.current?.scenarioId || null;
+    case 'battle.enemyPlannedHeal': return b?.current?.heal || 0;
+    case 'battle.hitHpLost': return hook.hitHpLost || 0;
+    case 'battle.hitIndex': return hook.hitIndex || 0;
+    case 'battle.hitCount': return hook.hitCount || b?.current?.hits || 1;
+    case 'battle.hitsTaken': return roundRec(b,node)?.hitsTaken || 0;
+    case 'battle.enemyActed': return !!roundRec(b, node)?.enemyActed;
     case 'battle.enemyHp': return b ? b.enemy.hp : 0;
     case 'battle.enemyMaxHp': return b ? b.enemy.maxHp : 0;
     case 'battle.startHp': return b ? b.startHp : 0;
     case 'battle.startMp': return b ? b.startMp : 0;
+    case 'spellPrepared': return s.spells.prepared.includes(evalExpr(env,node.id));
+    case 'battle.itemId': return roundRec(b,node)?.action?.itemId || null;
     case 'battle.heroAction': return actionType(roundRec(b, node));
     case 'battle.hpLost': { const r = roundRec(b, node); return r ? r.hpLost : 0; }
     case 'battle.attackHit': { const r = roundRec(b, node); return !!(r && r.landed); }
@@ -107,11 +121,30 @@ function resolveRef(env, node) {
     case 'battle.spellCostPaid': { const r = roundRec(b, node); return r && r.action && r.action.type === 'spell' ? r.action.cost : 0; }
     case 'battle.companionsActed': { const r = roundRec(b, node); return r && r.companionActed ? new Set(r.companionActed).size : 0; }
     case 'itemCategory': { const it = content.items[evalExpr(env, node.id)]; return it ? it.category : null; }
-    case 'sinceInn': { let last = 1; for (const p of s.board.innPositions) if (p <= s.pos && s.inns[p] && s.inns[p].visited) last = Math.max(last, p); return s.pos - last; }
+    case 'sinceInn': {
+      // An inn becomes visited on arrival, but HE48 measures from the inn we
+      // departed. While still inside it, the current inn is not that origin.
+      // Forward-only movement and mandatory inn stops make visited positions
+      // sufficient, including legacy saves without a departure-position field.
+      let last = 1;
+      for (const p of s.board.innPositions) {
+        if (p <= s.pos && !(s.phase === 'inn' && p === s.pos) && s.inns[p] && s.inns[p].visited) last = Math.max(last, p);
+      }
+      return s.pos - last;
+    }
     case 'battle.enemyHealed': { const r = roundRec(b, node); return r ? r.enemyHealed || 0 : 0; }
+    case 'battle.attackDamageDealt': return roundRec(b,node)?.attackDamageDealt || 0;
+    case 'battle.spellDamageDealt': return roundRec(b,node)?.spellDamageDealt || 0;
+    case 'battle.spellHit': return (roundRec(b,node)?.hitKinds || []).includes('spell');
+    case 'battle.spellHpRestored': return roundRec(b,node)?.spellHpRestored || 0;
+    case 'battle.restoredHp': return hook.restoredHp || 0;
+    case 'battle.restoredMp': return hook.restoredMp || 0;
+    case 'battle.hpBeforeRestore': return hook.hpBeforeRestore ?? null;
+    case 'battle.restoreSource': return hook.restoreSource ?? null;
     case 'battle.damage': return hook.damage === undefined ? 0 : hook.damage;
     case 'battle.dealt': return hook.dealt === undefined ? 0 : hook.dealt;
     case 'battle.attackKind': return hook.attackKind === undefined ? null : hook.attackKind;
+    case 'battle.spellKind': return node.offset !== undefined || node.abs !== undefined ? roundRec(b, node)?.action?.spellKind ?? null : hook.spellKind === undefined ? null : hook.spellKind;
     case 'battle.spellCost': return hook.spellCost === undefined ? 0 : hook.spellCost;
     case 'battle.spellMpAfter': return hook.spellMpAfter === undefined ? 0 : hook.spellMpAfter;
     case 'battle.count': return countOf(b, node.what);

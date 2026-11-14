@@ -111,7 +111,28 @@
             }
           ]
         }
-      ]
+      ],
+      "puzzle": {
+        "id": "M3-08",
+        "kind": "numeric",
+        "answer": 4,
+        "min": 0,
+        "max": 8,
+        "implementationSupplement": true,
+        "prompt": "見本には計り升4杯分の油が示されています。升1杯を1目盛りとして、大びんの目盛りを合わせてください。",
+        "display": {
+          "unit": "杯",
+          "cupCount": 4,
+          "scaleMax": 8
+        },
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 460
+          }
+        ],
+        "onWrong": []
+      }
     },
     "M3-09": {
       "options": [

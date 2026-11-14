@@ -209,7 +209,86 @@
             }
           ]
         }
-      ]
+      ],
+      "puzzle": {
+        "id": "M5-15",
+        "kind": "compare",
+        "implementationSupplement": true,
+        "prompt": "見本と現在の窓を比べて、明かりを直す窓を一つ選んでください。",
+        "candidates": [
+          "r0c0",
+          "r0c1",
+          "r0c2",
+          "r1c0",
+          "r1c1",
+          "r1c2",
+          "r2c0",
+          "r2c1",
+          "r2c2"
+        ],
+        "labels": {
+          "r0c0": "1行1列の窓",
+          "r0c1": "1行2列の窓",
+          "r0c2": "1行3列の窓",
+          "r1c0": "2行1列の窓",
+          "r1c1": "2行2列の窓",
+          "r1c2": "2行3列の窓",
+          "r2c0": "3行1列の窓",
+          "r2c1": "3行2列の窓",
+          "r2c2": "3行3列の窓"
+        },
+        "answer": "r0c1",
+        "differences": [
+          {
+            "id": "r0c1",
+            "row": 0,
+            "column": 1
+          }
+        ],
+        "display": {
+          "reference": [
+            [
+              true,
+              true,
+              true
+            ],
+            [
+              false,
+              true,
+              false
+            ],
+            [
+              true,
+              true,
+              true
+            ]
+          ],
+          "current": [
+            [
+              true,
+              false,
+              true
+            ],
+            [
+              false,
+              true,
+              false
+            ],
+            [
+              true,
+              true,
+              true
+            ]
+          ]
+        },
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 860
+          }
+        ],
+        "onWrong": []
+      }
     },
     "M5-16": {
       "options": [

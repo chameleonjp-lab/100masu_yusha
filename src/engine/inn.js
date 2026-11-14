@@ -4,6 +4,7 @@ import { clone, fail } from './util.js';
 import { shuffle } from './rng.js';
 import {
   MAX_COMPANIONS,
+  runFieldHook,
   bagFree,
   changeGold,
   changeHp,
@@ -17,8 +18,10 @@ import {
 } from './core.js';
 import { consumablePool } from './board.js';
 import { grantGear, grantItem, learnSpell } from './ops-basic.js';
+import { evalExpr } from './expr.js';
 import { applyCost, optionStatus } from './options.js';
-import { newScope, runEffects } from './runner.js';
+import { applyItemUse } from './items.js';
+import { newScope, runEffects, register, envOf } from './runner.js';
 
 export const STANDARD_STOCK = ['HE01', 'BD01'];
 export const SELL_RATE = { item: 40, gear: 50 };
@@ -110,15 +113,37 @@ export function restHalf(content, s, inn) {
   };
 }
 
-export function doRest(ctx) {
+export function doRest(ctx, action = {}) {
   const s = ctx.s;
   const inn = requireInn(s);
   if (inn.restUsed) fail('rest_used');
+  const choices=ctx.content.scripts.events[s.event.eventId]?.inn?.restOptions || [];
+  let selected=null;
+  if(choices.length) {
+    if(action.choiceId===undefined)fail('rest_choice_required');
+    selected=choices.find(x=>x.id===action.choiceId);
+    if(!selected)fail('bad_rest_choice',String(action.choiceId));
+    const status=optionStatus(ctx,newScope({kind:'service',pos:s.event.pos,eventId:s.event.eventId}),selected,action.input,action.input!==undefined);
+    if(!status.enabled)fail(`rest_${status.reason}`);
+    applyCost(ctx,selected.cost,false);
+  } else if(action.choiceId!==undefined)fail('bad_rest_choice',String(action.choiceId));
   const mh = maxHpOf(ctx.content, s);
   const mm = maxMpOf(ctx.content, s);
+  const overflow=Math.max(0,s.hp+Math.ceil(mh/2)-mh);
+  runFieldHook(ctx,'restBefore');
+  const normalRestHp=Math.min(Math.ceil(mh/2),Math.max(0,mh-s.hp));
   inn.restUsed = true;
   changeHp(ctx, Math.ceil(mh / 2), undefined, { reason: 'rest' });
   changeMp(ctx, Math.ceil(mm / 2), undefined, { reason: 'rest' });
+  runFieldHook(ctx,'restConfirm');
+  if(selected)runEffects(ctx,selected.effects || [],newScope({kind:'service',pos:s.event.pos,eventId:s.event.eventId},{vars:selected.input?{[selected.input.var]:action.input}:{}}));
+  if(action.itemId) {
+    ctx.pendingRest={normalRestHp};
+    const result=applyItemUse(ctx,action.itemId,{...(action.params || {}),restHpOverflow:overflow},'restConfirm');
+    if(result.status!=='done') fail('item_prompt');
+    delete ctx.pendingRest;
+  }
+  s.afterRest={pos:s.event.pos};
   ctx.emit({ t: 'rested', pos: s.event.pos });
 }
 
@@ -202,7 +227,7 @@ export function doChangeJob(ctx, jobId) {
   ctx.emit({ t: 'jobChanged', from, to: jobId });
 }
 
-export function doRecruit(ctx, companionId, replaceId) {
+export function doRecruit(ctx, companionId, replaceId, action = {}) {
   const s = ctx.s;
   const inn = requireInn(s);
   if (!inn.tavern) fail('no_tavern');
@@ -220,6 +245,12 @@ export function doRecruit(ctx, companionId, replaceId) {
   }
   inn.tavern.recruited = true;
   discover(ctx, 'companions', companionId);
+  if(action.itemId){
+    ctx.pendingRecruit={companionId};
+    const used=applyItemUse(ctx,action.itemId,action.params||{},'recruit');
+    if(used.status!=='done')fail('item_prompt');
+    delete ctx.pendingRecruit;
+  }
 }
 
 // ---- services (event-script `inn.services`) ------------------------------------------
@@ -262,3 +293,17 @@ export function checkLeaveInn(ctx) {
 }
 
 void clone;
+
+register('reserveRestHp',(ctx,op,scope)=>{
+  const amount=evalExpr(envOf(ctx,scope),op.amount);
+  if(!ctx.pendingRest || !Number.isInteger(amount)||amount<1||amount>12||amount>ctx.pendingRest.normalRestHp)fail('bad_rest_reservation');
+  changeHp(ctx,-amount,1,{reason:'restReserved'});
+  const key=`rest-reserve:${ctx.s.nextRid}`;
+  runEffects(ctx,[{op:'reserve',slot:'nextBattle',withinMoves:3,label:'休憩の取り置き',rules:[{id:key,hook:'afterEnemyAction',limit:{perBattle:1},when:{and:[{eq:[{ref:'battle.round'},1]},{gt:[{ref:'hp'},0]},{not:{ref:'flag',key}}]},effects:[{op:'setFlag',key,value:true},{op:'hp',delta:amount}]}]}],scope);
+});
+
+register('reserveCompanionAid',(ctx)=>{
+ const id=ctx.pendingRecruit?.companionId;
+ if(!id||!ctx.s.companions.includes(id))fail('recruit_required');
+ ctx.s.reservations.push({rid:ctx.s.nextRid++,slot:'companionAid',companionId:id,withinMoves:3,movesUsed:0});
+});

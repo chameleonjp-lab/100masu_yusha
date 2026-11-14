@@ -93,10 +93,14 @@ test('reservations: nextBattle with withinMoves, thisMove with move.* refs, and 
       rules: [{ id: 'mark', hook: 'heroAttackDamage', when: { eq: [{ ref: 'battle.attackKind' }, 'attack'] }, uses: 1, effects: [{ op: 'addDamage', amount: 6 }] }] }] }] },
     BD07: { uses: [{ where: ['board'], effects: [{ op: 'reserve', slot: 'thisMove', rules: [{ when: { lte: [{ ref: 'move.steps' }, 2] }, effects: [{ op: 'hp', delta: 7 }] }] }] }] },
   };
-  const c = withScripts(content, { items, events: { 'M1-22': { onLand: [{ op: 'battle', enemy: 'EN09' }] } } });
+  const reservationBase = cl(base);
+  // Neutral intermediate squares keep this unit test independent of live catalog scripts.
+  for (const pos of [12, 13, 15]) reservationBase.board.squares[pos - 1] = {position:pos, contentId:'M1-02'};
+  reservationBase.chests = {};
+  const c = withScripts(content, { items, events: { 'M1-02': {onLand:[]}, 'M1-22': { onLand: [{ op: 'battle', enemy: 'EN09' }] } } });
   assert.deepEqual(problemsOf(c).filter((p) => p.level === 'error'), []);
   // BD10: used one move before the battle square -> the first attack gets +6
-  let t = place(base, 8, { bag: ['BD10', 'BD10'] });
+  let t = place(reservationBase, 8, { bag: ['BD10', 'BD10'] });
   t.board.squares[9] = { position: 10, contentId: 'M1-22' };
   let s = A(c, t, { type: 'useItem', itemId: 'BD10' }).state;
   assert.throws(() => A(c, s, { type: 'useItem', itemId: 'BD10' }), /already_reserved/);
@@ -107,17 +111,18 @@ test('reservations: nextBattle with withinMoves, thisMove with move.* refs, and 
   const hit = A(c, tweakHp(s), { type: 'attack' });
   assert.equal(hit.state.battle.enemy.hp, 100 - (5 + 6)); // 7-2 plus the booked +6; die 2 only softens
   // the battle is two moves away: the booking (within 1 move) has lapsed
-  t = place(base, 12, { bag: ['BD10'] });
+  t = place(reservationBase, 12, { bag: ['BD10'] });
   t.board.squares[15] = { position: 16, contentId: 'M1-22' };
   s = A(c, t, { type: 'useItem', itemId: 'BD10' }).state;
-  s = A(c, walk(c, s, 1).state, { type: 'skipUnscripted' }).state; // square 13 (unscripted)
+  s = walk(c, s, 1).state; // square 13: explicit neutral fixture
+  assert.equal(s.phase, 'board');
   assert.equal(s.reservations.length, 1);
   const lapsed = walk(c, s, 3);
   assert.equal(lapsed.state.phase, 'battle');
   assert.equal(lapsed.state.battle.marks.length, 0);
   assert.ok(fxOf(lapsed.effects, 'reservationExpired').length === 1);
   // BD07-like: only moves of 1-2 steps heal
-  const h = place(base, 10, { bag: ['BD07', 'BD07'], hp: 20 });
+  const h = place(reservationBase, 10, { bag: ['BD07', 'BD07'], hp: 20 });
   const used = A(c, h, { type: 'useItem', itemId: 'BD07' }).state;
   assert.equal(used.reservations.length, 1);
   assert.equal(walk(c, used, 5).state.hp, 20);
@@ -132,14 +137,14 @@ function tweakHp(s) {
   return t;
 }
 
-test('validator rules: unwired items/hooks warn, battle must be last, award mismatch is an error, custom must exist', () => {
+test('validator rules: unwired items warn, wired rest hooks do not, battle must be last, award mismatch is an error, custom must exist', () => {
   const bad = withScripts(content, {
     events: {
       'M1-02': { onLand: [{ op: 'battle', enemy: 'EN09' }, { op: 'hp', delta: 1 }] },
       'M1-03': { onLand: [{ op: 'custom', id: 'no.such.handler' }] },
       'M1-04': { onLand: [{ op: 'awardGold', amount: 100 }] },
     },
-    items: { HE03: { uses: [{ where: ['restConfirm'], effects: [{ op: 'hp', delta: 1 }] }] } },
+    items: { HE03: { uses: [{ where: ['equipConfirm'], effects: [{ op: 'hp', delta: 1 }] }] } },
     equipment: { SW02: { rules: [{ hook: 'restConfirm', effects: [] }, { hook: 'bogus', effects: [] }] } },
   });
   const p = problemsOf(bad);
@@ -148,7 +153,7 @@ test('validator rules: unwired items/hooks warn, battle must be last, award mism
   assert.ok(has('error', 'script-custom'));
   assert.ok(has('error', 'script-award'));
   assert.ok(has('warn', 'script-where-unwired'));
-  assert.ok(has('warn', 'script-hook-unwired'));
+  assert.equal(has('warn', 'script-hook-unwired'), false); // all declared hooks, including rest, are now wired
   assert.ok(has('error', 'script-hook'));
   // the custom registry works when the handler exists
   const ok = withScripts(content, { events: { 'M1-02': { onLand: [{ op: 'custom', id: 'example.noop', args: { a: 1 } }] } } });

@@ -125,7 +125,11 @@ export function applyCost(ctx, cost, defaultTrapLoss) {
     if (g > 0) changeGold(ctx, -g, 'pay');
   }
   if (c.hp) changeHp(ctx, -evalExpr(env, c.hp.amount), c.hp.floor, { trapLoss, reason: 'cost' });
-  if (c.mp) changeMp(ctx, -evalExpr(env, c.mp.amount), c.mp.floor, { reason: 'cost' });
+  if (c.mp) {
+    const amount = evalExpr(env, c.mp.amount);
+    if (c.mp.strict && ctx.s.mp < amount) fail('insufficient_mp');
+    changeMp(ctx, -amount, c.mp.floor, { trapLoss, reason: 'cost' });
+  }
   if (c.items) {
     for (const id of c.items) {
       bagRemoveOne(ctx.s, id);
@@ -138,4 +142,20 @@ export function findOption(options, id) {
   const o = options.find((x) => x.id === id);
   if (!o) fail('bad_option', String(id));
   return o;
+}
+
+/** BD36 applies only to an explicit one-consumable handover, never a purchase/cash reward. */
+export function substituteTradeOption(ctx, opt, substituteId) {
+  const cost = normCost(opt?.cost);
+  const hasCashReward = value => value && typeof value === 'object' &&
+    (value.op === 'awardGold' || Object.values(value).some(hasCashReward));
+  if(ctx.s.phase !== 'event' || !ctx.s.prompt?.top || ctx.s.event?.puzzle ||
+    !opt || cost.items?.length !== 1 || cost.gold !== undefined || cost.trapLoss ||
+    hasCashReward(opt.effects) || hasCashReward(ctx.s.prompt.cont?.rest)) fail('trade_not_allowed');
+  const original = ctx.content.items[cost.items[0]];
+  const substitute = ctx.content.items[substituteId];
+  if(!original || !substitute || original.id === substitute.id ||
+    original.band !== substitute.band || original.category !== substitute.category ||
+    substitute.price < original.price || itemCount(ctx.s,substituteId) < 1) fail('trade_bad_substitute');
+  return {...opt,cost:{...cost,items:[substituteId]}};
 }

@@ -1,11 +1,15 @@
+import {finishTrapItem} from './trap-items.js';
 // Landing on squares, event options/prompts, chests, bag-full flow.
 
+import { recordLandingKind, finishLandingKinds } from './landing-kind-items.js';
 import { clone, fail } from './util.js';
 import { knowsSpell, jobDef, ownsGear, bagRemoveOne } from './core.js';
 import { arriveAtInn } from './inn.js';
 import { grantGear, grantItem, learnSpell } from './ops-basic.js';
 import { applyCost, findOption, optionStatus } from './options.js';
-import { newScope, runEffects } from './runner.js';
+import { newScope, runEffects, register } from './runner.js';
+
+import { createPuzzleState, assistPuzzle, resolvePuzzleAnswer, commitPendingWrong } from './puzzles.js';
 
 export const ORIGIN_HANDLERS = Object.create(null); // kind -> (ctx, origin) => void ; registered by battle.js ('reward')
 
@@ -38,6 +42,7 @@ export function landOn(ctx, pos) {
   }
   const sq = s.board.squares[pos - 1];
   const ev = content.events[sq.contentId];
+  recordLandingKind(ctx,pos,ev.kind);
   ctx.emit({ t: 'landed', pos, eventId: ev.id, kind: ev.kind, name: ev.name });
   if (ev.kind === '宿場') {
     if (!content.scripts.events[ev.id] && !s.unscripted.includes(ev.id)) s.unscripted.push(ev.id);
@@ -58,6 +63,7 @@ function startEvent(ctx, pos, ev) {
     ctx.emit({ t: 'unscripted', id: ev.id });
     return;
   }
+  if (script.puzzle) s.event.puzzle = createPuzzleState(script.puzzle);
   const scope = newScope({ kind: 'event', pos, eventId: ev.id });
   const r = runEffects(ctx, script.onLand || [], scope);
   if (r !== 'done') return;
@@ -67,6 +73,11 @@ function startEvent(ctx, pos, ev) {
 function presentOptions(ctx, script) {
   const s = ctx.s;
   const origin = { kind: 'event', pos: s.event.pos, eventId: s.event.eventId };
+  if (script.puzzle && script.puzzle.kind !== 'choice') {
+    s.event.stage = 'puzzle';
+    s.prompt = { kind: 'puzzle' };
+    return;
+  }
   if (script.options && script.options.length) {
     s.event.stage = 'options';
     s.prompt = { kind: 'choice', top: true, title: null, options: clone(script.options), cont: { rest: [], vars: {}, origin } };
@@ -82,6 +93,7 @@ export function finishEvent(ctx) {
 export function finishSquare(ctx) {
   const s = ctx.s;
   const pos = s.pos;
+  finishLandingKinds(ctx);
   s.done[pos] = true;
   s.event = null;
   s.prompt = null;
@@ -103,6 +115,9 @@ export function completeOrigin(ctx, origin) {
       if (s.event && s.event.stage === 'land' && script) return presentOptions(ctx, script);
       return finishEvent(ctx);
     }
+    case 'gate':
+      s.phase='gate';
+      return undefined;
     case 'service':
       s.phase = 'inn';
       return undefined;
@@ -124,6 +139,16 @@ function continueCont(ctx, effects, cont) {
 }
 
 export function chooseOption(ctx, optionId, input) {
+  const puzzle = ctx.s.event?.puzzle;
+  if (puzzle && ctx.s.prompt?.top && !puzzle.resolved) {
+    const def = ctx.content.scripts.events[ctx.s.event.eventId].puzzle;
+    const result = resolvePuzzleAnswer(def, puzzle, optionId, { offerRetry: ctx.s.bag.includes('BD39') });
+    ctx.s.event.puzzle = result.state;
+    if (result.outcome === 'wrongPending') { ctx.s.event.pendingPuzzleOption = { optionId, input }; return; }
+  }
+  return applyChosenOption(ctx,optionId,input);
+}
+function applyChosenOption(ctx, optionId, input) {
   const s = ctx.s;
   const p = s.prompt;
   if (!p || p.kind !== 'choice') fail('illegal_action', 'no choice pending');
@@ -136,6 +161,7 @@ export function chooseOption(ctx, optionId, input) {
   if (p.top && s.event) s.event.stage = 'option';
   const isTrap = !!(s.event && s.event.kind === '罠');
   applyCost(ctx, opt.cost, isTrap);
+  finishTrapItem(ctx);
   const vars = { ...cont.vars };
   if (opt.input) vars[opt.input.var] = input;
   ctx.emit({ t: 'optionChosen', id: optionId });
@@ -231,6 +257,9 @@ export function pickChest(ctx, index) {
   if (id === undefined) fail('bad_index', String(index));
   const pos = s.chest.pos;
   const content = ctx.content;
+  if(content.gear[id] && s.bag.includes('BD28') && !ownsGear(s,id)){
+    s.prompt={kind:'gearConfirm',gearId:id,paidGold:null,from:'chest',cont:{rest:[],vars:{},origin:{kind:'chest',pos,picked:id}}};return;
+  }
   if (content.gear[id]) grantGear(ctx, id, null, 'chest');
   else if (content.spells[id]) learnSpell(ctx, id);
   else {
@@ -263,3 +292,49 @@ export function skipChest(ctx) {
 }
 
 void bagRemoveOne;
+
+// Puzzle helpers do not execute rewards during previews or the retry window.
+register('puzzleAssist', (ctx,op,scope) => {
+  const state=ctx.s.event?.puzzle, def=ctx.content.scripts.events[ctx.s.event?.eventId]?.puzzle;
+  if(!state||!def||ctx.s.phase!=='event') fail('puzzle_assist_unavailable');
+  const result=assistPuzzle(def,state,op.itemId || scope.itemId,scope.vars || {});
+  ctx.s.event.puzzle=result.state;
+  if((op.itemId || scope.itemId)==='BD39') delete ctx.s.event.pendingPuzzleOption;
+  ctx.emit({t:'puzzleHint',...result.hint});
+});
+export function answerPuzzle(ctx,answer) {
+  const s=ctx.s,script=ctx.content.scripts.events[s.event?.eventId];
+  if(s.phase!=='event'||s.prompt?.kind!=='puzzle'||!script?.puzzle) fail('puzzle_not_now');
+  const result=resolvePuzzleAnswer(script.puzzle,s.event.puzzle,answer,{offerRetry:s.bag.includes('BD39')});
+  s.event.puzzle=result.state;
+  if(result.outcome==='wrongPending') return;
+  return finishPuzzleOutcome(ctx,script,result.outcome);
+}
+function finishPuzzleOutcome(ctx,script,outcome) {
+  const s=ctx.s,origin={kind:'event',pos:s.pos,eventId:s.event.eventId};
+  s.prompt=null;s.event.stage='option';
+  return continueCont(ctx,outcome==='correct'?(script.puzzle.onCorrect || []):(script.puzzle.onWrong || []),{origin,vars:{},rest:[]});
+}
+export function commitPuzzleWrong(ctx) {
+  const s=ctx.s,script=ctx.content.scripts.events[s.event?.eventId];
+  if(s.phase!=='event'||!script?.puzzle) fail('puzzle_not_now');
+  const result=commitPendingWrong(script.puzzle,s.event.puzzle);s.event.puzzle=result.state;
+  const pending=s.event.pendingPuzzleOption;
+  if(pending){delete s.event.pendingPuzzleOption;return applyChosenOption(ctx,pending.optionId,pending.input);}
+  return finishPuzzleOutcome(ctx,script,'wrong');
+}
+
+export function confirmRecovery(ctx,delta) {
+ const p=ctx.s.prompt;
+ if(ctx.s.phase!=='event'||p?.kind!=='recoveryConfirm')fail('recovery_not_now');
+ ctx.s.prompt=null;
+ return continueCont(ctx,[{...p.recoveryOp,delta,recoveryConfirmed:true},...p.cont.rest],p.cont);
+}
+
+export function confirmGear(ctx){
+ const p=ctx.s.prompt;
+ if(p?.kind!=='gearConfirm'||!['event','chest'].includes(ctx.s.phase))fail('gear_receipt_not_now');
+ ctx.s.prompt=null;
+ grantGear(ctx,p.gearId,p.paidGold,p.from);
+ return continueCont(ctx,p.cont.rest,p.cont);
+}

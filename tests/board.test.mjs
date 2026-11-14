@@ -29,7 +29,7 @@ test('the four example boards pass the structural audit', () => {
 test('generated boards: counts per kind, 19/20/20/20/19, 5 inns in the 2nd-7th pool position, 5 chests, no duplicates', () => {
   for (const route of content.routeIds) {
     for (let seed = 1; seed <= 60; seed++) {
-      const s = createRun(content, { route, seed });
+      const s = createRun(content, { runId: 'deterministic-fixture', route, seed });
       const problems = checkBoard(content, route, s.board);
       assert.deepEqual(problems, [], `${route} seed ${seed}`);
       const ids = s.board.squares.map((q) => q.contentId);
@@ -52,15 +52,15 @@ test('generated boards: counts per kind, 19/20/20/20/19, 5 inns in the 2nd-7th p
 });
 
 test('generation is deterministic in the seed and different across seeds', () => {
-  const a = createRun(content, { route: 'F', seed: 7 });
-  const b = createRun(content, { route: 'F', seed: 7 });
-  const c = createRun(content, { route: 'F', seed: 8 });
+  const a = createRun(content, { runId: 'deterministic-fixture', route: 'F', seed: 7 });
+  const b = createRun(content, { runId: 'deterministic-fixture', route: 'F', seed: 7 });
+  const c = createRun(content, { runId: 'deterministic-fixture', route: 'F', seed: 8 });
   assert.deepEqual(a, b);
   assert.notDeepEqual(a.board, c.board);
 });
 
 test('chest candidates: 3 distinct from the band pool, fallbacks are consumables that do not overlap', () => {
-  const s = createRun(content, { route: 'B', seed: 3 });
+  const s = createRun(content, { runId: 'deterministic-fixture', route: 'B', seed: 3 });
   for (const sq of s.board.squares.filter((q) => q.treasure)) {
     const t = sq.treasure;
     assert.equal(new Set(t.candidateIds).size, 3);
@@ -70,7 +70,7 @@ test('chest candidates: 3 distinct from the band pool, fallbacks are consumables
 });
 
 test('shops are fixed at run start: HE01 20G + BD01 30G + 2 regional; bands 2-4 carry SP02/03/04, band 5 SW50 for 3000G', () => {
-  const s = createRun(content, { route: 'M', seed: 11 });
+  const s = createRun(content, { runId: 'deterministic-fixture', route: 'M', seed: 11 });
   s.board.innPositions.forEach((p, i) => {
     const slots = s.inns[p].shop.slots;
     assert.equal(slots.length, 4);
@@ -84,7 +84,7 @@ test('shops are fixed at run start: HE01 20G + BD01 30G + 2 regional; bands 2-4 
     if (i === 4) assert.equal(slots.find((x) => x.id === 'SW50').price, 3000);
   });
   // the same seed yields the same shelves; nothing is redrawn later
-  assert.deepEqual(createRun(content, { route: 'M', seed: 11 }).inns, s.inns);
+  assert.deepEqual(createRun(content, { runId: 'deterministic-fixture', route: 'M', seed: 11 }).inns, s.inns);
 });
 
 test('EX01-M: from 6, a roll of 5 stops at the inn on 8, 2 steps of xp, the remaining 3 are discarded', () => {

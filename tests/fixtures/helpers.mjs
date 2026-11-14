@@ -4,18 +4,19 @@ import { loadContentFromDisk } from '../../src/content/node.js';
 import { boardFromExample, createRun, dispatch, view } from '../../src/engine/index.js';
 
 let cached = null;
+let fixtureRunSequence = 0;
 export async function getContent() {
   if (!cached) cached = await loadContentFromDisk();
   return cached;
 }
 
 export function newRun(content, route = 'M', seed = 1, extra = {}) {
-  return createRun(content, { route, seed, ...extra });
+  return createRun(content, { route, seed, runId: `fixture-${++fixtureRunSequence}`, ...extra });
 }
 
 export function exampleRun(content, route = 'M', seed = 1) {
   const ex = content.base.exampleBoards.find((b) => b.route === route);
-  return createRun(content, { route, seed, board: boardFromExample(content, ex) });
+  return createRun(content, { route, seed, runId: `fixture-${++fixtureRunSequence}`, board: boardFromExample(content, ex) });
 }
 
 export const cl = (o) => JSON.parse(JSON.stringify(o));

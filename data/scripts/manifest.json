@@ -2,17 +2,34 @@
   "format": "script-manifest-1",
   "note": "Lists the script files the browser loader fetches (paths are relative to data/scripts/). The Node loader lists the directories instead. Real per-route-band files (events/M1.json ... events/H5.json), items.json and equipment.json are added by the data-conversion role; files whose name starts with _samples are lower priority and are overridden by real files that define the same id.",
   "events": [
-    "events/_samples.json",
+    "events/B1.json",
+    "events/B2.json",
+    "events/B3.json",
+    "events/B4.json",
+    "events/B5.json",
+    "events/F1.json",
+    "events/F2.json",
+    "events/F3.json",
+    "events/F4.json",
+    "events/F5.json",
+    "events/H1.json",
+    "events/H2.json",
+    "events/H3.json",
+    "events/H4.json",
+    "events/H5.json",
     "events/M1.json",
     "events/M2.json",
     "events/M3.json",
     "events/M4.json",
-    "events/M5.json"
+    "events/M5.json",
+    "events/_samples.json"
   ],
   "items": [
-    "_samples-items.json"
+    "_samples-items.json",
+    "items.json"
   ],
   "equipment": [
-    "_samples-equipment.json"
+    "_samples-equipment.json",
+    "equipment.json"
   ]
 }

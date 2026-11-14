@@ -51,6 +51,14 @@ function explore(s, trail, out, depth = 0) {
       return undefined;
     }
     case 'event': case 'inn': {
+      if (s.prompt?.kind === 'puzzle') {
+        const answers = s.event.eventId === 'M1-01'
+          ? [{daisy:'white',violet:'purple'},{daisy:'purple',violet:'white'}]
+          : s.event.eventId === 'M1-02' ? [['layBag','coverHole','tieRope'],['tieRope','coverHole','layBag']]
+          : s.event.eventId === 'M3-08' ? [4,0,8] : ['r0c1','r0c0'];
+        for (const answer of answers) explore(dispatch(content,cl(s),{type:'answerPuzzle',answer}).state,[...trail,'answerPuzzle'],out,depth+1);
+        return;
+      }
       if (s.prompt && s.prompt.kind === 'pickBagItem') return explore(dispatch(content, cl(s), { type: 'pickBagItem', index: 0 }).state, [...trail, 'pick0'], out, depth + 1);
       if (s.prompt && s.prompt.kind === 'choice') {
         for (const a of view(content, s).actions.filter((x) => x.type === 'chooseOption')) {
@@ -137,7 +145,8 @@ for (const id of M_IDS) {
       }
     }
     const script = content.scripts.events[id];
-    for (const o of script.options || []) assert.ok(sawEnabled.has(o.id), `option ${o.id} was never selectable in any fixture`);
+    // Authored multi-step puzzles replace the old one-click confirmation; both answer paths are traversed above.
+    for (const o of (script.puzzle && script.puzzle.kind !== 'choice') ? [] : (script.options || [])) assert.ok(sawEnabled.has(o.id), `option ${o.id} was never selectable in any fixture`);
   });
 }
 
@@ -167,9 +176,13 @@ test('M1 gold events pay the source amount once (M1-01 100G, M1-04 180G, M1-16 2
   for (const [id, amt] of [['M1-01', 100], ['M1-04', 180], ['M1-16', 280], ['M1-13', 250]]) {
     const r = land(id, { patch: { gold: 50 } });
     assert.equal(r.state.phase, 'event');
-    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
-    assert.equal(only.length, 1);
-    const w = choose(r.state, only[0].optionId);
+    let w;
+    if (id === 'M1-01') w = dispatch(content,r.state,{type:'answerPuzzle',answer:{daisy:'white',violet:'purple'}});
+    else {
+      const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+      assert.equal(only.length, 1);
+      w = choose(r.state, only[0].optionId);
+    }
     assert.equal(w.state.gold, 50 + amt, id);
     assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
     assert.equal(w.state.hp, r.state.hp);
@@ -292,9 +305,13 @@ test('M1 traps: 荷運び needs 60G, 自分で押す costs 3 hp (floor 1); 綿�
 test('M2 gold events pay the source amount (M2-01 220, M2-04 290, M2-11 340, M2-15 360, M2-16 330)', () => {
   for (const [id, amt] of [['M2-01', 220], ['M2-04', 290], ['M2-11', 340], ['M2-15', 360], ['M2-16', 330]]) {
     const r = land(id, { patch: { gold: 10 } });
-    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
-    assert.equal(only.length, 1, id);
-    const w = choose(r.state, only[0].optionId);
+    let w;
+    if (id === 'M3-08' || id === 'M5-15') w=dispatch(content,r.state,{type:'answerPuzzle',answer:id==='M3-08'?4:'r0c1'});
+    else {
+      const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+      assert.equal(only.length, 1, id);
+      w = choose(r.state, only[0].optionId);
+    }
     assert.equal(w.state.gold, 10 + amt, id);
     assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
   }
@@ -388,9 +405,13 @@ test('M2 traps: 48 hp-3; 49 boat 90G or untie hp-4; 50 board 100G or rail hp-3 (
 test('M3 gold events pay the source amount (M3-01 380, M3-08 460, M3-10 490, M3-12 520, M3-16 550)', () => {
   for (const [id, amt] of [['M3-01', 380], ['M3-08', 460], ['M3-10', 490], ['M3-12', 520], ['M3-16', 550], ['M3-13', 320]]) {
     const r = land(id, { patch: { gold: 5 } });
-    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
-    assert.equal(only.length, 1, id);
-    const w = choose(r.state, only[0].optionId);
+    let w;
+    if (id === 'M3-08' || id === 'M5-15') w=dispatch(content,r.state,{type:'answerPuzzle',answer:id==='M3-08'?4:'r0c1'});
+    else {
+      const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+      assert.equal(only.length, 1, id);
+      w = choose(r.state, only[0].optionId);
+    }
     assert.equal(w.state.gold, 5 + amt, id);
     assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
   }
@@ -485,9 +506,13 @@ test('M3 traps: 48 hp-4; 49 jack 140G or shoulder hp-5; 50 mp-3 (needs 3 mp) or 
 test('M4 gold events pay the source amount (M4-01 480, M4-06 620, M4-14 610, M4-15 670, M4-16 700)', () => {
   for (const [id, amt] of [['M4-01', 480], ['M4-06', 620], ['M4-14', 610], ['M4-15', 670], ['M4-16', 700], ['M4-04', 410]]) {
     const r = land(id, { patch: { gold: 7 } });
-    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
-    assert.equal(only.length, 1, id);
-    const w = choose(r.state, only[0].optionId);
+    let w;
+    if (id === 'M3-08' || id === 'M5-15') w=dispatch(content,r.state,{type:'answerPuzzle',answer:id==='M3-08'?4:'r0c1'});
+    else {
+      const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+      assert.equal(only.length, 1, id);
+      w = choose(r.state, only[0].optionId);
+    }
     assert.equal(w.state.gold, 7 + amt, id);
     assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
   }
@@ -578,9 +603,13 @@ test('M4 traps: 48 rein 160G or root hp-5; 49 hp-4; 50 mp-4 (needs 4) or cloth h
 test('M5 gold events pay the source amount (M5-01 600, M5-06 800, M5-15 860, M5-16 1000, M5-03 580)', () => {
   for (const [id, amt] of [['M5-01', 600], ['M5-06', 800], ['M5-15', 860], ['M5-16', 1000], ['M5-03', 580]]) {
     const r = land(id, { patch: { gold: 3 } });
-    const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
-    assert.equal(only.length, 1, id);
-    const w = choose(r.state, only[0].optionId);
+    let w;
+    if (id === 'M3-08' || id === 'M5-15') w=dispatch(content,r.state,{type:'answerPuzzle',answer:id==='M3-08'?4:'r0c1'});
+    else {
+      const only = view(content, r.state).actions.filter((a) => a.type === 'chooseOption');
+      assert.equal(only.length, 1, id);
+      w = choose(r.state, only[0].optionId);
+    }
     assert.equal(w.state.gold, 3 + amt, id);
     assert.deepEqual(goldFx(w.effects), [[amt, 'award']]);
   }
@@ -661,4 +690,12 @@ test('M5 traps: 48 guard 190G or stoop hp-6; 49 hp-5; 50 mp-4 (needs 4) or post 
   assert.equal(choose(r.state, 'post').state.hp, 14);
   const m = choose(land('M5-50', { patch: { mp: 4, hp: 20 } }).state, 'mark').state;
   assert.equal(m.mp, 0); assert.equal(m.hp, 20);
+});
+
+test('M1-02 authored order pays 160 once; reverse order pays nothing',()=>{
+ const s=land('M1-02',{patch:{gold:50}}).state;
+ const right=dispatch(content,s,{type:'answerPuzzle',answer:['layBag','coverHole','tieRope'],opId:'m1-02-answer'});
+ assert.equal(right.state.gold,210);assert.deepEqual(goldFx(right.effects),[[160,'award']]);
+ const replay=dispatch(content,right.state,{type:'answerPuzzle',answer:['layBag','coverHole','tieRope'],opId:'m1-02-answer'});assert.equal(replay.state.gold,210);
+ const wrong=dispatch(content,s,{type:'answerPuzzle',answer:['tieRope','coverHole','layBag']});assert.equal(wrong.state.gold,50);assert.deepEqual(goldFx(wrong.effects),[]);
 });

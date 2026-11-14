@@ -1,0 +1,1445 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "F5-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "戻し紐に遊びをもたせ、鐘楼の下から一打の合図を頼む。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 760
+            }
+          ]
+        }
+      ]
+    },
+    "F5-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "泥を外して板を垂直に立て、石の基準線とそろえる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 580
+            }
+          ]
+        }
+      ]
+    },
+    "F5-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "札を抜き、角に穴を開け直して数字を見せる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 460
+            }
+          ]
+        }
+      ]
+    },
+    "F5-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "橋に支えを入れ、ずれた歯板を隣の板にそろえて締める。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 1000
+            }
+          ]
+        }
+      ]
+    },
+    "F5-05": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "裂け目へ当て板を留め、同じ一杯を量り直す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 690
+            }
+          ]
+        }
+      ]
+    },
+    "F5-06": {
+      "options": [
+        {
+          "id": "dot",
+          "label": "点のある刃",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW41",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "plain",
+          "label": "点のない刃",
+          "effects": []
+        }
+      ]
+    },
+    "F5-07": {
+      "options": [
+        {
+          "id": "rope",
+          "label": "縄の試験",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW42",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "shield",
+          "label": "木盾の試験",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW43",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F5-08": {
+      "options": [
+        {
+          "id": "wood",
+          "label": "当て木を置く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW44",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "direct",
+          "label": "直接工具を当てる",
+          "effects": []
+        }
+      ]
+    },
+    "F5-09": {
+      "options": [
+        {
+          "id": "white",
+          "label": "白い糸",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW45",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "red",
+          "label": "赤い糸",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW46",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F5-10": {
+      "options": [
+        {
+          "id": "two",
+          "label": "二枚重ねる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW47",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "return",
+          "label": "一枚を返す",
+          "effects": []
+        }
+      ]
+    },
+    "F5-11": {
+      "options": [
+        {
+          "id": "weapon",
+          "label": "武器棚",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW48",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具棚",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR41",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-12": {
+      "options": [
+        {
+          "id": "support",
+          "label": "台を作業椅子の高さに合わせ、親方自身が印を打てるよう支える。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW49",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-13": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "3000Gで名剣（百歩の夜明けの剣）を買う",
+          "cost": {
+            "gold": 3000
+          },
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW50",
+              "paidGold": 3000
+            }
+          ]
+        },
+        {
+          "id": "inspect",
+          "label": "模擬の的で検品する（体力2を失う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW42"
+            }
+          ]
+        }
+      ]
+    },
+    "F5-14": {
+      "options": [
+        {
+          "id": "inspect",
+          "label": "窓の明かりが消える位置へ帯をずらし、座ったまま再検査する。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR42",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-15": {
+      "options": [
+        {
+          "id": "adjust",
+          "label": "仕切りを直す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR43",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "other",
+          "label": "別の台",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR44",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-16": {
+      "options": [
+        {
+          "id": "red",
+          "label": "赤い輪",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR45",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "black",
+          "label": "黒い縫い目",
+          "effects": []
+        }
+      ]
+    },
+    "F5-17": {
+      "options": [
+        {
+          "id": "light",
+          "label": "軽い試験",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR46",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "load",
+          "label": "荷持ちの試験",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR47",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F5-18": {
+      "options": [
+        {
+          "id": "donate",
+          "label": "AT41を寄付",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR48",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "items": [
+              "AT41"
+            ]
+          }
+        },
+        {
+          "id": "pay",
+          "label": "440Gを託す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR48",
+              "paidGold": 440
+            }
+          ],
+          "cost": {
+            "gold": 440
+          }
+        },
+        {
+          "id": "skip",
+          "label": "見送る",
+          "effects": []
+        }
+      ]
+    },
+    "F5-19": {
+      "options": [
+        {
+          "id": "band",
+          "label": "帯状",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR49",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "round",
+          "label": "丸い模様",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR50",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-20": {
+      "options": [
+        {
+          "id": "weapon",
+          "label": "武器を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW44",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR42",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-21": {
+      "options": [
+        {
+          "id": "finish",
+          "label": "突起を削る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR48",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "trade",
+          "label": "BD41を渡す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR49",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "items": [
+              "BD41"
+            ]
+          }
+        }
+      ]
+    },
+    "F5-22": {
+      "options": [
+        {
+          "id": "valve",
+          "label": "弁を預かる",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "valve",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.enemyKind"
+                          },
+                          "大技"
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          2
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "return",
+          "label": "弁を返す",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F5-23": {
+      "options": [
+        {
+          "id": "chain",
+          "label": "太い鎖",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "chain",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rope",
+          "label": "細い綱",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "rope",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "F5-24": {
+      "options": [
+        {
+          "id": "wall",
+          "label": "胸壁",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": []
+            }
+          ]
+        },
+        {
+          "id": "floor",
+          "label": "床下",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F5-25": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "職人を守る",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": []
+            }
+          ]
+        },
+        {
+          "id": "safe",
+          "label": "足場へ引き上げる",
+          "effects": []
+        }
+      ]
+    },
+    "F5-26": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "AT42を194Gで買う",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT42"
+            },
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": []
+            }
+          ],
+          "cost": {
+            "gold": 194
+          }
+        },
+        {
+          "id": "open",
+          "label": "買わずに開ける",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F5-27": {
+      "options": [
+        {
+          "id": "wait",
+          "label": "鐘まで守りを固める",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "wait",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction",
+                            "abs": 1
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "early",
+          "label": "先に影へ入る",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN08",
+              "rules": [
+                {
+                  "id": "early",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "F5-28": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "足跡を頼りに霧狼に挑む",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "MB03",
+              "rules": [
+                {
+                  "id": "real",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 5
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "skip",
+          "label": "幕を下ろして小門へ",
+          "effects": []
+        }
+      ]
+    },
+    "F5-29": {
+      "options": [
+        {
+          "id": "battle",
+          "label": "戦いの箱",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT43"
+            }
+          ]
+        },
+        {
+          "id": "road",
+          "label": "道中の箱",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD42"
+            }
+          ]
+        }
+      ]
+    },
+    "F5-30": {
+      "options": [
+        {
+          "id": "blue",
+          "label": "青いひも",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE41"
+            }
+          ]
+        },
+        {
+          "id": "red",
+          "label": "赤いひも",
+          "effects": []
+        }
+      ]
+    },
+    "F5-31": {
+      "options": [
+        {
+          "id": "trade",
+          "label": "BD43を交換",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT44"
+            }
+          ],
+          "cost": {
+            "items": [
+              "BD43"
+            ]
+          }
+        },
+        {
+          "id": "board",
+          "label": "板を差し替える",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "F5-32": {
+      "options": [
+        {
+          "id": "cross",
+          "label": "十字",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE42"
+            }
+          ]
+        },
+        {
+          "id": "arrow",
+          "label": "矢印",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD44"
+            }
+          ]
+        }
+      ]
+    },
+    "F5-33": {
+      "options": [
+        {
+          "id": "carry",
+          "label": "取っ手を持つ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT45"
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "support",
+          "label": "扉を支える",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE43"
+            }
+          ]
+        }
+      ]
+    },
+    "F5-34": {
+      "options": [
+        {
+          "id": "bag",
+          "label": "持ち帰りの包み",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE44"
+            }
+          ]
+        },
+        {
+          "id": "water",
+          "label": "湯を飲む",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F5-35": {
+      "options": [
+        {
+          "id": "mochi",
+          "label": "餅",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 12,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "tea",
+          "label": "茶",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F5-36": {
+      "options": [
+        {
+          "id": "arms",
+          "label": "腕を休める",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "lie",
+          "label": "横になる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    },
+    "F5-37": {
+      "options": [
+        {
+          "id": "foot",
+          "label": "足湯",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "bath",
+          "label": "180Gで全身浴",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 14,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "cost": {
+            "gold": 180
+          }
+        }
+      ]
+    },
+    "F5-38": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "時計に合わせて呼吸し、砂が落ちきるまで手を休める。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F5-42": {
+      "options": [
+        {
+          "id": "fix",
+          "label": "受け金を固定",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 640
+            }
+          ]
+        },
+        {
+          "id": "guard",
+          "label": "守備役",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR44",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-43": {
+      "options": [
+        {
+          "id": "bellows",
+          "label": "ふいごを踏む",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW45",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "deliver",
+          "label": "救護所へ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE45"
+            }
+          ]
+        }
+      ]
+    },
+    "F5-44": {
+      "options": [
+        {
+          "id": "repair",
+          "label": "AT46で補修",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 520
+            }
+          ],
+          "cost": {
+            "items": [
+              "AT46"
+            ]
+          }
+        },
+        {
+          "id": "rest",
+          "label": "一服",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "F5-45": {
+      "options": [
+        {
+          "id": "paint",
+          "label": "火皿を塗る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 720
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "meal",
+          "label": "食事",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "F5-46": {
+      "options": [
+        {
+          "id": "item",
+          "label": "道具庫",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD45"
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具庫",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR46",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F5-47": {
+      "options": [
+        {
+          "id": "hammer",
+          "label": "鎚で見本を打つ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT47"
+            }
+          ]
+        },
+        {
+          "id": "rest",
+          "label": "姿勢を整える",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F5-48": {
+      "options": [
+        {
+          "id": "outside",
+          "label": "輪の外",
+          "effects": []
+        },
+        {
+          "id": "inside",
+          "label": "輪の内",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 6,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F5-49": {
+      "options": [
+        {
+          "id": "boat",
+          "label": "台船に200G",
+          "effects": [],
+          "cost": {
+            "gold": 200,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "board",
+          "label": "板を渡る",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 5,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F5-50": {
+      "options": [
+        {
+          "id": "stop",
+          "label": "木片で止める",
+          "effects": []
+        },
+        {
+          "id": "peek",
+          "label": "止めずにのぞく",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            },
+            "mp": {
+              "amount": 3
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F5-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "inspect",
+            "label": "親方に魔王の剣筋を聞く",
+            "once": false,
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "kingPhaseHint"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "F5-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "inspect",
+            "label": "橋番に99番までの残りの罠数を聞く",
+            "once": false,
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "remainingTraps"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "F5-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "inspect",
+            "label": "所持する防具を2点まで比べる",
+            "once": false,
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "ownedArmorComparison"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
