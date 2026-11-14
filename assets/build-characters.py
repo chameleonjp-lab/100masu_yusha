@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'docs/art/mockups/src'))
 from pen import render
+from common import icon_defs
 from heroes import hero
 import enemies
 out=Path(__file__).resolve().parent/'characters'
@@ -14,6 +15,10 @@ out.mkdir(exist_ok=True)
 sprites=[]
 def write(name,fn,pose):
     content=f'<svg xmlns="http://www.w3.org/2000/svg" width="{fn.W}" height="{fn.H}" viewBox="0 0 {fn.W} {fn.H}" aria-hidden="true">'+render(fn,pose)+'</svg>'
+    # MB03 uses the authored shared footprint icon; standalone SVGs need its definition.
+    if 'href="#i-foot"' in content:
+        foot = next(s for s in icon_defs().splitlines() if s.startswith('<symbol id="i-foot" '))
+        content = content.replace('>', '><defs>' + foot + '</defs>', 1)
     if name.startswith('hero-') and pose=='attack':
         content=content.replace('M104 30C134 44 142 82 122 112C130 82 124 56 104 30Z', 'M138 38C156 54 161 76 150 96C153 75 148 55 138 38Z').replace('fill="#fff" stroke="#2A1E16" stroke-width="2"', 'fill="#fff" fill-opacity=".62" stroke="#E9C676" stroke-opacity=".6" stroke-width="1"')
     (out/(name+'.svg')).write_text(content,encoding='utf-8')
