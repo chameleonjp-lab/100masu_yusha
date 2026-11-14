@@ -7591,5 +7591,7 @@
   "reasons.noTarget": "Es gibt kein Ziel.",
   "reasons.notNow": "Das kannst du jetzt nicht verwenden.",
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
-  "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50"
+  "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
+  "ui.receipt.gearTitle": "Du erhältst {name}",
+  "ui.receipt.confirmGear": "Erhalt der Ausrüstung bestätigen"
 }

@@ -7607,5 +7607,7 @@
   "scripts.events.H5-49.options.0.label": "구조선 150G",
   "scripts.events.H5-49.options.1.label": "내려가기",
   "scripts.events.H5-50.options.0.label": "마력 4로 띄우기",
-  "scripts.events.H5-50.options.1.label": "추 받치기"
+  "scripts.events.H5-50.options.1.label": "추 받치기",
+  "ui.receipt.gearTitle": "{name}을(를) 받습니다",
+  "ui.receipt.confirmGear": "장비 수령 확정"
 }

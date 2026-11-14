@@ -7607,5 +7607,7 @@
   "scripts.events.H5-49.options.0.label": "Спасательная лодка за 150G",
   "scripts.events.H5-49.options.1.label": "Спуститься",
   "scripts.events.H5-50.options.0.label": "Приподнять за 4 MP",
-  "scripts.events.H5-50.options.1.label": "Поддержать груз"
+  "scripts.events.H5-50.options.1.label": "Поддержать груз",
+  "ui.receipt.gearTitle": "Вы получите {name}",
+  "ui.receipt.confirmGear": "Подтвердить получение снаряжения"
 }

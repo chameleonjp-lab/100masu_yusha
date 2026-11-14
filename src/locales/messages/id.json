@@ -7591,5 +7591,7 @@
   "scripts.events.H5-50.options.1.label": "Topang pemberat",
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
-  "ui.literal.868310e193d1": "Tidak ada"
+  "ui.literal.868310e193d1": "Tidak ada",
+  "ui.receipt.gearTitle": "Kamu akan menerima {name}",
+  "ui.receipt.confirmGear": "Konfirmasi penerimaan perlengkapan"
 }

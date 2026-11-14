@@ -7591,5 +7591,7 @@
   "scripts.events.H5-49.options.0.label": "Barco de auxílio: 150G",
   "scripts.events.H5-49.options.1.label": "Descer",
   "scripts.events.H5-50.options.0.label": "Erguer por 4 MP",
-  "scripts.events.H5-50.options.1.label": "Apoiar o peso"
+  "scripts.events.H5-50.options.1.label": "Apoiar o peso",
+  "ui.receipt.gearTitle": "Você receberá {name}",
+  "ui.receipt.confirmGear": "Confirmar o recebimento do equipamento"
 }

@@ -7591,5 +7591,7 @@
   "scripts.events.H5-50.options.1.label": "Đỡ quả nặng",
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
-  "ui.literal.868310e193d1": "Không có"
+  "ui.literal.868310e193d1": "Không có",
+  "ui.receipt.gearTitle": "Bạn sẽ nhận được {name}",
+  "ui.receipt.confirmGear": "Xác nhận nhận trang bị"
 }

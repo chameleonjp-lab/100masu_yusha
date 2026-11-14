@@ -7591,5 +7591,7 @@
   "reasons.noTarget": "No valid target",
   "reasons.notNow": "Cannot use this now",
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
-  "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50"
+  "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
+  "ui.receipt.gearTitle": "You will receive {name}",
+  "ui.receipt.confirmGear": "Confirm equipment receipt"
 }

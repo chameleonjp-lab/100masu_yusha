@@ -7591,5 +7591,7 @@
   "scripts.events.M5-48.options.1.label": "彎腰抽出袋子（消耗體力6，最低保留1）",
   "scripts.events.M5-49.options.0.label": "離開熱石，在陰涼處冷卻鞋底（消耗體力5，最低保留1）",
   "scripts.events.M5-50.options.0.label": "向藍色標記注入力量（消耗魔力4）",
-  "scripts.events.M5-50.options.1.label": "抓住柱子穿過強風（消耗體力6，最低保留1）"
+  "scripts.events.M5-50.options.1.label": "抓住柱子穿過強風（消耗體力6，最低保留1）",
+  "ui.receipt.gearTitle": "你將獲得{name}",
+  "ui.receipt.confirmGear": "確認領取裝備"
 }

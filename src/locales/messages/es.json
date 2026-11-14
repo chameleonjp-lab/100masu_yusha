@@ -7591,5 +7591,7 @@
   "scripts.events.H5-50.options.0.label": "Hacer flotar con 4 de magia",
   "scripts.events.H5-50.options.1.label": "Sujetar el peso",
   "scripts.events.M3-08.puzzle.prompt": "El modelo muestra 4 medidas de aceite. Cada medida equivale a 1 marca; ajusta el nivel de la botella grande.",
-  "scripts.events.M5-15.puzzle.prompt": "Compara el modelo con las ventanas actuales y elige una ventana cuya luz debas corregir."
+  "scripts.events.M5-15.puzzle.prompt": "Compara el modelo con las ventanas actuales y elige una ventana cuya luz debas corregir.",
+  "ui.receipt.gearTitle": "Recibirás {name}",
+  "ui.receipt.confirmGear": "Confirmar la recepción del equipo"
 }

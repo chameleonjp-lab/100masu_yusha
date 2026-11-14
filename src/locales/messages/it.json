@@ -7591,5 +7591,7 @@
   "scripts.events.H5-49.options.0.label": "Barca di soccorso per 150G",
   "scripts.events.H5-49.options.1.label": "Scendi",
   "scripts.events.H5-50.options.0.label": "Solleva con 4 punti magia",
-  "scripts.events.H5-50.options.1.label": "Sorreggi il peso"
+  "scripts.events.H5-50.options.1.label": "Sorreggi il peso",
+  "ui.receipt.gearTitle": "Riceverai {name}",
+  "ui.receipt.confirmGear": "Conferma la ricezione dell’equipaggiamento"
 }

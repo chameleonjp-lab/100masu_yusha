@@ -7591,5 +7591,7 @@
   "scripts.events.M5-48.options.1.label": "弯腰抽出袋子（消耗体力6，最低保留1）",
   "scripts.events.M5-49.options.0.label": "离开热石，在阴凉处冷却鞋底（消耗体力5，最低保留1）",
   "scripts.events.M5-50.options.0.label": "向蓝色标记注入力量（消耗魔力4）",
-  "scripts.events.M5-50.options.1.label": "抓住柱子穿过强风（消耗体力6，最低保留1）"
+  "scripts.events.M5-50.options.1.label": "抓住柱子穿过强风（消耗体力6，最低保留1）",
+  "ui.receipt.gearTitle": "你将获得{name}",
+  "ui.receipt.confirmGear": "确认领取装备"
 }

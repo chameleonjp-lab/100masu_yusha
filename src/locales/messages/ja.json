@@ -7607,5 +7607,7 @@
   "scripts.events.M5-50.options.1.label": "柱をつかんで風を抜ける（体力6を使う。最低1）",
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
-  "ui.literal.868310e193d1": "なし"
+  "ui.literal.868310e193d1": "なし",
+  "ui.receipt.gearTitle": "{name}を受け取ります",
+  "ui.receipt.confirmGear": "装備の受け取りを確定"
 }

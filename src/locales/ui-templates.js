@@ -361,5 +361,7 @@ export const uiTemplates={
   "ui.ranking.error": "一覧を読み込めませんでした。冒険と記録への影響はありません。",
   "ui.ranking.retry": "端末内一覧を再読込",
   "ui.ranking.row": "{p0}位：{p1} / {p2}マス / {p3}回",
-  "ui.ranking.condition": "正式な日付・ルート・ルール版・内容版の参加枠は未設定です。公開登録まで本番参加はできません。"
+  "ui.ranking.condition": "正式な日付・ルート・ルール版・内容版の参加枠は未設定です。公開登録まで本番参加はできません。",
+  "ui.receipt.gearTitle": "{name}を受け取ります",
+  "ui.receipt.confirmGear": "装備の受け取りを確定"
 };

@@ -7607,5 +7607,7 @@
   "scripts.events.M5-48.options.1.label": "ก้มดึงถุงออก (ใช้พลังชีวิต 6 ต่ำสุด 1)",
   "scripts.events.M5-49.options.0.label": "ออกห่างหินร้อน พักพื้นรองเท้าให้เย็นในร่ม (ใช้พลังชีวิต 5 ต่ำสุด 1)",
   "scripts.events.M5-50.options.0.label": "ส่งพลังผ่านเครื่องหมายสีน้ำเงิน (ใช้มานา 4)",
-  "scripts.events.M5-50.options.1.label": "จับเสาฝ่าลม (ใช้พลังชีวิต 6 ต่ำสุด 1)"
+  "scripts.events.M5-50.options.1.label": "จับเสาฝ่าลม (ใช้พลังชีวิต 6 ต่ำสุด 1)",
+  "ui.receipt.gearTitle": "คุณจะได้รับ {name}",
+  "ui.receipt.confirmGear": "ยืนยันการรับอุปกรณ์"
 }

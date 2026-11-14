@@ -7602,6 +7602,8 @@
     "ui.ranking.retry",
     "ui.ranking.row",
     "ui.ranking.title",
+    "ui.receipt.confirmGear",
+    "ui.receipt.gearTitle",
     "ui.records",
     "ui.route",
     "ui.saved",

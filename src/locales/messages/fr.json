@@ -7591,5 +7591,7 @@
   "scripts.events.H5-49.options.0.label": "Barque de secours : 150G",
   "scripts.events.H5-49.options.1.label": "Descendre",
   "scripts.events.H5-50.options.0.label": "Faire léviter pour 4 points de magie",
-  "scripts.events.H5-50.options.1.label": "Soutenir les poids"
+  "scripts.events.H5-50.options.1.label": "Soutenir les poids",
+  "ui.receipt.gearTitle": "Vous allez recevoir {name}",
+  "ui.receipt.confirmGear": "Confirmer la réception de l’équipement"
 }
