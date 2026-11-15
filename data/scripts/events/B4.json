@@ -1,0 +1,2881 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "B4-01": {
+      "options": [
+        {
+          "id": "correct",
+          "label": "曲がり角を正しく指す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 520
+            }
+          ]
+        },
+        {
+          "id": "reverse",
+          "label": "反対を指す",
+          "effects": []
+        }
+      ]
+    },
+    "B4-02": {
+      "options": [
+        {
+          "id": "real",
+          "label": "にじまなかった札",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 640
+            }
+          ]
+        },
+        {
+          "id": "blur",
+          "label": "にじんだ札",
+          "effects": []
+        }
+      ]
+    },
+    "B4-03": {
+      "options": [
+        {
+          "id": "take",
+          "label": "茨をくぐって取る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 710
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "tell",
+          "label": "枝を教える",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "B4-04": {
+      "options": [
+        {
+          "id": "footprint",
+          "label": "丸い足形だけ消す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 560
+            }
+          ]
+        },
+        {
+          "id": "bird",
+          "label": "鳥の印も消す",
+          "effects": []
+        }
+      ]
+    },
+    "B4-05": {
+      "options": [
+        {
+          "id": "cut",
+          "label": "真っすぐな糸を切る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 600
+            }
+          ]
+        },
+        {
+          "id": "untie",
+          "label": "結び目のない端をほどく",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 600
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "rules": [
+                {
+                  "id": "thread",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "limit": {
+                    "perBattle": 1
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 2,
+                      "min": 0
+                    }
+                  ]
+                }
+              ],
+              "onStart": []
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 2,
+              "strict": true
+            }
+          }
+        }
+      ]
+    },
+    "B4-06": {
+      "options": [
+        {
+          "id": "SW31",
+          "label": "SW31",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW31"
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lte": [
+                  {
+                    "ref": "die"
+                  },
+                  3
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        },
+        {
+          "id": "SW32",
+          "label": "SW32",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW32"
+            }
+          ]
+        },
+        {
+          "id": "SW33",
+          "label": "SW33",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW33"
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "die"
+                  },
+                  4
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-07": {
+      "options": [
+        {
+          "id": "wool",
+          "label": "毛糸をたぐる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR31"
+            },
+            {
+              "op": "hp",
+              "delta": 3
+            }
+          ]
+        },
+        {
+          "id": "silk",
+          "label": "絹糸をたぐる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR32"
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "B4-08": {
+      "options": [
+        {
+          "id": "free",
+          "label": "SW34をもらう",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW34"
+            }
+          ]
+        },
+        {
+          "id": "SW35",
+          "label": "1760GでSW35",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW35",
+              "paidGold": 1760
+            }
+          ],
+          "cost": {
+            "gold": 1760
+          }
+        },
+        {
+          "id": "SW36",
+          "label": "1830GでSW36",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW36",
+              "paidGold": 1830
+            }
+          ],
+          "cost": {
+            "gold": 1830
+          }
+        }
+      ]
+    },
+    "B4-09": {
+      "options": [
+        {
+          "id": "AR33",
+          "label": "AR33を受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR33"
+            }
+          ]
+        },
+        {
+          "id": "AR34",
+          "label": "AR34を受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR34"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "その場で手当て",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "B4-10": {
+      "options": [
+        {
+          "id": "SW37",
+          "label": "SW37を受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW37"
+            }
+          ]
+        },
+        {
+          "id": "AR35",
+          "label": "AR35を受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR35"
+            }
+          ]
+        },
+        {
+          "id": "AR36",
+          "label": "AR36を受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR36"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-11": {
+      "options": [
+        {
+          "id": "AR37",
+          "label": "下段のAR37",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR37"
+            }
+          ]
+        },
+        {
+          "id": "SW38",
+          "label": "上段のSW38",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW38"
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lte": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  3
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        },
+        {
+          "id": "AR38",
+          "label": "上段のAR38",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR38"
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lte": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  3
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06",
+          "rules": [
+            {
+              "id": "scent",
+              "hook": "enemyDamage",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  {
+                    "lte": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "hp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "increaseDamage",
+                  "amount": 4
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN12"
+        }
+      ]
+    },
+    "B4-31": {
+      "options": [
+        {
+          "id": "AT31",
+          "label": "AT31を受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT31"
+            }
+          ]
+        },
+        {
+          "id": "HE31",
+          "label": "HE31を受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE31"
+            }
+          ]
+        },
+        {
+          "id": "BD31",
+          "label": "BD31を受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD31"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-32": {
+      "options": [
+        {
+          "id": "small",
+          "label": "小穴からHE32",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE32"
+            }
+          ]
+        },
+        {
+          "id": "large",
+          "label": "大穴からAT32",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT32"
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "B4-33": {
+      "options": [
+        {
+          "id": "BD33",
+          "label": "BD33を受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD33"
+            }
+          ]
+        },
+        {
+          "id": "HE33",
+          "label": "HE33を受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE33"
+            }
+          ]
+        },
+        {
+          "id": "send",
+          "label": "何も取らず送る",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "B4-34": {
+      "options": [
+        {
+          "id": "left",
+          "label": "左のAT34",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT34"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "label": "魔力で右のBD34",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD34"
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 1,
+              "strict": true
+            }
+          }
+        }
+      ]
+    },
+    "B4-35": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "袋の空きを確かめ、届け物を一口分受け取る。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "bagFree"
+                  },
+                  2
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "HE35"
+                },
+                {
+                  "op": "giveItem",
+                  "id": "BD35"
+                }
+              ],
+              "else": [
+                {
+                  "op": "choice",
+                  "options": [
+                    {
+                      "id": "HE35",
+                      "label": "HE35を受け取る",
+                      "effects": [
+                        {
+                          "op": "giveItem",
+                          "id": "HE35"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "BD35",
+                      "label": "BD35を受け取る",
+                      "effects": [
+                        {
+                          "op": "giveItem",
+                          "id": "BD35"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-36": {
+      "options": [
+        {
+          "id": "short",
+          "label": "短い歌",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "long",
+          "label": "長い歌",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "ref": "maxHp"
+                  },
+                  4
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-37": {
+      "options": [
+        {
+          "id": "drops",
+          "label": "体力用の滴数を選ぶ",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "mul": [
+                  {
+                    "ref": "var.n"
+                  },
+                  3
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "mul": [
+                  {
+                    "sub": [
+                      3,
+                      {
+                        "ref": "var.n"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              }
+            }
+          ],
+          "input": {
+            "var": "n",
+            "type": "int",
+            "min": 0,
+            "max": 3
+          }
+        }
+      ]
+    },
+    "B4-38": {
+      "options": [
+        {
+          "id": "feather",
+          "label": "羽だけで休む",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            }
+          ]
+        },
+        {
+          "id": "pillow",
+          "label": "枕の水も分ける",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "B4-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "benefit",
+            "label": "一杯だけの葉茶で、体力か魔力のうち選んだ方を2回復。通常の休憩を先に使っていても一杯分は残る。",
+            "once": true,
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "hp",
+                    "label": "体力の葉茶",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 2
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mp",
+                    "label": "魔力の葉茶",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "B4-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "benefit",
+            "label": "帳面で相手と最初の手掛かりを読む",
+            "once": true,
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "battleHint",
+                "normalOnly": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "B4-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "tie",
+            "label": "靴紐を一度だけ結ぶ",
+            "once": true,
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "solid",
+                    "label": "固結び：次の罠の体力損失を2軽減",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextTrapLoss",
+                        "resource": "hp",
+                        "amount": 2
+                      }
+                    ]
+                  },
+                  {
+                    "id": "bow",
+                    "label": "ちょう結び：次の罠の魔力損失を2軽減",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextTrapLoss",
+                        "resource": "mp",
+                        "amount": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "B4-42": {
+      "options": [
+        {
+          "id": "gather",
+          "label": "木の実を集める",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 650
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 2,
+              "strict": true
+            }
+          }
+        },
+        {
+          "id": "hold",
+          "label": "丸太を押さえる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            }
+          ]
+        }
+      ]
+    },
+    "B4-43": {
+      "options": [
+        {
+          "id": "open",
+          "label": "かごを開ける",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06"
+            }
+          ]
+        },
+        {
+          "id": "path",
+          "label": "小道で一息つく",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "B4-44": {
+      "options": [
+        {
+          "id": "left",
+          "label": "左の標で二つ調べる",
+          "effects": [
+            {
+              "op": "reveal",
+              "info": "nearestSquares",
+              "kinds": [
+                "装備"
+              ],
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "label": "右の標で一つ詳しく調べる",
+          "effects": [
+            {
+              "op": "reveal",
+              "info": "gearCandidates"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-45": {
+      "options": [
+        {
+          "id": "magic",
+          "label": "魔力を出す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT36"
+            },
+            {
+              "op": "giveItem",
+              "id": "HE36"
+            }
+          ],
+          "cost": {
+            "mp": {
+              "amount": 3,
+              "strict": true
+            }
+          }
+        },
+        {
+          "id": "wood",
+          "label": "乾いた薪を拾う",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD36"
+            }
+          ]
+        }
+      ]
+    },
+    "B4-46": {
+      "options": [
+        {
+          "id": "squeeze",
+          "label": "布を細く絞る",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "rules": [
+                {
+                  "id": "squeeze",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "limit": {
+                    "perBattle": 1
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ]
+                }
+              ],
+              "onStart": []
+            }
+          ]
+        },
+        {
+          "id": "wide",
+          "label": "幅広く張る",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "rules": [
+                {
+                  "id": "wide",
+                  "hook": "roundEnd",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.guarded"
+                          },
+                          true
+                        ]
+                      },
+                      {
+                        "gt": [
+                          {
+                            "ref": "hp"
+                          },
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "limit": {
+                    "perBattle": 1
+                  },
+                  "effects": [
+                    {
+                      "op": "hp",
+                      "delta": 4
+                    }
+                  ]
+                }
+              ],
+              "onStart": []
+            }
+          ]
+        }
+      ]
+    },
+    "B4-47": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "112GでBD37",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD37"
+            }
+          ],
+          "cost": {
+            "gold": 112
+          }
+        },
+        {
+          "id": "warm",
+          "label": "灯で温める",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "B4-48": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "森番に頼む",
+          "effects": [],
+          "cost": {
+            "gold": 220,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "hand",
+          "label": "手でまとめる",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "B4-49": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "ふいごを借りる",
+          "effects": [],
+          "cost": {
+            "gold": 160,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "hp",
+          "label": "体力で抜ける",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "mp",
+          "label": "魔力で抜ける",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 3,
+              "floor": 0
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "B4-50": {
+      "options": [
+        {
+          "id": "wash",
+          "label": "自分で洗う",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 4,
+              "floor": 0
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "item",
+          "label": "HE38で落とす",
+          "effects": [],
+          "cost": {
+            "items": [
+              "HE38"
+            ],
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "B4-13": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "attackChoices": [
+              {
+                "id": "thick",
+                "label": "太い支え糸",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 5
+                  }
+                ]
+              },
+              {
+                "id": "thin",
+                "label": "細い歩み糸",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "thin",
+                      "hook": "enemyDamage",
+                      "uses": 2,
+                      "when": {
+                        "gt": [
+                          {
+                            "ref": "battle.damage"
+                          },
+                          0
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "reduceDamage",
+                          "amount": 2
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "body",
+                "label": "直接攻撃",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": []
+              }
+            ]
+          },
+          "rules": []
+        }
+      ]
+    },
+    "B4-15": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "guardChoices": [
+              {
+                "id": "bowl",
+                "label": "前列に器を出す",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "setBattleFlag",
+                    "key": "bowl",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "id": "rear",
+                "label": "後列で身を隠す",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "setEnemyAction",
+                    "action": {
+                      "attack": 0,
+                      "rawDamage": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "rules": [
+            {
+              "id": "bowl",
+              "hook": "afterEnemyAction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  {
+                    "gt": [
+                      {
+                        "ref": "hp"
+                      },
+                      0
+                    ]
+                  },
+                  {
+                    "ref": "battleFlag",
+                    "key": "bowl"
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "hp",
+                  "delta": 4
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-16": {
+      "options": [
+        {
+          "id": "password",
+          "label": "鳥の巣と答える",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "scenario": {
+                "roundActions": [
+                  {
+                    "round": 1,
+                    "action": {
+                      "attack": 0,
+                      "rawDamage": 0,
+                      "name": "合言葉に驚く",
+                      "kind": "準備"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "silent",
+          "label": "声に答えず構える",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "silent",
+                  "hook": "spellCost",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.spellKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceCost",
+                      "amount": 1,
+                      "min": 0,
+                      "allowZero": true
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-28": {
+      "options": [
+        {
+          "id": "sword",
+          "label": "剣の手紙",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "letter-reset",
+                  "hook": "battleStart",
+                  "when": true,
+                  "effects": [
+                    {
+                      "op": "setBattleFlag",
+                      "key": "letterDamage",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "id": "letter-record",
+                  "hook": "heroHit",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "in": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          [
+                            "attack",
+                            "spell",
+                            "item"
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "setBattleFlag",
+                      "key": "letterDamage",
+                      "value": {
+                        "add": [
+                          {
+                            "ref": "battleFlag",
+                            "key": "letterDamage"
+                          },
+                          {
+                            "ref": "battle.dealt"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "letter-return",
+                  "hook": "heroTurnStart",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "dealDamage",
+                      "amount": {
+                        "min": [
+                          5,
+                          {
+                            "ref": "battleFlag",
+                            "key": "letterDamage"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shield",
+          "label": "盾の手紙",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "shield",
+                  "hook": "heroTurnStart",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "hp",
+                      "delta": {
+                        "min": [
+                          5,
+                          {
+                            "ref": "battle.hpLost",
+                            "abs": 1
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-14": {
+      "options": [
+        {
+          "id": "polish",
+          "label": "鏡を磨く",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "mirror",
+                  "hook": "battleStart",
+                  "when": true,
+                  "effects": [
+                    {
+                      "op": "reveal",
+                      "info": "nextEnemyAction"
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shield",
+          "label": "鏡を伏せ盾に結ぶ",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "mirror-shield",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-26": {
+      "options": [
+        {
+          "id": "blue",
+          "label": "青のカサを折る",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "white",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "subDamage",
+                      "amount": 3,
+                      "min": 0
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "white",
+          "label": "白のカサを折る",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN06",
+              "rules": [
+                {
+                  "id": "blue",
+                  "hook": "spellCost",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.spellKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceCost",
+                      "amount": -1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-17": {
+      "options": [
+        {
+          "id": "untie",
+          "label": "脚の糸をほどく",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "scenario": {
+                "announcements": [
+                  {
+                    "id": "first-big-normal",
+                    "when": {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        2
+                      ]
+                    },
+                    "actionFrom": "normal"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "tie",
+          "label": "枝の糸を結び直す",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN07",
+              "rules": [
+                {
+                  "id": "branch",
+                  "hook": "afterEnemyAction",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind"
+                      },
+                      "大技"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "dealDamage",
+                      "amount": 6
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "guardChoices": [
+              {
+                "id": "reverse",
+                "label": "矢印と反対に巻き返す",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "setEnemyAction",
+                    "action": {
+                      "attack": 0,
+                      "rawDamage": 0
+                    }
+                  },
+                  {
+                    "op": "setBattleFlag",
+                    "key": "reverse",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "id": "normal",
+                "label": "普通に構える",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "effects": []
+              }
+            ]
+          },
+          "rules": [
+            {
+              "id": "bound-shield",
+              "hook": "guardReduction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "not": {
+                      "ref": "battleFlag",
+                      "key": "reverse"
+                    }
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "subDamage",
+                  "amount": 2,
+                  "min": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B4-12": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06",
+          "scenario": {
+            "roundActions": [
+              {
+                "round": 1,
+                "action": {
+                  "name": "しっぽの幻術",
+                  "tell": "水に触れたしっぽだけ輪ができる。"
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "ring",
+                "label": "水面の輪を狙う",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": [],
+                "bonus": 3
+              },
+              {
+                "id": "reflection",
+                "label": "輪のない映りを払う",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "setEnemyAction",
+                    "action": {
+                      "attack": 0,
+                      "rawDamage": 0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "rules": []
+        }
+      ]
+    },
+    "B4-18": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06",
+          "scenario": {
+            "roundActions": [
+              {
+                "round": 1,
+                "action": {
+                  "name": "矢印の幻術",
+                  "tell": "剣を出すなという矢印の裏には肉球。"
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "sign",
+                "label": "矢印を打つ",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "ignore-illusion",
+                      "hook": "enemyDamage",
+                      "uses": 1,
+                      "when": {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      "expires": {
+                        "enemyActions": 1
+                      },
+                      "effects": [
+                        {
+                          "op": "capDamage",
+                          "amount": 0
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "body",
+                "label": "本体を斬る",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": [
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "angry-illusion",
+                      "hook": "enemyDamage",
+                      "uses": 1,
+                      "expires": {
+                        "enemyActions": 1
+                      },
+                      "effects": [
+                        {
+                          "op": "increaseDamage",
+                          "amount": 2
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "rules": []
+        }
+      ]
+    },
+    "B4-19": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "roundActions": [
+              {
+                "round": 1,
+                "action": {
+                  "tell": "丸の糸が震えている。"
+                }
+              },
+              {
+                "round": 2,
+                "action": {
+                  "tell": "三角の糸が震えている。"
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "circle",
+                "label": "丸の糸",
+                "when": {
+                  "lte": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    2
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "if",
+                    "cond": {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        1
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "dealDamage",
+                        "amount": 3
+                      },
+                      {
+                        "op": "setEnemyAction",
+                        "from": "normal"
+                      }
+                    ],
+                    "else": []
+                  }
+                ]
+              },
+              {
+                "id": "triangle",
+                "label": "三角の糸",
+                "when": {
+                  "lte": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    2
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "if",
+                    "cond": {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        2
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "dealDamage",
+                        "amount": 3
+                      },
+                      {
+                        "op": "setEnemyAction",
+                        "from": "normal"
+                      }
+                    ],
+                    "else": []
+                  }
+                ]
+              },
+              {
+                "id": "square",
+                "label": "四角の糸",
+                "when": {
+                  "lte": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    2
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "if",
+                    "cond": {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        -1
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "dealDamage",
+                        "amount": 3
+                      },
+                      {
+                        "op": "setEnemyAction",
+                        "from": "normal"
+                      }
+                    ],
+                    "else": []
+                  }
+                ]
+              },
+              {
+                "id": "body",
+                "label": "本体を攻撃",
+                "when": {
+                  "lte": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    2
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": []
+              }
+            ]
+          },
+          "rules": []
+        }
+      ]
+    },
+    "B4-20": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06",
+          "scenario": {},
+          "rules": [
+            {
+              "id": "leaf-defense",
+              "hook": "battleStart",
+              "when": true,
+              "effects": [
+                {
+                  "op": "enemyDefense",
+                  "delta": 1
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            },
+            {
+              "id": "leaf-falls",
+              "hook": "afterHeroAction",
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  1
+                ]
+              },
+              "effects": [
+                {
+                  "op": "enemyDefense",
+                  "delta": -1
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            },
+            {
+              "id": "leaf-smoke",
+              "hook": "heroHit",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "smoke",
+                    "hook": "enemyDamage",
+                    "uses": 1,
+                    "when": {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    "effects": [
+                      {
+                        "op": "reduceDamage",
+                        "amount": 2
+                      }
+                    ]
+                  }
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-21": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "roundActions": [
+              {
+                "round": 1,
+                "action": {
+                  "tell": "赤い実は敵の側に揺れている。"
+                }
+              },
+              {
+                "round": 2,
+                "action": {
+                  "tell": "赤い実は勇者の側に揺れている。"
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "fruit",
+                "label": "赤い実を打つ",
+                "when": {
+                  "and": [
+                    {
+                      "lte": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        2
+                      ]
+                    },
+                    {
+                      "not": {
+                        "ref": "battleFlag",
+                        "key": "fruit"
+                      }
+                    }
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "setBattleFlag",
+                    "key": "fruit",
+                    "value": true
+                  },
+                  {
+                    "op": "if",
+                    "cond": {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        1
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "dealDamage",
+                        "amount": 5
+                      }
+                    ],
+                    "else": [
+                      {
+                        "op": "hp",
+                        "delta": -5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "body",
+                "label": "本体を攻撃",
+                "when": {
+                  "and": [
+                    {
+                      "lte": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        2
+                      ]
+                    },
+                    {
+                      "not": {
+                        "ref": "battleFlag",
+                        "key": "fruit"
+                      }
+                    }
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": []
+              }
+            ]
+          },
+          "rules": []
+        }
+      ]
+    },
+    "B4-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN06",
+          "scenario": {
+            "announcements": [
+              {
+                "id": "mist",
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        1
+                      ]
+                    },
+                    {
+                      "lte": [
+                        {
+                          "mul": [
+                            {
+                              "ref": "battle.enemyHp"
+                            },
+                            2
+                          ]
+                        },
+                        {
+                          "ref": "battle.enemyMaxHp"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "action": {
+                  "name": "星の足跡の霧",
+                  "tell": "四つの足跡。星の葉だけがぬれている。"
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "wet",
+                "label": "ぬれた星の跡",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "mist"
+                  ]
+                },
+                "damageMode": "pierce",
+                "effects": []
+              },
+              {
+                "id": "circle",
+                "label": "乾いた丸の跡",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "mist"
+                  ]
+                },
+                "damageMode": "none",
+                "effects": []
+              },
+              {
+                "id": "triangle",
+                "label": "乾いた三角の跡",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "mist"
+                  ]
+                },
+                "damageMode": "none",
+                "effects": []
+              },
+              {
+                "id": "square",
+                "label": "乾いた四角の跡",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "mist"
+                  ]
+                },
+                "damageMode": "none",
+                "effects": []
+              }
+            ]
+          },
+          "rules": [
+            {
+              "id": "mist-guard",
+              "hook": "afterHeroAction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.announcement"
+                      },
+                      "mist"
+                    ]
+                  },
+                  {
+                    "ref": "battle.guarded"
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "attackChoices": [
+              {
+                "id": "beam",
+                "label": "横木を打つ",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 3
+                  },
+                  {
+                    "op": "setBattleFlag",
+                    "key": "threadOff",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "id": "body",
+                "label": "本体を攻める",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.round"
+                    },
+                    1
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": []
+              }
+            ]
+          },
+          "rules": [
+            {
+              "id": "item-unhook",
+              "hook": "afterHeroAction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  {
+                    "ne": [
+                      {
+                        "ref": "battle.itemId"
+                      },
+                      null
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "setBattleFlag",
+                  "key": "threadOff",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "thread-trap",
+              "hook": "afterHeroAction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "not": {
+                      "ref": "battleFlag",
+                      "key": "threadOff"
+                    }
+                  },
+                  {
+                    "ne": [
+                      {
+                        "ref": "battle.itemId"
+                      },
+                      null
+                    ]
+                  },
+                  {
+                    "gt": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      0
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "hp",
+                  "delta": -2
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-29": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN07",
+          "scenario": {
+            "announcements": [
+              {
+                "id": "retreat",
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        1
+                      ]
+                    },
+                    {
+                      "lte": [
+                        {
+                          "mul": [
+                            {
+                              "ref": "battle.enemyHp"
+                            },
+                            2
+                          ]
+                        },
+                        {
+                          "ref": "battle.enemyMaxHp"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "action": {
+                  "name": "戸へ退避",
+                  "tell": "閉じれば今と次の敵行動は休み、追えば一撃を4防ぐ糸をまとう。",
+                  "attack": 0,
+                  "rawDamage": 0
+                }
+              },
+              {
+                "id": "door-stunned",
+                "when": {
+                  "and": [
+                    {
+                      "ref": "battleFlag",
+                      "key": "doorClosed"
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        {
+                          "add": [
+                            {
+                              "ref": "battleFlag",
+                              "key": "doorRound"
+                            },
+                            1
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "action": {
+                  "name": "閉じた戸にぶつかる",
+                  "attack": 0,
+                  "rawDamage": 0
+                }
+              }
+            ],
+            "attackChoices": [
+              {
+                "id": "close",
+                "label": "戸を閉じる",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "retreat"
+                  ]
+                },
+                "damageMode": "none",
+                "effects": [
+                  {
+                    "op": "setEnemyAction",
+                    "action": {
+                      "attack": 0,
+                      "rawDamage": 0
+                    }
+                  },
+                  {
+                    "op": "setBattleFlag",
+                    "key": "doorClosed",
+                    "value": true
+                  },
+                  {
+                    "op": "setBattleFlag",
+                    "key": "doorRound",
+                    "value": {
+                      "ref": "battle.round"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "chase",
+                "label": "追って本体を打つ",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.announcement"
+                    },
+                    "retreat"
+                  ]
+                },
+                "damageMode": "normal",
+                "effects": []
+              }
+            ]
+          },
+          "rules": [
+            {
+              "id": "door-init",
+              "hook": "battleStart",
+              "when": true,
+              "effects": [
+                {
+                  "op": "setBattleFlag",
+                  "key": "doorRound",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "id": "retreat-shell",
+              "hook": "afterEnemyAction",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.announcement"
+                      },
+                      "retreat"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "ref": "battleFlag",
+                      "key": "doorClosed"
+                    }
+                  },
+                  {
+                    "gt": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      0
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "retreat-shell",
+                    "hook": "heroAttackDamage",
+                    "uses": 1,
+                    "when": {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    "effects": [
+                      {
+                        "op": "subDamage",
+                        "amount": 4,
+                        "min": 0,
+                        "reductionKind": "shell"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B4-30": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "MB02",
+          "scenario": {},
+          "rules": [
+            {
+              "id": "first-open",
+              "hook": "heroAttackDamage",
+              "when": {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "op": "addDamage",
+                  "amount": 5
+                }
+              ],
+              "limit": {
+                "perBattle": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

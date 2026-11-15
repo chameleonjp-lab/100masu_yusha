@@ -1,0 +1,26 @@
+# Translation contract (not translation acceptance)
+
+## 2026-11-14 status checkpoint
+
+This checkpoint refers to [PR #5 at 167f66b](https://github.com/chameleonjp-lab/100masu_yusha/tree/167f66b1380c8a79ccda3cdf467a9bb72a1723ab), not to a completed or deployed game. At this pre-document-addition checkpoint it was open/Draft. Stages 1–11 and 13–16 are reflected: 286 follow-up paths, 357 files. At that fixed head, the 21 absent paths include this document/metadata group, the local ranking prototype, and application entry/integration files. `index.html`, `src/ui/app.js` and the ranking modules are not in that tree. Adding these six documentation/metadata files does not add application functionality or complete acceptance testing.
+
+A new independent run on 2026-11-14 at 03:42:48–03:42:56 UTC verified the reconstructed 357-file snapshot: 1,557/1,557 Node tests passed, with content validation and both normal/strict translation audits exiting successfully. All 357 Git blob hashes and sizes, and the complete Git tree, matched the fixed head; files were unchanged after execution. These are new results, not recovered earlier logs. The run used a JavaScript network-blocking preload; it is not an OS-level network audit. Neither unit/model checks nor translation structure checks establish CI success, rendered-screen acceptance, actual IndexedDB/WebGL/audio behavior, or iPhone performance. No merge, deployment or production score submission is established by this checkpoint.
+
+All 15 language JSON files are present. The reported structure audit covers 7,593 required keys, with 16 empty Japanese source entries tracked separately and 338–415 source-identical entries per translated locale. These counts do not establish natural or context-correct translation. `loadMessages` at the fixed head requests the deduplicated Japanese, English and selected language sequentially: two resources for Japanese/English, otherwise three for a supported locale. It does not request all 15 language files on every call. Actual call frequency, browser caching, compressed transfer size and device responsiveness remain unmeasured.
+
+## Contract and remaining boundaries
+`messages/ja.json` is the extracted Japanese display-text source. `key-manifest.json` lists stable structural IDs. `messages/<locale>.json` is the translation worker's sole editable file for that locale. Do not edit keys, game data, scripts, identifiers, enum values, rules or original Japanese. Preserve `{placeholder}` names. Missing keys must remain absent rather than copying Japanese and claiming translation. All 15 language JSON files are present at the checkpoint above; the earlier empty-file state is historical.
+
+15 locales: ja, en, es, pt-BR, zh-Hans, fr, de, ko, ru, it, zh-Hant, id, tr, vi, th. Basic English/Japanese UI strings live in catalogs.js; external messages merge above them. Locale selection: saved setting, device languages, English. Exact display strings use source IDs; fallback metadata is not counted as translation. Language changes only save settings, not the run.
+
+The historical extraction command is `node src/locales/extract.mjs`. It writes Japanese source and the key manifest. The tool and its required app source are not yet included in the checkpoint PR. Do not treat it as a runnable read-only audit there. Reassess its inputs and preserve generated originals before a future approved extraction. No extraction was run for this documentation correction.
+
+Coverage scope includes extracted content fields, wired UI keys and the context-keyed dynamic templates described below. The initial unkeyed-template extraction debt is historical. Remaining generated labels and technical errors still need review. Structural coverage is not linguistic or rendered-screen acceptance. The local share design uses a draft and URL guard; app/share integration is absent from the checkpoint PR and is not a deployed sharing feature.
+
+## Context-key migration contract
+
+Dynamic UI templates and displayed short vocabulary now call `msg(contextKey, parameters)` explicitly. `ui-template-context.json` explains each parameter expression. Definition fields use structural content keys through a read-only display projection/proxy. Sanitized puzzle fields must match original Japanese before structural lookup; localization cannot reveal hidden original answers. Generic DOM source-text matching is no longer used.
+
+`key-migration.json` maps old `ui.literal.<hash>` IDs to context IDs only when the UTF-8 Japanese source is exactly identical. The assigned translation writer may copy the old translation to all listed targets in that writer's own locale file, then remove its old ID. Do not replace other language files. Inspect placeholders before applying. Existing keys are now frozen; subsequent coverage additions should append keys rather than rename them.
+
+Earlier extraction-debt notes above describe the initial state. Dynamic Japanese templates are now keyed; full translation and rendered-language acceptance remain incomplete. Generated runtime labels or technical errors not yet represented by definitions/reason catalog still require translation review. No structural check establishes linguistic quality.

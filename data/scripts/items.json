@@ -1,0 +1,6376 @@
+{
+  "format": "item-scripts-1",
+  "_note": "個別原文から型付け。未収録IDは未実装であり、全件validatorで不合格になる。",
+  "items": {
+    "HE01": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 12
+            }
+          ]
+        }
+      ]
+    },
+    "HE02": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "requires": [
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "reason": "mpFull"
+            }
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "HE11": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "inputs": [
+            {
+              "id": "which",
+              "type": "enum",
+              "values": [
+                "hp",
+                "mp"
+              ],
+              "optional": true
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "or": [
+                  {
+                    "lt": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "reason": "nothingToRestore"
+            }
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lt": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  },
+                  {
+                    "mul": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": {
+                    "min": [
+                      18,
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxHp"
+                          },
+                          3
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "if",
+                  "cond": {
+                    "gt": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "hp"
+                          },
+                          {
+                            "ref": "maxMp"
+                          }
+                        ]
+                      },
+                      {
+                        "mul": [
+                          {
+                            "ref": "mp"
+                          },
+                          {
+                            "ref": "maxHp"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "op": "mp",
+                      "delta": {
+                        "min": [
+                          8,
+                          {
+                            "ceilDiv": [
+                              {
+                                "ref": "maxMp"
+                              },
+                              3
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "op": "if",
+                      "cond": {
+                        "eq": [
+                          {
+                            "ref": "var.which"
+                          },
+                          "hp"
+                        ]
+                      },
+                      "then": [
+                        {
+                          "op": "hp",
+                          "delta": {
+                            "min": [
+                              18,
+                              {
+                                "ceilDiv": [
+                                  {
+                                    "ref": "maxHp"
+                                  },
+                                  3
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "else": [
+                        {
+                          "op": "mp",
+                          "delta": {
+                            "min": [
+                              8,
+                              {
+                                "ceilDiv": [
+                                  {
+                                    "ref": "maxMp"
+                                  },
+                                  3
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT01": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 10,
+              "boostable": true
+            }
+          ]
+        }
+      ]
+    },
+    "AT02": {
+      "uses": [
+        {
+          "id": "battle",
+          "where": [
+            "battle"
+          ],
+          "unique": "AT02",
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT02-card",
+                "hook": "enemyDamage",
+                "stage": "card",
+                "unique": "AT02",
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "uses": 1,
+                "effects": [
+                  {
+                    "op": "halveDamage",
+                    "round": "ceil"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "trap",
+          "where": [
+            "trap"
+          ],
+          "effects": [
+            {
+              "op": "negateTrap"
+            }
+          ]
+        }
+      ]
+    },
+    "AT03": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "unique": "AT03",
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT03-caltrops",
+                "hook": "afterEnemyHit",
+                "unique": "AT03",
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.hitHpLost"
+                    },
+                    0
+                  ]
+                },
+                "uses": 2,
+                "expires": {
+                  "enemyActions": 2
+                },
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 4
+                  }
+                ],
+                "limit": {
+                  "perRound": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT11": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 5,
+              "times": 2
+            }
+          ]
+        }
+      ]
+    },
+    "BD01": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "inputs": [
+            {
+              "id": "delta",
+              "type": "enum",
+              "values": [
+                -1,
+                1
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "add": [
+                  {
+                    "ref": "die"
+                  },
+                  {
+                    "ref": "var.delta"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD02": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "setDieRule",
+              "table": {
+                "4": 3,
+                "5": 3,
+                "6": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD09": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "revealShop"
+            }
+          ]
+        }
+      ]
+    },
+    "BD11": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "sub": [
+                  7,
+                  {
+                    "ref": "die"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD40": {
+      "uses": [
+        {
+          "where": [
+            "inn"
+          ],
+          "inputs": [
+            {
+              "id": "slot",
+              "type": "int",
+              "min": 2,
+              "max": 3
+            },
+            {
+              "id": "newItemId",
+              "type": "string"
+            }
+          ],
+          "effects": [
+            {
+              "op": "swapShopSlot"
+            }
+          ]
+        }
+      ]
+    },
+    "BD41": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "if": [
+                  {
+                    "lte": [
+                      {
+                        "ref": "die"
+                      },
+                      3
+                    ]
+                  },
+                  4,
+                  3
+                ]
+              },
+              "constraints": [
+                "sameForcedStop"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD42": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "if": [
+                  {
+                    "lte": [
+                      {
+                        "ref": "die"
+                      },
+                      3
+                    ]
+                  },
+                  {
+                    "add": [
+                      {
+                        "ref": "die"
+                      },
+                      3
+                    ]
+                  },
+                  {
+                    "sub": [
+                      {
+                        "ref": "die"
+                      },
+                      3
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD43": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "inputs": [
+            {
+              "id": "target",
+              "type": "int",
+              "min": 2,
+              "max": 100
+            }
+          ],
+          "effects": [
+            {
+              "op": "showLandingOdds",
+              "within": 12
+            }
+          ]
+        }
+      ]
+    },
+    "BD49": {
+      "uses": [
+        {
+          "where": [
+            "gate"
+          ],
+          "inputs": [
+            {
+              "id": "order",
+              "type": "sequence",
+              "of": [
+                "sword",
+                "staff",
+                "shield"
+              ]
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "not": {
+                  "ref": "flag",
+                  "key": "BD49used"
+                }
+              },
+              "reason": "used"
+            }
+          ],
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "BD49used",
+              "value": true
+            },
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.order"
+                  },
+                  [
+                    "sword",
+                    "staff",
+                    "shield"
+                  ]
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "king",
+                  "unique": "BD49",
+                  "label": "BD49",
+                  "rules": [
+                    {
+                      "id": "BD49-guard",
+                      "hook": "enemyDamage",
+                      "stage": "card",
+                      "when": {
+                        "gt": [
+                          {
+                            "ref": "battle.damage"
+                          },
+                          0
+                        ]
+                      },
+                      "uses": 1,
+                      "effects": [
+                        {
+                          "op": "reduceDamage",
+                          "amount": 10
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD50": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "inputs": [
+            {
+              "id": "nums",
+              "type": "ints",
+              "min": 1,
+              "max": 6,
+              "minCount": 2,
+              "maxCount": 3
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "between": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "nextStop"
+                      },
+                      {
+                        "ref": "pos"
+                      }
+                    ]
+                  },
+                  3,
+                  15
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "sum": {
+                      "ref": "var.nums"
+                    }
+                  },
+                  {
+                    "sub": [
+                      {
+                        "ref": "nextStop"
+                      },
+                      {
+                        "ref": "pos"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "arrival",
+                  "pos": {
+                    "ref": "nextStop"
+                  },
+                  "withinMoves": 6,
+                  "unique": "BD50",
+                  "label": "BD50",
+                  "effects": [
+                    {
+                      "op": "hp",
+                      "delta": 18
+                    },
+                    {
+                      "op": "mp",
+                      "delta": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE03": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "HE04": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.which"
+                  },
+                  "hp"
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 11
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": 4
+                }
+              ]
+            }
+          ],
+          "inputs": [
+            {
+              "id": "which",
+              "type": "enum",
+              "values": [
+                "hp",
+                "mp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE05": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE05",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 5
+                  }
+                ],
+                "uses": 2,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE06": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "if": [
+                  {
+                    "lte": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "hp"
+                          },
+                          3
+                        ]
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  },
+                  18,
+                  8
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE07": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "mp"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 7
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                },
+                {
+                  "op": "hp",
+                  "delta": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE08": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE08",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": {
+                      "if": [
+                        {
+                          "eq": [
+                            {
+                              "ref": "battle.hpLost"
+                            },
+                            0
+                          ]
+                        },
+                        15,
+                        7
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE10": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 16
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 9
+                },
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE12": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": -3
+            },
+            {
+              "op": "hp",
+              "delta": 20
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  3
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE13": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": -4
+            },
+            {
+              "op": "mp",
+              "delta": 9
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  5
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE15": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE15",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": {
+                      "min": [
+                        {
+                          "ref": "battle.hpLost"
+                        },
+                        9
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE16": {
+      "uses": [
+        {
+          "where": [
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "if": [
+                  {
+                    "lte": [
+                      {
+                        "ref": "bagCount"
+                      },
+                      1
+                    ]
+                  },
+                  21,
+                  {
+                    "if": [
+                      {
+                        "lte": [
+                          {
+                            "ref": "bagCount"
+                          },
+                          3
+                        ]
+                      },
+                      16,
+                      10
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE22": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  12,
+                  {
+                    "sub": [
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxMp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ceilDiv": [
+                      {
+                        "ref": "maxMp"
+                      },
+                      2
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE23": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  9,
+                  {
+                    "ref": "battle.spellCostPaid",
+                    "offset": -1
+                  }
+                ]
+              }
+            },
+            {
+              "op": "hp",
+              "delta": 6
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction",
+                    "offset": -1
+                  },
+                  "spell"
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE25": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  5,
+                  {
+                    "floorDiv": [
+                      {
+                        "max": [
+                          0,
+                          {
+                            "sub": [
+                              {
+                                "add": [
+                                  {
+                                    "ref": "hp"
+                                  },
+                                  16
+                                ]
+                              },
+                              {
+                                "ref": "maxHp"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      3
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "hp",
+              "delta": 16
+            }
+          ]
+        }
+      ]
+    },
+    "HE27": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE27",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "if",
+                    "cond": {
+                      "eq": [
+                        {
+                          "ref": "hp"
+                        },
+                        {
+                          "ref": "maxHp"
+                        }
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "mp",
+                        "delta": 2
+                      }
+                    ],
+                    "else": [
+                      {
+                        "op": "hp",
+                        "delta": 5
+                      }
+                    ]
+                  }
+                ],
+                "uses": 3,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 3
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE30": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "add": [
+                  10,
+                  {
+                    "mul": [
+                      5,
+                      {
+                        "min": [
+                          2,
+                          {
+                            "ref": "battle.companionsActed",
+                            "offset": -1
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE31": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 6
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE31",
+                "hook": "heroTurnStart",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": 4
+                  }
+                ],
+                "uses": 1,
+                "when": true,
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE35": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "mul": [
+                  6,
+                  {
+                    "ref": "var.hpRooms"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "mul": [
+                  2,
+                  {
+                    "sub": [
+                      3,
+                      {
+                        "ref": "var.hpRooms"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "inputs": [
+            {
+              "id": "hpRooms",
+              "type": "int",
+              "min": 0,
+              "max": 3
+            }
+          ]
+        }
+      ]
+    },
+    "HE41": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "min": [
+                  30,
+                  {
+                    "sub": [
+                      {
+                        "ceilDiv": [
+                          {
+                            "mul": [
+                              {
+                                "ref": "maxHp"
+                              },
+                              3
+                            ]
+                          },
+                          4
+                        ]
+                      },
+                      {
+                        "ref": "hp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ceilDiv": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "maxHp"
+                          },
+                          3
+                        ]
+                      },
+                      4
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE42": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "ref": "die"
+                  },
+                  3
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 20
+                },
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 10
+                },
+                {
+                  "op": "mp",
+                  "delta": 8
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE44": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "ref": "battle.isKing"
+                  },
+                  {
+                    "lte": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "battle.enemyHp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "battle.enemyMaxHp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 19
+                },
+                {
+                  "op": "mp",
+                  "delta": 7
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 10
+                },
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE48": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "mul": [
+                  2,
+                  {
+                    "min": [
+                      8,
+                      {
+                        "floorDiv": [
+                          {
+                            "ref": "sinceInn"
+                          },
+                          2
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  8,
+                  {
+                    "floorDiv": [
+                      {
+                        "ref": "sinceInn"
+                      },
+                      2
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "sinceInn"
+                  },
+                  2
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE49": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "battle.enemyHealed",
+                    "offset": -1
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": {
+                    "min": [
+                      24,
+                      {
+                        "ref": "battle.enemyHealed",
+                        "offset": -1
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": 7
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE50": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "max": [
+                  0,
+                  {
+                    "sub": [
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxHp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "hp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "max": [
+                  0,
+                  {
+                    "sub": [
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxMp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "or": [
+                  {
+                    "lt": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxHp"
+                          },
+                          2
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "maxMp"
+                          },
+                          2
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE28": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE28-wait",
+                "hook": "heroTurnStart",
+                "effects": [
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "HE28-heal",
+                      "hook": "heroTurnStart",
+                      "effects": [
+                        {
+                          "op": "hp",
+                          "delta": 24
+                        }
+                      ],
+                      "uses": 1,
+                      "when": true
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE39": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE39",
+                "hook": "heroTurnStart",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 20
+                  },
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "hp"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "lte": [
+                        {
+                          "mul": [
+                            {
+                              "ref": "hp"
+                            },
+                            3
+                          ]
+                        },
+                        {
+                          "ref": "maxHp"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 3
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE45": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 9
+            },
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "ref": "battle.guarded",
+                    "offset": -1
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "大技"
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": {
+                    "min": [
+                      15,
+                      {
+                        "ref": "battle.hpLost",
+                        "offset": -1
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "HE47": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "loseItem",
+              "id": {
+                "ref": "var.partner"
+              }
+            },
+            {
+              "op": "hp",
+              "delta": 28
+            },
+            {
+              "op": "mp",
+              "delta": 12
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "ne": [
+                  {
+                    "ref": "var.partner"
+                  },
+                  "HE47"
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "itemCategory",
+                    "id": {
+                      "ref": "var.partner"
+                    }
+                  },
+                  "回復用"
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": {
+                      "ref": "var.partner"
+                    }
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "partner",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "AT05": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 4
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT05",
+                "hook": "enemyDamage",
+                "unique": "AT05",
+                "expires": {
+                  "heroTurns": 1
+                },
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.heroAction"
+                        },
+                        "guard"
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "cancelWhen": {
+                  "ne": [
+                    {
+                      "ref": "battle.heroAction"
+                    },
+                    "guard"
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 4
+                  }
+                ],
+                "stage": "card"
+              }
+            }
+          ],
+          "unique": "AT05"
+        }
+      ]
+    },
+    "AT07": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "if": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind"
+                      },
+                      "大技"
+                    ]
+                  },
+                  14,
+                  7
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT08": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT08",
+                "hook": "afterEnemyHit",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": {
+                      "min": [
+                        12,
+                        {
+                          "ref": "battle.hitHpLost"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT09": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT09",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 3
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            },
+            {
+              "op": "reveal",
+              "info": "nextEnemyAction"
+            }
+          ]
+        }
+      ]
+    },
+    "AT18": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "neg": {
+                  "ref": "var.paid"
+                }
+              }
+            },
+            {
+              "op": "dealDamage",
+              "amount": {
+                "add": [
+                  5,
+                  {
+                    "mul": [
+                      3,
+                      {
+                        "ref": "var.paid"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "var.paid"
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "paid",
+              "type": "int",
+              "min": 1,
+              "max": 3
+            }
+          ]
+        }
+      ]
+    },
+    "AT33": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "if": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "mp"
+                      },
+                      0
+                    ]
+                  },
+                  18,
+                  9
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT41": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "min": [
+                  {
+                    "add": [
+                      6,
+                      {
+                        "floorDiv": [
+                          {
+                            "ref": "battle.enemyHp"
+                          },
+                          5
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "if": [
+                      {
+                        "ref": "battle.isKing"
+                      },
+                      18,
+                      26
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE09": {
+      "uses": [
+        {
+          "where": [
+            "restConfirm"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lt": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 10
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": 4
+                }
+              ]
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "or": [
+                  {
+                    "lt": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE24": {
+      "uses": [
+        {
+          "where": [
+            "restConfirm"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  8,
+                  {
+                    "floorDiv": [
+                      {
+                        "ref": "var.restHpOverflow"
+                      },
+                      2
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "var.restHpOverflow"
+                  },
+                  2
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "HE36": {
+      "uses": [
+        {
+          "where": [
+            "afterRest"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.stat"
+                  },
+                  "hp"
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": {
+                    "min": [
+                      22,
+                      {
+                        "max": [
+                          0,
+                          {
+                            "sub": [
+                              {
+                                "ceilDiv": [
+                                  {
+                                    "mul": [
+                                      {
+                                        "ref": "maxHp"
+                                      },
+                                      3
+                                    ]
+                                  },
+                                  4
+                                ]
+                              },
+                              {
+                                "ref": "hp"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "mp",
+                  "delta": {
+                    "min": [
+                      12,
+                      {
+                        "max": [
+                          0,
+                          {
+                            "sub": [
+                              {
+                                "ceilDiv": [
+                                  {
+                                    "mul": [
+                                      {
+                                        "ref": "maxMp"
+                                      },
+                                      3
+                                    ]
+                                  },
+                                  4
+                                ]
+                              },
+                              {
+                                "ref": "mp"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "if": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "var.stat"
+                      },
+                      "hp"
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ceilDiv": [
+                          {
+                            "mul": [
+                              {
+                                "ref": "maxHp"
+                              },
+                              3
+                            ]
+                          },
+                          4
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ceilDiv": [
+                          {
+                            "mul": [
+                              {
+                                "ref": "maxMp"
+                              },
+                              3
+                            ]
+                          },
+                          4
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "stat",
+              "type": "enum",
+              "values": [
+                "hp",
+                "mp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD04": {
+      "uses": [
+        {
+          "where": [
+            "trapLoss"
+          ],
+          "effects": [
+            {
+              "op": "reduceTrapLoss",
+              "amount": 5
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "var.trapLoss"
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "not": {
+                  "ref": "var.trapHasOtherCost"
+                }
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "BD16": {
+      "uses": [
+        {
+          "where": [
+            "trapLoss"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "neg": {
+                  "ref": "var.mp"
+                }
+              }
+            },
+            {
+              "op": "reduceTrapLoss",
+              "amount": {
+                "mul": [
+                  {
+                    "ref": "var.mp"
+                  },
+                  2
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "var.mp"
+                  }
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "lte": [
+                  {
+                    "ref": "var.mp"
+                  },
+                  {
+                    "ceilDiv": [
+                      {
+                        "ref": "var.trapLoss"
+                      },
+                      2
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "mp",
+              "type": "int",
+              "min": 1,
+              "max": 4
+            }
+          ]
+        }
+      ]
+    },
+    "AT14": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "battle.enemyMaxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "dealDamage",
+                  "amount": 14
+                }
+              ],
+              "else": [
+                {
+                  "op": "dealDamage",
+                  "amount": 7
+                },
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "AT14",
+                    "hook": "enemyDamage",
+                    "effects": [
+                      {
+                        "op": "reduceDamage",
+                        "amount": 5
+                      }
+                    ],
+                    "uses": 1,
+                    "when": {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    "expires": {
+                      "enemyActions": 1
+                    },
+                    "stage": "card"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT35": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT35",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": {
+                      "sub": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        {
+                          "ceilDiv": [
+                            {
+                              "ref": "battle.damage"
+                            },
+                            3
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.enemyKind"
+                        },
+                        "大技"
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 2
+                },
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT37": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "lt": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "battle.enemyHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "dealDamage",
+                  "amount": 17
+                }
+              ],
+              "else": [
+                {
+                  "op": "dealDamage",
+                  "amount": 9
+                },
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "AT37",
+                    "hook": "enemyDamage",
+                    "effects": [
+                      {
+                        "op": "reduceDamage",
+                        "amount": 4
+                      }
+                    ],
+                    "uses": 1,
+                    "when": {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    "expires": {
+                      "enemyActions": 1
+                    },
+                    "stage": "card"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT40": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "odd": {
+                  "ref": "die"
+                }
+              },
+              "then": [
+                {
+                  "op": "dealDamage",
+                  "amount": {
+                    "mul": [
+                      3,
+                      {
+                        "ref": "die"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "AT40",
+                    "hook": "enemyDamage",
+                    "effects": [
+                      {
+                        "op": "reduceDamage",
+                        "amount": {
+                          "mul": [
+                            2,
+                            {
+                              "ref": "die"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "uses": 1,
+                    "when": {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    "expires": {
+                      "enemyActions": 1
+                    },
+                    "stage": "card"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT45": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT45",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "capDamage",
+                    "amount": 5
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "lte": [
+                        {
+                          "mul": [
+                            {
+                              "ref": "hp"
+                            },
+                            2
+                          ]
+                        },
+                        {
+                          "ref": "maxHp"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 2
+                },
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE18": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "thisMove",
+              "rules": [
+                {
+                  "id": "HE18",
+                  "hook": "moveConfirm",
+                  "effects": [
+                    {
+                      "op": "hp",
+                      "delta": {
+                        "mul": [
+                          2,
+                          {
+                            "ref": "move.die"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "op": "mp",
+                      "delta": {
+                        "min": [
+                          6,
+                          {
+                            "mul": [
+                              2,
+                              {
+                                "ref": "move.discarded"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE21": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE21",
+                "hook": "afterHeroAction",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 10
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "in": [
+                    {
+                      "ref": "battle.heroAction"
+                    },
+                    [
+                      "attack",
+                      "guard",
+                      "spell"
+                    ]
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE40": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE40",
+                "hook": "heroHit",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": {
+                      "min": [
+                        14,
+                        {
+                          "floorDiv": [
+                            {
+                              "ref": "battle.dealt"
+                            },
+                            2
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "op": "if",
+                    "cond": {
+                      "lte": [
+                        {
+                          "ref": "battle.enemyHp"
+                        },
+                        0
+                      ]
+                    },
+                    "then": [
+                      {
+                        "op": "mp",
+                        "delta": 3
+                      }
+                    ],
+                    "else": []
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE43": {
+      "uses": [
+        {
+          "where": [
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.which"
+                  },
+                  "hp"
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "withinMoves": 3,
+                  "onStart": [
+                    {
+                      "op": "hp",
+                      "delta": 22
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "withinMoves": 3,
+                  "onStart": [
+                    {
+                      "op": "mp",
+                      "delta": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "inputs": [
+            {
+              "id": "which",
+              "type": "enum",
+              "values": [
+                "hp",
+                "mp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT04": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT04",
+                "hook": "enemyDamage",
+                "stage": "card",
+                "unique": "AT04",
+                "expires": {
+                  "enemyActions": 2
+                },
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "absorbDamage",
+                    "amount": 8
+                  }
+                ]
+              }
+            }
+          ],
+          "unique": "AT04"
+        }
+      ]
+    },
+    "AT06": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT06",
+                "hook": "heroAttackDamage",
+                "uses": 2,
+                "limit": {
+                  "perRound": 1
+                },
+                "expires": {
+                  "heroTurns": 2
+                },
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "cancelWhen": {
+                  "eq": [
+                    {
+                      "ref": "battle.heroAction"
+                    },
+                    "spell"
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": 4
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT10": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT10",
+                "hook": "heroAttackDamage",
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": 12
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "or": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.attackKind"
+                        },
+                        "attack"
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.attackKind"
+                        },
+                        "spell"
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT17": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT17",
+                "hook": "spellCost",
+                "effects": [
+                  {
+                    "op": "reduceCost",
+                    "amount": 4,
+                    "min": 1
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.spellCost"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT24": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 3
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT24",
+                "hook": "heroHit",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": {
+                      "min": [
+                        12,
+                        {
+                          "floorDiv": [
+                            {
+                              "ref": "battle.dealt"
+                            },
+                            2
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "or": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.attackKind"
+                        },
+                        "attack"
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.attackKind"
+                        },
+                        "spell"
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT46": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT46",
+                "hook": "heroHit",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 12
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.enemyHp"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "lte": [
+                        {
+                          "mul": [
+                            {
+                              "ref": "battle.enemyHp"
+                            },
+                            2
+                          ]
+                        },
+                        {
+                          "ref": "battle.enemyMaxHp"
+                        }
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "mul": [
+                            {
+                              "add": [
+                                {
+                                  "ref": "battle.enemyHp"
+                                },
+                                {
+                                  "ref": "battle.dealt"
+                                }
+                              ]
+                            },
+                            2
+                          ]
+                        },
+                        {
+                          "ref": "battle.enemyMaxHp"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT49": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT49",
+                "hook": "afterHeroAction",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 22
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "actions": {
+                    "rounds": [
+                      -2,
+                      -1,
+                      0
+                    ],
+                    "anyOrder": [
+                      "attack",
+                      "guard",
+                      "spell"
+                    ]
+                  }
+                },
+                "expires": {
+                  "heroTurns": 3
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE14": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE14",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 13
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "ref": "battle.guarded"
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "hp"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE17": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE17",
+                "hook": "afterHeroAction",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": {
+                      "min": [
+                        2,
+                        {
+                          "ref": "battle.spellCostPaid"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 2,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.heroAction"
+                    },
+                    "spell"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE19": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE19",
+                "hook": "heroHit",
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "uses": 2,
+                "limit": {
+                  "perRound": 1
+                },
+                "expires": {
+                  "heroTurns": 2
+                },
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": {
+                      "if": [
+                        {
+                          "lte": [
+                            {
+                              "ref": "battle.enemyHp"
+                            },
+                            0
+                          ]
+                        },
+                        4,
+                        3
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD07": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "thisMove",
+              "rules": [
+                {
+                  "id": "BD07",
+                  "hook": "moveConfirm",
+                  "when": {
+                    "between": [
+                      {
+                        "ref": "move.steps"
+                      },
+                      1,
+                      2
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "hp",
+                      "delta": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD12": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "setDieRule",
+              "table": {
+                "1": 2,
+                "3": 4,
+                "5": 6
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD21": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "floorDiv": [
+                  {
+                    "ref": "die"
+                  },
+                  2
+                ]
+              },
+              "constraints": [
+                "evenOnly"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD22": {
+      "uses": [
+        {
+          "where": [
+            "afterRoll"
+          ],
+          "effects": [
+            {
+              "op": "adjustDie",
+              "to": {
+                "floorDiv": [
+                  {
+                    "add": [
+                      {
+                        "ref": "rawDie"
+                      },
+                      {
+                        "ref": "prevDie"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              },
+              "constraints": [
+                "needPrev",
+                "mustDiffer"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD29": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.answer"
+                  },
+                  {
+                    "sub": [
+                      {
+                        "ref": "nextStop"
+                      },
+                      {
+                        "ref": "pos"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "thisMove",
+                  "rules": [
+                    {
+                      "id": "BD29",
+                      "hook": "moveConfirm",
+                      "effects": [
+                        {
+                          "op": "hp",
+                          "delta": 5
+                        },
+                        {
+                          "op": "mp",
+                          "delta": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "lte": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "nextStop"
+                      },
+                      {
+                        "ref": "pos"
+                      }
+                    ]
+                  },
+                  6
+                ]
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "answer",
+              "type": "int",
+              "min": 1,
+              "max": 6
+            }
+          ]
+        }
+      ]
+    },
+    "BD31": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "setDieRule",
+              "table": {
+                "1": 3,
+                "6": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD35": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "normal",
+              "withinMoves": 3,
+              "rules": [
+                {
+                  "id": "BD35",
+                  "hook": "enemyDamage",
+                  "stage": "card",
+                  "when": {
+                    "and": [
+                      {
+                        "lte": [
+                          {
+                            "mul": [
+                              {
+                                "ref": "battle.startHp"
+                              },
+                              2
+                            ]
+                          },
+                          {
+                            "ref": "maxHp"
+                          }
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "ref": "battle.guarded"
+                      }
+                    ]
+                  },
+                  "limit": {
+                    "perBattle": 1
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD48": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "var.prediction"
+                  },
+                  "small"
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "thisMove",
+                  "rules": [
+                    {
+                      "id": "BD48-small",
+                      "hook": "moveConfirm",
+                      "when": {
+                        "lte": [
+                          {
+                            "ref": "rawDie"
+                          },
+                          3
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "hp",
+                          "delta": 12
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "op": "reserve",
+                  "slot": "thisMove",
+                  "rules": [
+                    {
+                      "id": "BD48-large",
+                      "hook": "moveConfirm",
+                      "when": {
+                        "gte": [
+                          {
+                            "ref": "rawDie"
+                          },
+                          4
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "mp",
+                          "delta": 6
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "inputs": [
+            {
+              "id": "prediction",
+              "type": "enum",
+              "values": [
+                "small",
+                "large"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT28": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "if": [
+                  {
+                    "and": [
+                      {
+                        "ref": "battle.guarded",
+                        "offset": -1
+                      },
+                      {
+                        "ref": "battle.enemyHit",
+                        "offset": -1
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.hpLost",
+                            "offset": -1
+                          },
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  19,
+                  8
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT36": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT36",
+                "hook": "afterEnemyAction",
+                "uses": 2,
+                "limit": {
+                  "perRound": 1
+                },
+                "expires": {
+                  "heroTurns": 2
+                },
+                "when": {
+                  "and": [
+                    {
+                      "ref": "battle.guarded"
+                    },
+                    {
+                      "ref": "battle.enemyHit"
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "hp"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 7
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT50": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT50-risk",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "increaseDamage",
+                    "amount": 4
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT50-strike",
+                "hook": "heroAttackDamage",
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": 26
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE33": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "HE33",
+                "hook": "hpRestored",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": {
+                      "min": [
+                        6,
+                        {
+                          "ref": "battle.spellCostPaid"
+                        },
+                        {
+                          "floorDiv": [
+                            {
+                              "ref": "battle.restoredHp"
+                            },
+                            2
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.restoreSource"
+                        },
+                        "spell"
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.restoredHp"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT38": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT38",
+                "hook": "hpRestored",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 13
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.restoreSource"
+                        },
+                        "spell"
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.restoredHp"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT42": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT42",
+                "hook": "afterHeroAction",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": 18
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.heroAction"
+                        },
+                        "spell"
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.spellCostPaid"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.spellMpAfter"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 3
+                }
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  1
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "BD08": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "reveal",
+              "info": "squaresAhead",
+              "from": 7,
+              "to": 12,
+              "expires": {
+                "moves": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD30": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "reveal",
+              "info": "sixOutcomes",
+              "expires": {
+                "moves": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT29": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT29",
+                "hook": "heroAttackDamage",
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": 13
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "or": [
+                    {
+                      "and": [
+                        {
+                          "eq": [
+                            {
+                              "ref": "battle.attackKind"
+                            },
+                            "attack"
+                          ]
+                        },
+                        {
+                          "ref": "battle.spellHit",
+                          "offset": -1
+                        }
+                      ]
+                    },
+                    {
+                      "and": [
+                        {
+                          "eq": [
+                            {
+                              "ref": "battle.attackKind"
+                            },
+                            "spell"
+                          ]
+                        },
+                        {
+                          "ref": "battle.attackHit",
+                          "offset": -1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT47": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "item.AT47.payment",
+              "value": {
+                "min": [
+                  10,
+                  {
+                    "ceilDiv": [
+                      {
+                        "ref": "hp"
+                      },
+                      4
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "hp",
+              "delta": {
+                "neg": {
+                  "ref": "flag",
+                  "key": "item.AT47.payment"
+                }
+              }
+            },
+            {
+              "op": "dealDamage",
+              "amount": {
+                "add": [
+                  6,
+                  {
+                    "mul": [
+                      2,
+                      {
+                        "ref": "flag",
+                        "key": "item.AT47.payment"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "setFlag",
+              "key": "item.AT47.payment",
+              "value": false
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "min": [
+                      10,
+                      {
+                        "ceilDiv": [
+                          {
+                            "ref": "hp"
+                          },
+                          4
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "AT27": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "min": [
+                  18,
+                  {
+                    "ref": "battle.attackDamageDealt",
+                    "offset": -1
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction",
+                    "offset": -1
+                  },
+                  "attack"
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "AT34": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "min": [
+                  16,
+                  {
+                    "ceilDiv": [
+                      {
+                        "ref": "battle.spellDamageDealt",
+                        "offset": -1
+                      },
+                      2
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction",
+                    "offset": -1
+                  },
+                  "spell"
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.spellKind",
+                    "offset": -1
+                  },
+                  "attack"
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "BD05": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD05"
+            }
+          ]
+        }
+      ]
+    },
+    "BD14": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD14"
+            }
+          ]
+        }
+      ]
+    },
+    "BD18": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD18"
+            }
+          ]
+        }
+      ]
+    },
+    "BD23": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD23"
+            }
+          ]
+        }
+      ]
+    },
+    "BD26": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD26"
+            }
+          ]
+        }
+      ]
+    },
+    "BD33": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD33"
+            }
+          ]
+        }
+      ]
+    },
+    "BD34": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD34"
+            }
+          ]
+        }
+      ]
+    },
+    "BD39": {
+      "uses": [
+        {
+          "where": [
+            "puzzleWrong"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD39"
+            }
+          ]
+        }
+      ]
+    },
+    "BD44": {
+      "uses": [
+        {
+          "where": [
+            "puzzle"
+          ],
+          "effects": [
+            {
+              "op": "puzzleAssist",
+              "itemId": "BD44"
+            }
+          ]
+        }
+      ]
+    },
+    "AT13": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT13",
+                "hook": "enemyDamage",
+                "expires": {
+                  "enemyActions": 2
+                },
+                "when": {
+                  "gte": [
+                    {
+                      "ref": "battle.hitIndex"
+                    },
+                    2
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 4
+                  }
+                ],
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT15": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT15",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "capDamage",
+                    "amount": 0
+                  }
+                ],
+                "uses": 1,
+                "when": true,
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "not": {
+                  "ref": "battle.isKing"
+                }
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "not": {
+                  "ref": "battle.isOptional"
+                }
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              },
+              "reason": "notNow"
+            },
+            {
+              "when": {
+                "eq": [
+                  {
+                    "ref": "battle.hitCount"
+                  },
+                  1
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "AT16": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "item.AT16.reduced",
+              "value": 0
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT16-reduce",
+                "hook": "enemyDamage",
+                "expires": {
+                  "enemyActions": 1
+                },
+                "effects": [
+                  {
+                    "op": "setFlag",
+                    "key": "item.AT16.reduced",
+                    "value": {
+                      "add": [
+                        {
+                          "ref": "flag",
+                          "key": "item.AT16.reduced"
+                        },
+                        {
+                          "min": [
+                            3,
+                            {
+                              "ref": "battle.damage"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "op": "reduceDamage",
+                    "amount": 3
+                  }
+                ],
+                "stage": "card"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT16-counter",
+                "hook": "heroAttackDamage",
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": {
+                      "min": [
+                        9,
+                        {
+                          "ref": "flag",
+                          "key": "item.AT16.reduced"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT22": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT22-wait",
+                "hook": "beforeEnemyAction",
+                "effects": [
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "AT22-explode",
+                      "hook": "beforeEnemyAction",
+                      "effects": [
+                        {
+                          "op": "if",
+                          "cond": {
+                            "ref": "battle.isKing"
+                          },
+                          "then": [
+                            {
+                              "op": "dealDamage",
+                              "amount": 20,
+                              "leave": 1
+                            }
+                          ],
+                          "else": [
+                            {
+                              "op": "dealDamage",
+                              "amount": 20
+                            }
+                          ]
+                        }
+                      ],
+                      "uses": 1,
+                      "when": true
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT25": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT25-shield",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "setFlag",
+                    "key": "item.AT25.reduced",
+                    "value": {
+                      "min": [
+                        8,
+                        {
+                          "ref": "battle.damage"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "op": "reduceDamage",
+                    "amount": 8
+                  },
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "AT25-reflect",
+                      "hook": "afterEnemyHit",
+                      "effects": [
+                        {
+                          "op": "dealDamage",
+                          "amount": {
+                            "ref": "flag",
+                            "key": "item.AT25.reduced"
+                          }
+                        }
+                      ],
+                      "uses": 1,
+                      "when": true,
+                      "expires": {
+                        "enemyActions": 1
+                      }
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": true,
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT26": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "item.AT26.total",
+              "value": 0
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT26",
+                "hook": "enemyDamage",
+                "expires": {
+                  "enemyActions": 1
+                },
+                "effects": [
+                  {
+                    "op": "capDamage",
+                    "amount": {
+                      "max": [
+                        0,
+                        {
+                          "sub": [
+                            12,
+                            {
+                              "ref": "flag",
+                              "key": "item.AT26.total"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "item.AT26.total",
+                    "value": {
+                      "add": [
+                        {
+                          "ref": "flag",
+                          "key": "item.AT26.total"
+                        },
+                        {
+                          "ref": "battle.damage"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT32": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 7
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT32",
+                "hook": "enemyHeal",
+                "expires": {
+                  "enemyActions": 2
+                },
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "effects": [
+                  {
+                    "op": "absorbDamage",
+                    "amount": 12
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT43": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": {
+                "min": [
+                  22,
+                  {
+                    "add": [
+                      4,
+                      {
+                        "mul": [
+                          6,
+                          {
+                            "ref": "battle.hitsTaken",
+                            "offset": -1
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AT39": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "battle.enemyPlannedHeal"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "addMark",
+                  "mark": {
+                    "id": "AT39",
+                    "hook": "enemyHeal",
+                    "effects": [
+                      {
+                        "op": "if",
+                        "cond": {
+                          "ref": "battle.isKing"
+                        },
+                        "then": [
+                          {
+                            "op": "subDamage",
+                            "amount": 10,
+                            "min": 0
+                          }
+                        ],
+                        "else": [
+                          {
+                            "op": "capDamage",
+                            "amount": 0
+                          }
+                        ]
+                      }
+                    ],
+                    "uses": 1,
+                    "when": true,
+                    "expires": {
+                      "enemyActions": 1
+                    }
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "op": "dealDamage",
+                  "amount": 10
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE20": {
+      "uses": [
+        {
+          "where": [
+            "flee"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 12
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "HE34": {
+      "uses": [
+        {
+          "where": [
+            "victoryConfirm"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "mul": [
+                  4,
+                  {
+                    "min": [
+                      4,
+                      {
+                        "ref": "battle.count",
+                        "what": "enemyActions"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  4,
+                  {
+                    "ref": "battle.count",
+                    "what": "enemyActions"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE38": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "min": [
+                  18,
+                  {
+                    "ref": "battle.guardShieldReduced",
+                    "offset": -1
+                  }
+                ]
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "gt": [
+                  {
+                    "ref": "battle.guardShieldReduced",
+                    "offset": -1
+                  },
+                  0
+                ]
+              },
+              "reason": "notNow"
+            }
+          ]
+        }
+      ]
+    },
+    "AT20": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 5
+            },
+            {
+              "op": "setFlag",
+              "key": "item.AT20.round",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT20",
+                "hook": "hpRestored",
+                "effects": [
+                  {
+                    "op": "dealDamage",
+                    "amount": {
+                      "min": [
+                        12,
+                        {
+                          "ref": "battle.restoredHp"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.restoreSource"
+                        },
+                        "companion"
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.round"
+                        },
+                        {
+                          "ref": "flag",
+                          "key": "item.AT20.round"
+                        }
+                      ]
+                    },
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.restoredHp"
+                        },
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "BD36": {
+      "uses": [
+        {
+          "where": [
+            "trade"
+          ],
+          "effects": [
+            {
+              "op": "substituteTradeItem"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "substituteId",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "BD37": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "trackLandingKinds"
+            }
+          ]
+        }
+      ]
+    },
+    "BD03": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD03"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "pos",
+              "type": "int",
+              "min": 1,
+              "max": 99
+            }
+          ]
+        }
+      ]
+    },
+    "BD13": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD13"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "pos",
+              "type": "int",
+              "min": 1,
+              "max": 99
+            }
+          ]
+        }
+      ]
+    },
+    "BD15": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD15"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "pos",
+              "type": "int",
+              "min": 1,
+              "max": 99
+            }
+          ]
+        }
+      ]
+    },
+    "BD24": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD24"
+            }
+          ]
+        }
+      ]
+    },
+    "BD47": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD47"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "kind",
+              "type": "enum",
+              "values": [
+                "装備",
+                "道具",
+                "回復"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD10": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD10"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "pos",
+              "type": "int",
+              "min": 1,
+              "max": 99
+            }
+          ]
+        }
+      ]
+    },
+    "BD32": {
+      "uses": [
+        {
+          "where": [
+            "board"
+          ],
+          "effects": [
+            {
+              "op": "boardItem",
+              "id": "BD32"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "pos",
+              "type": "int",
+              "min": 1,
+              "max": 99
+            }
+          ]
+        }
+      ]
+    },
+    "BD17": {
+      "uses": [
+        {
+          "where": [
+            "recoveryConfirm"
+          ],
+          "effects": [
+            {
+              "op": "convertRecovery"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "groups",
+              "type": "int",
+              "min": 1,
+              "max": 4
+            }
+          ]
+        }
+      ]
+    },
+    "BD38": {
+      "uses": [
+        {
+          "where": [
+            "recoveryConfirm"
+          ],
+          "effects": [
+            {
+              "op": "reserveRecoveryShield"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "amount",
+              "type": "int",
+              "min": 1,
+              "max": 10
+            }
+          ]
+        }
+      ]
+    },
+    "BD06": {
+      "uses": [
+        {
+          "where": [
+            "receiveItem"
+          ],
+          "effects": [
+            {
+              "op": "consumeReceivedItem"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "receivedId",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "AT23": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "assumeGuard"
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT23",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 4
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "battle.damage"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "HE29": {
+      "uses": [
+        {
+          "where": [
+            "battle",
+            "inn",
+            "gate"
+          ],
+          "effects": [
+            {
+              "op": "preparedSpellAid",
+              "spellId": {
+                "ref": "var.spellId"
+              }
+            }
+          ],
+          "requires": [
+            {
+              "when": {
+                "ref": "spellPrepared",
+                "id": {
+                  "ref": "var.spellId"
+                }
+              },
+              "reason": "notNow"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "spellId",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "BD28": {
+      "uses": [
+        {
+          "where": [
+            "receiveGear"
+          ],
+          "effects": [
+            {
+              "op": "prepareGearBonus"
+            }
+          ]
+        }
+      ]
+    },
+    "BD46": {
+      "uses": [
+        {
+          "where": [
+            "challengeConfirm"
+          ],
+          "effects": [
+            {
+              "op": "declareFirstAction"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "declaration",
+              "type": "enum",
+              "values": [
+                "attack",
+                "guard"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "BD19": {
+      "uses": [
+        {
+          "where": [
+            "trapChoice"
+          ],
+          "effects": [
+            {
+              "op": "trapItem",
+              "mode": "paidHeal"
+            }
+          ]
+        }
+      ]
+    },
+    "BD20": {
+      "uses": [
+        {
+          "where": [
+            "trapChoice"
+          ],
+          "effects": [
+            {
+              "op": "trapItem",
+              "mode": "replaceItem",
+              "id": {
+                "ref": "var.lossId"
+              }
+            }
+          ],
+          "inputs": [
+            {
+              "id": "lossId",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "BD25": {
+      "uses": [
+        {
+          "where": [
+            "trapChoice"
+          ],
+          "effects": [
+            {
+              "op": "trapItem",
+              "mode": "discountGold"
+            }
+          ]
+        }
+      ]
+    },
+    "BD27": {
+      "uses": [
+        {
+          "where": [
+            "restConfirm"
+          ],
+          "effects": [
+            {
+              "op": "reserveRestHp",
+              "amount": {
+                "ref": "var.amount"
+              }
+            }
+          ],
+          "inputs": [
+            {
+              "id": "amount",
+              "type": "int",
+              "min": 1,
+              "max": 12
+            }
+          ]
+        }
+      ]
+    },
+    "BD45": {
+      "uses": [
+        {
+          "where": [
+            "recruit"
+          ],
+          "effects": [
+            {
+              "op": "reserveCompanionAid"
+            }
+          ]
+        }
+      ]
+    },
+    "AT31": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "scoutDecoyHit"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "target",
+              "type": "int",
+              "min": 0,
+              "max": 99,
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "AT44": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "prepareDoubleTarget"
+            }
+          ]
+        }
+      ]
+    },
+    "AT12": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "pierceShellHit"
+            }
+          ]
+        }
+      ]
+    },
+    "AT21": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "weakenTemporaryDefense"
+            },
+            {
+              "op": "dealDamage",
+              "amount": 6
+            }
+          ]
+        }
+      ]
+    },
+    "AT19": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 6
+            },
+            {
+              "op": "preventEnemyStatus",
+              "kinds": [
+                "mpLoss"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "AT48": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 8
+            },
+            {
+              "op": "preventEnemyStatus",
+              "kinds": [
+                "mpLoss",
+                "attackDown",
+                "defenseDown"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "HE26": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            },
+            {
+              "op": "clearTemporaryStatus",
+              "kind": "turnEndHpLoss"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "statusId",
+              "type": "string",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "HE32": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "min": [
+                  18,
+                  {
+                    "ceilDiv": [
+                      {
+                        "ref": "maxHp"
+                      },
+                      4
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "clearTemporaryStatus",
+              "kind": "defenseDown"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "statusId",
+              "type": "string",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "HE37": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            },
+            {
+              "op": "recoverEnemyMp",
+              "amount": 7,
+              "enemyActions": 2
+            }
+          ]
+        }
+      ]
+    },
+    "HE46": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            },
+            {
+              "op": "clearTemporaryPair"
+            }
+          ],
+          "inputs": [
+            {
+              "id": "attackId",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "id": "defenseId",
+              "type": "string",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "AT30": {
+      "uses": [
+        {
+          "where": [
+            "battle"
+          ],
+          "effects": [
+            {
+              "op": "forecastEnemyActions"
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AT30",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 3
+                  }
+                ],
+                "uses": 1,
+                "expires": {
+                  "enemyActions": 1
+                },
+                "stage": "card"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

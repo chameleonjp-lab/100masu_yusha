@@ -1,0 +1,714 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "M2-01": {
+      "options": [
+        {
+          "id": "stones",
+          "label": "白い石を降り口、青い石を乗り口へ並べ、人を別々に案内する",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 220
+            }
+          ]
+        }
+      ]
+    },
+    "M2-02": {
+      "options": [
+        {
+          "id": "plank",
+          "label": "おけをからにし、小石を抜いて板を元の溝にはめる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 260
+            }
+          ]
+        }
+      ]
+    },
+    "M2-03": {
+      "options": [
+        {
+          "id": "hang",
+          "label": "重なった二匹を離し、それぞれ日の当たる所につるす",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 190
+            }
+          ]
+        }
+      ]
+    },
+    "M2-04": {
+      "options": [
+        {
+          "id": "basket",
+          "label": "なべのふたを結び、かごを水平にしたまま向こうへ引く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 290
+            }
+          ]
+        }
+      ]
+    },
+    "M2-05": {
+      "options": [
+        {
+          "id": "wipe",
+          "label": "船頭に場所を教わり、段の横の板を布で一段ずつぬぐう",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 230
+            }
+          ]
+        }
+      ]
+    },
+    "M2-06": {
+      "options": [
+        {
+          "id": "collect",
+          "label": "三角の穴を目印に、今日乗る人の切符だけを集める",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 210
+            }
+          ]
+        }
+      ]
+    },
+    "M2-07": {
+      "options": [
+        {
+          "id": "weave",
+          "label": "内側を向いた竹を見つけ、ほかと同じ向きに編み直す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 310
+            }
+          ]
+        }
+      ]
+    },
+    "M2-08": {
+      "options": [
+        {
+          "id": "shade",
+          "label": "動かす前の舟で、日よけの留めひもをほどいて広げる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 270
+            }
+          ]
+        }
+      ]
+    },
+    "M2-09": {
+      "options": [
+        {
+          "id": "turn",
+          "label": "地図を回し、橋と船着き場の向きを実物に合わせる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 240
+            }
+          ]
+        }
+      ]
+    },
+    "M2-10": {
+      "options": [
+        {
+          "id": "pour",
+          "label": "中の水を別のおけに移し、細いアシを取り除く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 200
+            }
+          ]
+        }
+      ]
+    },
+    "M2-11": {
+      "options": [
+        {
+          "id": "reed",
+          "label": "アシ筒を短く割り、布でくるんで皿の間へ差し込む",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 340
+            }
+          ]
+        }
+      ]
+    },
+    "M2-12": {
+      "options": [
+        {
+          "id": "fin",
+          "label": "魚のひれを上へ立て、岸から輪郭が見える角度に留める",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 300
+            }
+          ]
+        }
+      ]
+    },
+    "M2-13": {
+      "options": [
+        {
+          "id": "whistle",
+          "label": "片方に短く二度、もう片方に長く一度吹いてもらい、看板に印す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 280
+            }
+          ]
+        }
+      ]
+    },
+    "M2-14": {
+      "options": [
+        {
+          "id": "shell",
+          "label": "平たい貝がらを短い足の下へ差し入れる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 250
+            }
+          ]
+        }
+      ]
+    },
+    "M2-15": {
+      "options": [
+        {
+          "id": "salt",
+          "label": "白い跡の真上にあった袋を外し、乾いた荷を高い棚へ移す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 360
+            }
+          ]
+        }
+      ]
+    },
+    "M2-16": {
+      "options": [
+        {
+          "id": "song",
+          "label": "最初の一声を歌い、声の最後でオールをそろえてもらう",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 330
+            }
+          ]
+        }
+      ]
+    },
+    "M2-17": {
+      "options": [
+        {
+          "id": "ladder",
+          "label": "舟を岸に寄せてもらい、桟橋のはしごから受け取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW11"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-18": {
+      "options": [
+        {
+          "id": "cloth",
+          "label": "ぬれる側に油布を重ね、端を洗濯ばさみで留める",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR12"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-19": {
+      "options": [
+        {
+          "id": "sword",
+          "label": "剣の箱の留め金を外す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW14"
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具の箱の留め金を外す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR14"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-20": {
+      "options": [
+        {
+          "id": "drain",
+          "label": "剣を預け、からのさやから貝を抜く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW17"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-21": {
+      "options": [
+        {
+          "id": "boards",
+          "label": "二枚の板を少し離し、すき間から荷ひもを引き出す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR19"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN03"
+        }
+      ]
+    },
+    "M2-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN04"
+        }
+      ]
+    },
+    "M2-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN03"
+        }
+      ]
+    },
+    "M2-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN04"
+        }
+      ]
+    },
+    "M2-26": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN03"
+        }
+      ]
+    },
+    "M2-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN04"
+        }
+      ]
+    },
+    "M2-28": {
+      "options": [
+        {
+          "id": "colander",
+          "label": "転がってきた実をざるに受ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD11"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-29": {
+      "options": [
+        {
+          "id": "wrap",
+          "label": "紙の下に品を入れ、ひと巻きしてひもを十字に掛ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE12"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-30": {
+      "options": [
+        {
+          "id": "sift",
+          "label": "網の上で砂をふるい落とし、見本を漁師の手に返す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT13"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-31": {
+      "options": [
+        {
+          "id": "window",
+          "label": "風上の窓を閉め、反対の小窓を開ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD15"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-32": {
+      "options": [
+        {
+          "id": "wait",
+          "label": "笛がまだ鳴っていない包みを机の左に寄せ、確認を待つ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE16"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-33": {
+      "options": [
+        {
+          "id": "board",
+          "label": "波が来る側に戸板を立て、絵が正しく見える向きで箱を開ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT19"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-34": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 8
+        }
+      ]
+    },
+    "M2-35": {
+      "onLand": [
+        {
+          "op": "mp",
+          "delta": 4
+        }
+      ]
+    },
+    "M2-36": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 7
+        },
+        {
+          "op": "mp",
+          "delta": 1
+        }
+      ]
+    },
+    "M2-37": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 3
+        },
+        {
+          "op": "mp",
+          "delta": 3
+        }
+      ]
+    },
+    "M2-38": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M2-39": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M2-40": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M2-41": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M2-42": {
+      "options": [
+        {
+          "id": "gold",
+          "label": "金貨の袋を受け取る（260G）",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 260
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "棚の防具を受け取る（AR16）",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR16"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-43": {
+      "options": [
+        {
+          "id": "dango",
+          "label": "湯気の上がる団子を頼む（体力8回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            }
+          ]
+        },
+        {
+          "id": "tea",
+          "label": "冷たいお茶を頼む（魔力5回復）",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "M2-44": {
+      "options": [
+        {
+          "id": "red",
+          "label": "赤い箱をすくう（AT18）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT18"
+            }
+          ]
+        },
+        {
+          "id": "blue",
+          "label": "青い箱をすくう（BD18）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD18"
+            }
+          ]
+        }
+      ]
+    },
+    "M2-45": {
+      "options": [
+        {
+          "id": "help",
+          "label": "力を貸す（体力3を使う。最低1。350G）",
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 350
+            }
+          ]
+        },
+        {
+          "id": "flag",
+          "label": "見送りの旗だけ振る",
+          "effects": []
+        }
+      ]
+    },
+    "M2-46": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "73Gで椀を買う（HE20）",
+          "cost": {
+            "gold": 73
+          },
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE20"
+            }
+          ]
+        },
+        {
+          "id": "return",
+          "label": "取り置きを返す",
+          "effects": []
+        }
+      ]
+    },
+    "M2-47": {
+      "options": [
+        {
+          "id": "bench",
+          "label": "ベンチで両足を伸ばす（体力9回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 9
+            }
+          ]
+        },
+        {
+          "id": "song",
+          "label": "奥で船頭の歌を聞く（体力3・魔力4回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "M2-48": {
+      "options": [
+        {
+          "id": "wait",
+          "label": "柱の裏で波が引くのを待つ（体力3を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M2-49": {
+      "options": [
+        {
+          "id": "boat",
+          "label": "洗い舟に90Gを払って乗せてもらう",
+          "cost": {
+            "gold": 90,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "untie",
+          "label": "水草を自分でほどく（体力4を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M2-50": {
+      "options": [
+        {
+          "id": "board",
+          "label": "敷き板を100Gで借りる",
+          "cost": {
+            "gold": 100,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "rail",
+          "label": "手すりに体を預けて通る（体力3を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    }
+  }
+}

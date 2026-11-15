@@ -1,0 +1,2461 @@
+{
+  "version": 1,
+  "migrations": {
+    "ui.literal.0d8619aae051": {
+      "source": "設定",
+      "targets": [
+        "ui.settings"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9682ba3b92f7": {
+      "source": "言語",
+      "targets": [
+        "ui.language"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7eb7373cafc7": {
+      "source": "Xでシェア",
+      "targets": [
+        "ui.share"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.87f8cd993efc": {
+      "source": "共有文の下書き（端末内のみ）",
+      "targets": [
+        "ui.shareDraft"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3fed7b713335": {
+      "source": "下書きをコピー",
+      "targets": [
+        "ui.copy"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8698e4c208e4": {
+      "source": "正式URLが未確定です。投稿・コピーは無効です。",
+      "targets": [
+        "ui.urlPending"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0ffef3f722bc": {
+      "source": "翻訳は未完了です。未訳部分は英語または日本語で表示します。",
+      "targets": [
+        "ui.translationPending"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.16679487f293": {
+      "source": "遊び方",
+      "targets": [
+        "ui.help",
+        "ui.app.help.term.16679487f2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1fa3269f0f8e": {
+      "source": "図鑑・自己ベスト",
+      "targets": [
+        "ui.records"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.19a923e378ea": {
+      "source": "旅の道を選ぶ",
+      "targets": [
+        "ui.route"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e0bda711972b": {
+      "source": "予告を読み、道具を選び、100マス先の魔王へ。",
+      "targets": [
+        "ui.homeIntro"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6110ca71dcf8": {
+      "source": "この端末に保存済み",
+      "targets": [
+        "ui.saved"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1209d487b023": {
+      "source": "出目 {p0}",
+      "targets": [
+        "ui.app.scene.f51ade3b85"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.cf439e99f440": {
+      "source": "{p0}回 振った",
+      "targets": [
+        "ui.app.render.bdfdbc6d58"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f254ba9b51e4": {
+      "source": "{p0}まで あと{p1}マス",
+      "targets": [
+        "ui.app.render.7dcec7dac2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.04cf7f807280": {
+      "source": "{p0}マス：{p1}",
+      "targets": [
+        "ui.app.render.f65841c006",
+        "ui.app.reveals.8d3671ff6e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8948827ef948": {
+      "source": "{p0}：{p1} {p2} / あと{p3}手",
+      "targets": [
+        "ui.app.render.f1030d5885"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6ab013732817": {
+      "source": "{p0}手目 {p1}：{p2}場合 {p3}",
+      "targets": [
+        "ui.app.render.75ca5568df"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.862b9a108b03": {
+      "source": "{p0}手目：敵に{p1}、勇者に{p2}ダメージ。敵の行動：{p3}",
+      "targets": [
+        "ui.app.render.bc7ba68654"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.399d3eb03b28": {
+      "source": "保存済み · {p0}手目",
+      "targets": [
+        "ui.app.render.2c8ca60f57"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d6efed6812bf": {
+      "source": "{p0}G / 経験値 {p1}",
+      "targets": [
+        "ui.app.render.ad5147affc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9b2603fb5091": {
+      "source": "{p0} / {p1}マスまで / {p2}回",
+      "targets": [
+        "ui.app.render.7c9988bef2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e9713eb5aa38": {
+      "source": "最終職：{p0} / 仲間：{p1}",
+      "targets": [
+        "ui.app.render.40d7f7fcb6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bb4b150bf1f0": {
+      "source": "道具袋 {p0}/{p1}",
+      "targets": [
+        "ui.app.render.8b25e3dabf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3d83d78c73e6": {
+      "source": "{p0}【{p1}】\n使える場面：{p2}\n条件：{p3}\n効果：{p4}",
+      "targets": [
+        "ui.app.render.c938ee4c06"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.df0c7756cd24": {
+      "source": "攻撃 {p0} / 防御 {p1}",
+      "targets": [
+        "ui.app.render.66bc9851e6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1cb78c7837ff": {
+      "source": "差分 {p0}",
+      "targets": [
+        "ui.app.module.9876c43d0b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.63fccab40be2": {
+      "source": "{p0}{p1}：{p2} {p3} {p4} {p5}",
+      "targets": [
+        "ui.app.render.0c81238d33"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.ac527e292835": {
+      "source": "休むと 体力 +{p0} / 魔力 +{p1}",
+      "targets": [
+        "ui.app.render.c5af446173"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.36f08ed89607": {
+      "source": "{p0}マスから続きを遊ぶ",
+      "targets": [
+        "ui.app.home.fd5b9323a8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.fc69ae0276e5": {
+      "source": "{p0} · 現在 {p1}マス / {p2}",
+      "targets": [
+        "ui.app.worldMap.250a2572a7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5af7e7080202": {
+      "source": "今の職：{p0}。試着だけでは職は変わりません。",
+      "targets": [
+        "ui.app.jobs.83411198f0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f86f2cc91332": {
+      "source": "{p0}を試着",
+      "targets": [
+        "ui.app.choose.4363446e2e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3a325d478b91": {
+      "source": "現在の{p0}は復旧用の控えへ移します。新しい道：{p1}",
+      "targets": [
+        "ui.app.confirmStart.3b2526dd1a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8cbaa55a52ef": {
+      "source": "{p0} {p1}",
+      "targets": [
+        "ui.app.actionForm.057c340753"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a15de9db50a9": {
+      "source": "{p0}番目",
+      "targets": [
+        "ui.app.field.c2468207e2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7cd514e07a00": {
+      "source": "{p0}〜{p1}個、{p2}〜{p3}",
+      "targets": [
+        "ui.app.field.182703a068"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c106e5dec025": {
+      "source": "{p0}：{p1}（この道具を選んだ時だけ）",
+      "targets": [
+        "ui.app.field.bd0857ba8b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e7828baed8c1": {
+      "source": "入力を指定",
+      "targets": [
+        "ui.app.field.aa465ce801"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1c18b9572de7": {
+      "source": "{p0}番の影は偽物と分かりました。残る影から選びます。",
+      "targets": [
+        "ui.app.field.bcdcee45fa"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c71edbf78a85": {
+      "source": "{p0}番：{p1}足跡",
+      "targets": [
+        "ui.app.field.3160f4515d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e13f7bb1bef3": {
+      "source": "{p0}：{p1}足跡",
+      "targets": [
+        "ui.app.field.655d98e002"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2565e9c7c9eb": {
+      "source": "選択後の変化：体力 {p0}{p1} / 魔力 {p2}{p3} / 金貨 {p4}{p5}（併用道具なし）",
+      "targets": [
+        "ui.app.field.a7d2446f4f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.604446e67c53": {
+      "source": "途中の宿場・城で止まります。残り{p0}歩は使いません。",
+      "targets": [
+        "ui.app.field.f4d7448414"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a9dbf6f0a1e7": {
+      "source": " / あと{p0}G必要",
+      "targets": [
+        "ui.app.module.372ed15a46"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.901b266e25f0": {
+      "source": "購入後 {p0}G{p1}",
+      "targets": [
+        "ui.app.field.f51588c994"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.229a85cbf0fa": {
+      "source": "装備の比較 {p0} → {p1}（{p2}{p3}）",
+      "targets": [
+        "ui.app.field.f0660cb661"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.90461b71a3e1": {
+      "source": "呪文は{p0}つまでです",
+      "targets": [
+        "ui.app.field.38b970aa00"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.afd011eaca08": {
+      "source": "{p0}回目の情報",
+      "targets": [
+        "ui.app.reveals.2ecfe17754"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e31fb42b094f": {
+      "source": "この先の罠は {p0}マスです。",
+      "targets": [
+        "ui.app.reveals.242ff05421"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6f059eebe734": {
+      "source": "勝利報酬：金貨 {p0} / 経験値 {p1}",
+      "targets": [
+        "ui.app.reveals.564d3fc158"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c2c20722cc64": {
+      "source": "{p0}マス：{p1}・{p2}",
+      "targets": [
+        "ui.app.reveals.678663b34e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.396f4d08ab5c": {
+      "source": "出目{p0} → {p1}マス（{p2}）",
+      "targets": [
+        "ui.app.reveals.2c7aa1a6cb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0ab0e5f54e69": {
+      "source": "{p0}マス：{p1}（{p2}）",
+      "targets": [
+        "ui.app.reveals.a31812f03c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6aaec0301140": {
+      "source": "{p0}：{p1}マス / {p2}回 {p3}",
+      "targets": [
+        "ui.app.records.bf06ba048e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.189e5da09201": {
+      "source": "{p0}：{p1}",
+      "targets": [
+        "ui.app.puzzlePanel.425f470c0b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c829a73ca0cb": {
+      "source": "出目 {p0} の場合",
+      "targets": [
+        "ui.app.previewResult.f9cf40edb7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.eff645c4f751": {
+      "source": "入力 {p0} の場合",
+      "targets": [
+        "ui.app.previewResult.537a8bb364"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a2c3883879d4": {
+      "source": "体力 {p0}{p1} / 魔力 {p2}{p3} / 金貨 {p4}{p5}",
+      "targets": [
+        "ui.app.previewResult.731021acf4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.94db9a8e6417": {
+      "source": "{p0} {p1}マスへ進む（{p2}歩）",
+      "targets": [
+        "ui.presentation.actionLabel.6761a80589"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.20e916cd4e82": {
+      "source": " 魔力{p0}",
+      "targets": [
+        "ui.presentation.module.08cdd31706"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.55f3274b7d0a": {
+      "source": "{p0} · {p1}{p2}{p3}",
+      "targets": [
+        "ui.presentation.actionLabel.e198b06c50"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.86719fc46b6e": {
+      "source": "（足跡 {p0}）",
+      "targets": [
+        "ui.presentation.actionLabel.8d74518bd6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7c95074b1069": {
+      "source": "（{p0}回の合計）",
+      "targets": [
+        "ui.presentation.module.9f1325ba95"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4b0cf70d129a": {
+      "source": "、敵の回復 {p0}",
+      "targets": [
+        "ui.presentation.module.f453197cb3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.fd45d211bb82": {
+      "source": "{p0}：受ける傷 {p1}{p2}{p3}。",
+      "targets": [
+        "ui.presentation.telegraphText.4396e4e53a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1c6a5c98b18d": {
+      "source": "{p0}：対象などを選んでから予測できます。",
+      "targets": [
+        "ui.presentation.telegraphText.34d7dc13af"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1009212a6223": {
+      "source": " {p0}回攻撃の合計。",
+      "targets": [
+        "ui.presentation.module.3342610749"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7c6a1058b747": {
+      "source": " 敵は体力を {p0} 回復。",
+      "targets": [
+        "ui.presentation.module.4fe4ceb4c7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.ed41bf0231e8": {
+      "source": "{p0}。そのまま受けると {p1}、防御すると {p2} ダメージ。{p3}{p4}",
+      "targets": [
+        "ui.presentation.telegraphText.385c7693f0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b1754a63bd22": {
+      "source": "{p0}〜{p1}の整数を入力してください",
+      "targets": [
+        "ui.presentation.parseInput.4c8676d516"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.ccf01d184300": {
+      "source": "{p0}：{p1} {p2}、{p3}手",
+      "targets": [
+        "ui.presentation.effectText.dc07eb9875"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e52c96b61fa9": {
+      "source": "{p0}を取り除きました",
+      "targets": [
+        "ui.presentation.effectText.eb38a6c9c7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a41a6bec301d": {
+      "source": "{p0}を防ぎました",
+      "targets": [
+        "ui.presentation.effectText.29732299fb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.43197734fff8": {
+      "source": "サイコロは {p0}",
+      "targets": [
+        "ui.presentation.effectText.4a549c3761"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1f60353a8f54": {
+      "source": "。残り{p0}歩は使いません",
+      "targets": [
+        "ui.presentation.module.c773149047"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.31a533196e0d": {
+      "source": "{p0}マスに到着（{p1}歩）{p2}",
+      "targets": [
+        "ui.presentation.effectText.725bb6952a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.109d90a548d4": {
+      "source": "金貨 {p0}{p1}G",
+      "targets": [
+        "ui.presentation.effectText.c17c38754f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.543c920d3ec4": {
+      "source": "体力 {p0}{p1}",
+      "targets": [
+        "ui.presentation.effectText.bae0a4f845"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.128253ddd21e": {
+      "source": "（現在{p0}）",
+      "targets": [
+        "ui.presentation.module.734597997f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2e92a527c59d": {
+      "source": "魔力 {p0}{p1}{p2}",
+      "targets": [
+        "ui.presentation.effectText.2e76f976e0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d3c2136dc955": {
+      "source": "（軽減 {p0}）",
+      "targets": [
+        "ui.presentation.module.fc72b13abf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.abc53eaeab32": {
+      "source": "（{p0}）",
+      "targets": [
+        "ui.presentation.module.99d1e21eb1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.264be47c77c4": {
+      "source": "。残り体力 {p0}/{p1}",
+      "targets": [
+        "ui.presentation.module.cc337aafbf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.58f34e1f5dc0": {
+      "source": "{p0}に {p1} ダメージ{p2}{p3}",
+      "targets": [
+        "ui.presentation.effectText.00dead7c1b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c8a8dc4ca0ad": {
+      "source": "{p0}を使いました",
+      "targets": [
+        "ui.presentation.effectText.9f13ef9c90"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.565afe785dfa": {
+      "source": "{p0}を失いました",
+      "targets": [
+        "ui.presentation.effectText.5227884745"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.91c6cc436efa": {
+      "source": "{p0}は受け取りませんでした",
+      "targets": [
+        "ui.presentation.effectText.1e5340989a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d6da4ce9d9c3": {
+      "source": "{p0}を手に入れました",
+      "targets": [
+        "ui.presentation.effectText.162863673d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.497220fc371f": {
+      "source": "{p0}は持っているため重複しません",
+      "targets": [
+        "ui.presentation.effectText.aa61a666e2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.12149fb3db73": {
+      "source": "{p0}を装備しました",
+      "targets": [
+        "ui.presentation.effectText.c0a6782b5e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.226b578f850e": {
+      "source": "{p0}の支援：{p1}{p2}",
+      "targets": [
+        "ui.presentation.effectText.09579b842a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c7107afa796b": {
+      "source": "{p0}を唱えました（魔力 {p1}）",
+      "targets": [
+        "ui.presentation.effectText.e70315cd2b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bce50d855fe8": {
+      "source": "{p0}を覚えました",
+      "targets": [
+        "ui.presentation.effectText.da677eabdb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a435788edc22": {
+      "source": "出目 {p0} → {p1}",
+      "targets": [
+        "ui.presentation.effectText.9b6225b8a7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d8c94f0f57a7": {
+      "source": "{p0}を {p1}Gで売りました",
+      "targets": [
+        "ui.presentation.effectText.0c52ec6339"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f74ed087ef09": {
+      "source": "敵の行動：{p0}",
+      "targets": [
+        "ui.presentation.effectText.575541df64"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9191b62f2248": {
+      "source": "{p0}を手に入れた",
+      "targets": [
+        "ui.presentation.effectText.0d62c72c8c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0d47596a52bb": {
+      "source": "{p0}\n条件：{p1}\n効果：{p2}\n仲間にする費用：0G",
+      "targets": [
+        "ui.presentation.companionSummary.abc98baddf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6a164ebf84f0": {
+      "source": "{p0}\n{p1}\n条件：{p2}\n効果：{p3}",
+      "targets": [
+        "ui.presentation.comparisonText.0c89e01828"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.380e3dbd6730": {
+      "source": "{p0}{p1}",
+      "targets": [
+        "ui.presentation.mapTiles.08442435a3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.964c0066b29d": {
+      "source": "{p0}は候補から外せます。",
+      "targets": [
+        "ui.presentation.puzzleHintText.a9c2b8caa0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.ef222081a760": {
+      "source": "最初は {p0}。",
+      "targets": [
+        "ui.presentation.puzzleHintText.4f10746b6d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2d3c31b60419": {
+      "source": "{p0}と{p1}の組合せが確定。",
+      "targets": [
+        "ui.presentation.puzzleHintText.4ab8d5ce99"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6484e58c2ee5": {
+      "source": "{p0}番目に選んだ数のほうが近いです。",
+      "targets": [
+        "ui.presentation.puzzleHintText.f6f13a02a3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.185db8c91e93": {
+      "source": "手掛かり：文中の「{p0}」と選択肢の「{p1}」。",
+      "targets": [
+        "ui.presentation.puzzleHintText.7fcd4d48cc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.87a8f597be2f": {
+      "source": "{p0}番目が最初に違う場所です。",
+      "targets": [
+        "ui.presentation.puzzleHintText.38ff71b2a6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c1409c97031c": {
+      "source": "違う場所は {p0}です。",
+      "targets": [
+        "ui.presentation.puzzleHintText.1de0d24430"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6144904b4d4a": {
+      "source": "切り絵の勇者が立つ立体の旅路",
+      "targets": [
+        "ui.app.scene.literal.6144904b4d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7baa586810ac": {
+      "source": "3D表示を利用できません。進行と保存はそのままです。",
+      "targets": [
+        "ui.app.scene.literal.7baa586810"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.624fe166e663": {
+      "source": "百  100マス勇者",
+      "targets": [
+        "ui.app.render.literal.624fe166e6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c1fa727cb71a": {
+      "source": "保存・操作を確認してください",
+      "targets": [
+        "ui.app.render.literal.c1fa727cb7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bb1f5b26d409": {
+      "source": "保存された状態を読み直す",
+      "targets": [
+        "ui.app.render.literal.bb1f5b26d4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f1c2c7d3df45": {
+      "source": "旅のしたくをしています…",
+      "targets": [
+        "ui.app.render.literal.f1c2c7d3df"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.998f75677aee": {
+      "source": "勇者の状態",
+      "targets": [
+        "ui.app.render.literal.998f75677a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b6e1addfacbf": {
+      "source": "全体地図",
+      "targets": [
+        "ui.app.render.literal.b6e1addfac",
+        "ui.app.worldMap.term.b6e1addfac"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.cd7539d915ba": {
+      "source": "敵の次の行動",
+      "targets": [
+        "ui.app.render.literal.cd7539d915"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.78ea180ba106": {
+      "source": "一時的な状態",
+      "targets": [
+        "ui.app.render.literal.78ea180ba1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.34675f17d747": {
+      "source": "条件付きの先読み",
+      "targets": [
+        "ui.app.render.literal.34675f17d7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.87577bfcf393": {
+      "source": "今の状態で追加の攻撃や道具を使わず、同じ構えを続ける場合の敵の直撃です。行動後に再計算します。",
+      "targets": [
+        "ui.app.render.literal.87577bfcf3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.518564feda4a": {
+      "source": "直前の戦闘結果",
+      "targets": [
+        "ui.app.render.literal.518564feda"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c08e3524c98e": {
+      "source": "この出来事は未実装です。完了扱いにはせず、ここで進行を保留します。",
+      "targets": [
+        "ui.app.render.literal.c08e3524c9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.def16f80b1b5": {
+      "source": "勝利の報酬",
+      "targets": [
+        "ui.app.render.literal.def16f80b1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.726055e48f79": {
+      "source": "魔王の城",
+      "targets": [
+        "ui.app.render.literal.726055e48f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e485399357b9": {
+      "source": "ここが100マス目。装備・呪文・道具を確認して、最後の戦いへ。",
+      "targets": [
+        "ui.app.render.literal.e485399357"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3f905081bb47": {
+      "source": "もう一度、立ち上がる？",
+      "targets": [
+        "ui.app.render.literal.3f905081bb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3a301ecd5f34": {
+      "source": "この冒険で一度だけ再挑戦できます。",
+      "targets": [
+        "ui.app.render.literal.3a301ecd5f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5308c10dab2e": {
+      "source": "冒険の記録",
+      "targets": [
+        "ui.app.render.literal.5308c10dab"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e5ed7aa5db4e": {
+      "source": "旅の手帳へ",
+      "targets": [
+        "ui.app.render.literal.e5ed7aa5db"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1ae67cfcaf80": {
+      "source": "装備",
+      "targets": [
+        "ui.app.render.literal.1ae67cfcaf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f544044d74c8": {
+      "source": "旅の仲間",
+      "targets": [
+        "ui.app.render.literal.f544044d74"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.cd1c50af425d": {
+      "source": "まだひとり旅です。宿場の酒場で仲間を探しましょう。",
+      "targets": [
+        "ui.app.render.literal.cd1c50af42"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1ae4f6667ffc": {
+      "source": "酒場の候補を比較",
+      "targets": [
+        "ui.app.render.literal.1ae4f6667f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d27f9b977245": {
+      "source": "この宿場では1人。満員なら交代する仲間を選びます。",
+      "targets": [
+        "ui.app.render.literal.d27f9b9772"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2dcfd0642455": {
+      "source": "道具を選ぶ",
+      "targets": [
+        "ui.app.render.literal.2dcfd06424"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6b5afaa3e94f": {
+      "source": "転職・試着して比べる",
+      "targets": [
+        "ui.app.render.literal.6b5afaa3e9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c531094d931e": {
+      "source": "酒場で仲間を探す",
+      "targets": [
+        "ui.app.render.literal.c531094d93"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4ba28e355e19": {
+      "source": "端末内保存 · 外部送信なし · 制作中の試遊版",
+      "targets": [
+        "ui.app.render.literal.4ba28e355e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.491d174221c1": {
+      "source": "ひと振りずつ、物語になる。",
+      "targets": [
+        "ui.app.home.literal.491d174221"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.79285a8cf183": {
+      "source": "100マス勇者",
+      "targets": [
+        "ui.app.home.literal.79285a8cf1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.97225fd46a93": {
+      "source": "出目・敵の行動・手持ちの品もそのまま再開します。",
+      "targets": [
+        "ui.app.home.literal.97225fd46a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4617dfec2e6c": {
+      "source": "この版では保存を読めません。元データを保持しています。新しい冒険を始める前にバックアップを保管してください。",
+      "targets": [
+        "ui.app.home.literal.4617dfec2e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3041e9cda8cd": {
+      "source": "制作中の試遊版。未実装の出来事では進行を保留します。",
+      "targets": [
+        "ui.app.home.literal.3041e9cda8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.34eb96f43db7": {
+      "source": "宿",
+      "targets": [
+        "ui.app.worldMap.literal.34eb96f43d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.76f47004cc12": {
+      "source": "城",
+      "targets": [
+        "ui.app.worldMap.literal.76f47004cc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7d01e2c98cd2": {
+      "source": "◎ 現在地 / 宿：宿場 / 城：魔王城。閉じると元の位置に戻ります。",
+      "targets": [
+        "ui.app.worldMap.literal.7d01e2c98c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8a4ba79f4794": {
+      "source": "今のままで戻る",
+      "targets": [
+        "ui.app.choose.literal.8a4ba79f47"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.dd817f4395cc": {
+      "source": "① 四つの道から得意なものを選びます。サイコロを振り、行き先を確認して進みます。未訪問の宿では必ず止まります。",
+      "targets": [
+        "ui.app.help.literal.dd817f4395"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.298c2d3866b5": {
+      "source": "② 敵は次の手を予告します。大技には防御、隙には攻撃。仲間の支援条件と道具を見比べて一手ずつ選びます。",
+      "targets": [
+        "ui.app.help.literal.298c2d3866"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9bb2c9ecebf8": {
+      "source": "③ 宿で休み、装備・職・仲間を整え、100マス先の魔王へ。袋は6個、準備する呪文は2種まで。",
+      "targets": [
+        "ui.app.help.literal.9bb2c9eceb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4661ec53d043": {
+      "source": "出目や報酬は保存されます。再読み込みしても抽選はやり直しません。保存できなければ操作を止めます。",
+      "targets": [
+        "ui.app.help.literal.4661ec53d0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f6c244f98893": {
+      "source": "閉じる",
+      "targets": [
+        "ui.app.modal.literal.f6c244f988"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7f915bacbc83": {
+      "source": "控えを残して出発する",
+      "targets": [
+        "ui.app.confirmStart.literal.7f915bacbc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.31da45f17e11": {
+      "source": "覚えた呪文がありません。",
+      "targets": [
+        "ui.app.field.literal.31da45f17e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.89a49ca24d07": {
+      "source": "1〜2体の対象を選んでください",
+      "targets": [
+        "ui.app.field.literal.89a49ca24d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1f0b8387d418": {
+      "source": "見聞きした情報",
+      "targets": [
+        "ui.app.reveals.literal.1f0b8387d4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.89c2708c668c": {
+      "source": "所持装備から2点まで選んで比較できます。",
+      "targets": [
+        "ui.app.reveals.literal.89c2708c66"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f2c0caf48733": {
+      "source": "該当する予定はありません。",
+      "targets": [
+        "ui.app.reveals.literal.f2c0caf487"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0500c422a884": {
+      "source": "すべて消音",
+      "targets": [
+        "ui.app.audioSettings.literal.0500c422a8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.909c6a9deab9": {
+      "source": "演出の長さ",
+      "targets": [
+        "ui.app.settings.literal.909c6a9dea"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.08b0f55b1803": {
+      "source": "動きを減らす（端末設定も尊重）",
+      "targets": [
+        "ui.app.settings.literal.08b0f55b18"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8b3a5cfc451b": {
+      "source": "端末の消音スイッチがオンだと音は出ません。無音でも予告と結果を確認できます。音質は実機で確認中です。",
+      "targets": [
+        "ui.app.settings.literal.8b3a5cfc45"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0d19921a255b": {
+      "source": "音を試す（盾 → 城門の鐘）",
+      "targets": [
+        "ui.app.settings.literal.0d19921a25"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b4fd2d361a81": {
+      "source": "設定を保存",
+      "targets": [
+        "ui.app.settings.literal.b4fd2d361a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2283159eea5e": {
+      "source": "自己ベスト",
+      "targets": [
+        "ui.app.records.literal.2283159eea"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.46dff6e77f75": {
+      "source": "冒険を読み込めませんでした",
+      "targets": [
+        "ui.app.records.literal.46dff6e77f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.de1412f35ab1": {
+      "source": "元の保存を変更せず止めています。ページを読み直してください。",
+      "targets": [
+        "ui.app.records.literal.de1412f35a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2bd7c73f6925": {
+      "source": "除外した候補：",
+      "targets": [
+        "ui.app.puzzlePanel.literal.2bd7c73f69"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.073be543a8ea": {
+      "source": "確定した順序：",
+      "targets": [
+        "ui.app.puzzlePanel.literal.073be543a8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b3ee49dd39f3": {
+      "source": "確定した組合せ：",
+      "targets": [
+        "ui.app.puzzlePanel.literal.b3ee49dd39"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c32448f77b8b": {
+      "source": "誤答の結果はまだ確定していません。使える道具を確認するか、結果を確定してください。",
+      "targets": [
+        "ui.app.puzzlePanel.literal.c32448f77b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1167aecc2e56": {
+      "source": "現在の持ち物・能力では選べません。",
+      "targets": [
+        "ui.app.previewResult.literal.1167aecc2e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1ac10759b58e": {
+      "source": "この後に追加の選択があります。",
+      "targets": [
+        "ui.app.previewResult.literal.1ac10759b5"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.39e49d98b610": {
+      "source": "選択を確認してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.39e49d98b6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.90f469937d12": {
+      "source": "組み合わせを確認してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.90f469937d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.dd31eada2ab7": {
+      "source": "候補を一度ずつ並べてください",
+      "targets": [
+        "ui.presentation.parseInput.literal.dd31eada2a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.da9a20904ca2": {
+      "source": "数を区切って入力してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.da9a20904c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.22b0b9c5b521": {
+      "source": "すべての数を一度ずつ指定してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.22b0b9c5b5"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f5ac3e066ec0": {
+      "source": "個数と数の範囲を確認してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.f5ac3e066e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a9e35e0efaf3": {
+      "source": "入力を確認してください",
+      "targets": [
+        "ui.presentation.parseInput.literal.a9e35e0efa"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.828b8feda920": {
+      "source": "小さな勇者の、大きな旅。",
+      "targets": [
+        "ui.app.scene.term.828b8feda9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d6d2aa99fd69": {
+      "source": "体力",
+      "targets": [
+        "ui.app.render.term.d6d2aa99fd",
+        "ui.app.actionForm.term.d6d2aa99fd",
+        "ui.app.field.term.d6d2aa99fd"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.522148a1fdcc": {
+      "source": "魔力",
+      "targets": [
+        "ui.app.render.term.522148a1fd",
+        "ui.app.actionForm.term.522148a1fd",
+        "ui.app.field.term.522148a1fd"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a4c5f93082ee": {
+      "source": "魔王城",
+      "targets": [
+        "ui.app.render.term.a4c5f93082"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6038669e41d2": {
+      "source": "次の宿場",
+      "targets": [
+        "ui.app.render.term.6038669e41"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bb59eb7119dc": {
+      "source": "攻撃低下",
+      "targets": [
+        "ui.app.render.term.bb59eb7119",
+        "ui.presentation.effectText.term.bb59eb7119"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.862a6a31e31d": {
+      "source": "防御低下",
+      "targets": [
+        "ui.app.render.term.862a6a31e3",
+        "ui.presentation.effectText.term.862a6a31e3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.082937427d0d": {
+      "source": "手の終わりの体力減少",
+      "targets": [
+        "ui.app.render.term.082937427d",
+        "ui.presentation.effectText.term.082937427d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2a21905f43e5": {
+      "source": "・",
+      "targets": [
+        "ui.app.render.term.2a21905f43",
+        "ui.app.home.term.2a21905f43",
+        "ui.app.records.term.2a21905f43",
+        "ui.presentation.effectText.term.2a21905f43"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2e483eb82ebb": {
+      "source": "防御しない",
+      "targets": [
+        "ui.app.render.term.2e483eb82e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1177af8a7d14": {
+      "source": "防御する",
+      "targets": [
+        "ui.app.render.term.1177af8a7d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1e05a3a6d6da": {
+      "source": "この端末に保存しています。",
+      "targets": [
+        "ui.app.render.term.1e05a3a6d6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.52203486d8bf": {
+      "source": "魔王討伐！",
+      "targets": [
+        "ui.app.render.term.52203486d8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.17bd5d6c1227": {
+      "source": "旅の足あと",
+      "targets": [
+        "ui.app.render.term.17bd5d6c12"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.621728078419": {
+      "source": "ひとり旅",
+      "targets": [
+        "ui.app.render.term.6217280784"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b396c18ea561": {
+      "source": "行動",
+      "targets": [
+        "ui.app.render.term.b396c18ea5"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0ad8cdd51e50": {
+      "source": "道具袋",
+      "targets": [
+        "ui.app.render.term.0ad8cdd51e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b5989f74c7db": {
+      "source": "装備・呪文",
+      "targets": [
+        "ui.app.render.term.b5989f74c7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.86e8df92c1e9": {
+      "source": "仲間",
+      "targets": [
+        "ui.app.render.term.86e8df92c1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f8f6a2fe3169": {
+      "source": "今できる行動",
+      "targets": [
+        "ui.app.render.term.f8f6a2fe31"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.93a200dea750": {
+      "source": "持ち物と準備",
+      "targets": [
+        "ui.app.render.term.93a200dea7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.23480562a4b4": {
+      "source": "個別条件なし",
+      "targets": [
+        "ui.app.render.term.23480562a4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bf2bbcdd02ce": {
+      "source": "装備中 · ",
+      "targets": [
+        "ui.app.render.term.bf2bbcdd02"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9d9261bab93e": {
+      "source": "保存された冒険から再開しました。",
+      "targets": [
+        "ui.app.home.term.9d9261bab9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.415fdf317139": {
+      "source": "銭",
+      "targets": [
+        "ui.app.home.term.415fdf3171"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b92ccd545117": {
+      "source": "鍛",
+      "targets": [
+        "ui.app.home.term.b92ccd5451"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6dd2e4b41c2f": {
+      "source": "獣",
+      "targets": [
+        "ui.app.home.term.6dd2e4b41c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.28656d470286": {
+      "source": "灯",
+      "targets": [
+        "ui.app.home.term.28656d4702"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d520e6c00028": {
+      "source": " / 各20マス",
+      "targets": [
+        "ui.app.home.term.d520e6c000"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c4fd09e10afe": {
+      "source": " 現在地",
+      "targets": [
+        "ui.app.worldMap.term.c4fd09e10a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a9e0b26002bd": {
+      "source": "転職・試着",
+      "targets": [
+        "ui.app.jobs.term.a9e0b26002"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f60f49b1c2b7": {
+      "source": "新しい冒険を始めますか？",
+      "targets": [
+        "ui.app.confirmStart.term.f60f49b1c2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3eac9e4bd4d6": {
+      "source": "読み取れない保存",
+      "targets": [
+        "ui.app.confirmStart.term.3eac9e4bd4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.ed4b98dc3e0f": {
+      "source": "旅のはじまり。まずはサイコロを振ってみよう。",
+      "targets": [
+        "ui.app.start.term.ed4b98dc3e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d590327e6882": {
+      "source": "別の画面で冒険が進みました。保存を読み直してください。",
+      "targets": [
+        "ui.app.showError.term.d590327e68"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a0ade14b583e": {
+      "source": "別の画面で設定や記録が更新されました。読み直してください。",
+      "targets": [
+        "ui.app.showError.term.a0ade14b58"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.67d55c7ff222": {
+      "source": "別の画面で新しい冒険が始まりました。",
+      "targets": [
+        "ui.app.showError.term.67d55c7ff2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4cbfc7c68074": {
+      "source": "この版では読めない保存があります。元データを変更せず止めています。",
+      "targets": [
+        "ui.app.showError.term.4cbfc7c680"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9a3bad2d430e": {
+      "source": "操作を確定できませんでした。保存を読み直して状態を確認してください。",
+      "targets": [
+        "ui.app.showError.term.9a3bad2d43"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e8bafc9506e5": {
+      "source": "金貨",
+      "targets": [
+        "ui.app.actionForm.term.e8bafc9506"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.81b406f806f3": {
+      "source": "最初に通常攻撃",
+      "targets": [
+        "ui.app.field.term.81b406f806"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8885e4f22508": {
+      "source": "最初に防御",
+      "targets": [
+        "ui.app.field.term.8885e4f225"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bbfa5ff84666": {
+      "source": "この操作と一緒に使う道具",
+      "targets": [
+        "ui.app.field.term.bbfa5ff846"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.20a04e7533b1": {
+      "source": "答えを指定",
+      "targets": [
+        "ui.app.field.term.20a04e7533"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.08468ea02e6f": {
+      "source": "新しい",
+      "targets": [
+        "ui.app.field.term.08468ea02e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4f0311747e23": {
+      "source": "古い",
+      "targets": [
+        "ui.app.field.term.4f0311747e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4fd2597dc062": {
+      "source": "対象の足跡（0から順番）",
+      "targets": [
+        "ui.app.field.term.4fd2597dc0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3c2a5d9e6621": {
+      "source": "迎える仲間",
+      "targets": [
+        "ui.app.field.term.3c2a5d9e66"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.58603adad84a": {
+      "source": "今の仲間",
+      "targets": [
+        "ui.app.field.term.58603adad8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.699be4b74566": {
+      "source": "別れる仲間を選ぶ（確定前に条件を比較）",
+      "targets": [
+        "ui.app.field.term.699be4b745"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2ba9627cc759": {
+      "source": "現在の職業です",
+      "targets": [
+        "ui.app.field.term.2ba9627cc7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5a430d6bb01b": {
+      "source": "装備中は売れません",
+      "targets": [
+        "ui.app.field.term.5a430d6bb0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.eaa47743676f": {
+      "source": "この宿ではもう仲間にしました",
+      "targets": [
+        "ui.app.field.term.eaa4774367"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.96105c98cf61": {
+      "source": "今は選べません",
+      "targets": [
+        "ui.app.field.term.96105c98cf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a517fdcb64ab": {
+      "source": "操作を保存しました。",
+      "targets": [
+        "ui.app.field.term.a517fdcb64"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.53499658754d": {
+      "source": "この区間の先に該当するマスはありません。",
+      "targets": [
+        "ui.app.reveals.term.5349965875"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.982348c76990": {
+      "source": "全体の音量",
+      "targets": [
+        "ui.app.audioSettings.term.982348c769"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.dd5f9601f181": {
+      "source": "音楽の音量",
+      "targets": [
+        "ui.app.audioSettings.term.dd5f9601f1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.edcfda31c20b": {
+      "source": "効果音の音量",
+      "targets": [
+        "ui.app.audioSettings.term.edcfda31c2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.49b0ac0f54a8": {
+      "source": "旅の設定",
+      "targets": [
+        "ui.app.settings.term.49b0ac0f54"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8320984b0b92": {
+      "source": "標準の演出",
+      "targets": [
+        "ui.app.settings.term.8320984b0b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6e7fdac4f944": {
+      "source": "短い演出",
+      "targets": [
+        "ui.app.settings.term.6e7fdac4f9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9200344787f7": {
+      "source": "旅の手帳",
+      "targets": [
+        "ui.app.records.term.9200344787"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.23dad3af9c1e": {
+      "source": "全ルート",
+      "targets": [
+        "ui.app.records.term.23dad3af9c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.327f2f012996": {
+      "source": "討伐済み",
+      "targets": [
+        "ui.app.records.term.327f2f0129"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0361316afcfa": {
+      "source": "出会った敵",
+      "targets": [
+        "ui.app.records.term.0361316afc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.294293277d93": {
+      "source": "出会った仲間",
+      "targets": [
+        "ui.app.records.term.294293277d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.298778140553": {
+      "source": "見つけた装備",
+      "targets": [
+        "ui.app.records.term.2987781405"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c2c66b38868a": {
+      "source": "これから旅で見つけよう。",
+      "targets": [
+        "ui.app.records.term.c2c66b3886"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.24ab53a2bb6e": {
+      "source": "見本",
+      "targets": [
+        "ui.app.puzzlePanel.term.24ab53a2bb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c820c1e60f68": {
+      "source": "今の窓",
+      "targets": [
+        "ui.app.puzzlePanel.term.c820c1e60f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.73b972d71b0a": {
+      "source": "明",
+      "targets": [
+        "ui.app.puzzlePanel.term.73b972d71b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.140ede26426d": {
+      "source": "暗",
+      "targets": [
+        "ui.app.puzzlePanel.term.140ede2642"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3d191b623319": {
+      "source": "杯の数",
+      "targets": [
+        "ui.app.puzzlePanel.term.3d191b6233"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c2c1bfe05a33": {
+      "source": "単位",
+      "targets": [
+        "ui.app.puzzlePanel.term.c2c1bfe05a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.118b3ffebcdc": {
+      "source": "目盛りの上限",
+      "targets": [
+        "ui.app.puzzlePanel.term.118b3ffebc"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c39536b5d4bc": {
+      "source": "取り除く状態",
+      "targets": [
+        "ui.app.inputLabel.term.c39536b5d4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2946d1a6e36f": {
+      "source": "取り除く攻撃低下",
+      "targets": [
+        "ui.app.inputLabel.term.2946d1a6e3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.72c18b883660": {
+      "source": "取り除く防御低下",
+      "targets": [
+        "ui.app.inputLabel.term.72c18b8836"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e8a5a465a67a": {
+      "source": "最初の行動を宣言",
+      "targets": [
+        "ui.app.inputLabel.term.e8a5a465a6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a7ee428ae78a": {
+      "source": "回復する能力",
+      "targets": [
+        "ui.app.inputLabel.term.a7ee428ae7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c8c4cefc60c4": {
+      "source": "体力回復に使う部屋数",
+      "targets": [
+        "ui.app.inputLabel.term.c8c4cefc60"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.a2e319e114b4": {
+      "source": "一緒に使う回復品",
+      "targets": [
+        "ui.app.inputLabel.term.a2e319e114"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.300439317cd7": {
+      "source": "対象のマス",
+      "targets": [
+        "ui.app.inputLabel.term.300439317c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9596ee6f51c5": {
+      "source": "探すマスの種類",
+      "targets": [
+        "ui.app.inputLabel.term.9596ee6f51"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.15971d765410": {
+      "source": "代わりに渡す品",
+      "targets": [
+        "ui.app.inputLabel.term.15971d7654"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bad37f816606": {
+      "source": "魔力に振り替える組数",
+      "targets": [
+        "ui.app.inputLabel.term.bad37f8166"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3b81999de719": {
+      "source": "払う魔力",
+      "targets": [
+        "ui.app.inputLabel.term.3b81999de7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c83db6da15c9": {
+      "source": "答えを選ぶ",
+      "targets": [
+        "ui.app.inputLabel.term.c83db6da15"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.fcff4192051c": {
+      "source": "比較する2つの数",
+      "targets": [
+        "ui.app.inputLabel.term.fcff419205"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.cc19e2407ac8": {
+      "source": "入れ替え先の道具",
+      "targets": [
+        "ui.app.inputLabel.term.cc19e2407a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.02b85d978fa6": {
+      "source": "使う道具",
+      "targets": [
+        "ui.app.inputLabel.term.02b85d978f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2882b00920bf": {
+      "source": "対象を選ぶ",
+      "targets": [
+        "ui.app.inputLabel.term.2882b00920"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8de09130b262": {
+      "source": "並べる順序",
+      "targets": [
+        "ui.app.inputLabel.term.8de09130b2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7a961d6b2d6a": {
+      "source": "使う数",
+      "targets": [
+        "ui.app.inputLabel.term.7a961d6b2d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7920e38dd686": {
+      "source": "選ぶ品",
+      "targets": [
+        "ui.app.inputLabel.term.7920e38dd6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.26146f5dc5a9": {
+      "source": "出目を選ぶ",
+      "targets": [
+        "ui.app.inputLabel.term.26146f5dc5"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0cdffca37911": {
+      "source": "使い方を選ぶ",
+      "targets": [
+        "ui.app.inputLabel.term.0cdffca379"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.15a29a11fb68": {
+      "source": "サイコロを振る",
+      "targets": [
+        "ui.presentation.actionLabel.term.15a29a11fb"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0c72a412ed02": {
+      "source": "剣で攻撃",
+      "targets": [
+        "ui.presentation.actionLabel.term.0c72a412ed"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.265884f56927": {
+      "source": "盾を構える",
+      "targets": [
+        "ui.presentation.actionLabel.term.265884f569"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6842a05a7da6": {
+      "source": "旅を続ける",
+      "targets": [
+        "ui.presentation.actionLabel.term.6842a05a7d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7c23ed85b4d6": {
+      "source": "強敵に挑む",
+      "targets": [
+        "ui.presentation.actionLabel.term.7c23ed85b4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.c898ab0b084c": {
+      "source": "今回は見送る",
+      "targets": [
+        "ui.presentation.actionLabel.term.c898ab0b08"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5654451e020a": {
+      "source": "魔王に挑む",
+      "targets": [
+        "ui.presentation.actionLabel.term.5654451e02"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.b72518fa3a92": {
+      "source": "休む・半分回復",
+      "targets": [
+        "ui.presentation.actionLabel.term.b72518fa3a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1f19864a58c4": {
+      "source": "宿場を出る",
+      "targets": [
+        "ui.presentation.actionLabel.term.1f19864a58"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0b6b5dd89dec": {
+      "source": "逃げる",
+      "targets": [
+        "ui.presentation.actionLabel.term.0b6b5dd89d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5a0363134ae2": {
+      "source": "一度だけ再挑戦",
+      "targets": [
+        "ui.presentation.actionLabel.term.5a0363134a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.318895d26d05": {
+      "source": "冒険を終える",
+      "targets": [
+        "ui.presentation.actionLabel.term.318895d26d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.844aef5157d1": {
+      "source": "準備を終えて再挑戦",
+      "targets": [
+        "ui.presentation.actionLabel.term.844aef5157"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7029b6cd0f42": {
+      "source": "宝箱を見送る",
+      "targets": [
+        "ui.presentation.actionLabel.term.7029b6cd0f"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.f2484b15f4e1": {
+      "source": "受け取らない",
+      "targets": [
+        "ui.presentation.actionLabel.term.f2484b15f4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9e2879426295": {
+      "source": "呪文を準備",
+      "targets": [
+        "ui.presentation.actionLabel.term.9e28794262"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e492104f8213": {
+      "source": "未実装のため進行を保留",
+      "targets": [
+        "ui.presentation.actionLabel.term.e492104f82"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.46be5c3f4ec5": {
+      "source": "出目を調整して",
+      "targets": [
+        "ui.presentation.actionLabel.term.46be5c3f4e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2d686d9ec492": {
+      "source": "そのまま",
+      "targets": [
+        "ui.presentation.actionLabel.term.2d686d9ec4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2952009576e0": {
+      "source": "買う",
+      "targets": [
+        "ui.presentation.actionLabel.term.2952009576"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e6ad56414e08": {
+      "source": "売る",
+      "targets": [
+        "ui.presentation.actionLabel.term.e6ad56414e"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.3b472f63bd46": {
+      "source": "装備する",
+      "targets": [
+        "ui.presentation.actionLabel.term.3b472f63bd"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7247483901e9": {
+      "source": "仲間にする",
+      "targets": [
+        "ui.presentation.actionLabel.term.7247483901"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.603fe0458085": {
+      "source": "転職する",
+      "targets": [
+        "ui.presentation.actionLabel.term.603fe04580"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.12413235d333": {
+      "source": "使う",
+      "targets": [
+        "ui.presentation.actionLabel.term.12413235d3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e820d061dd32": {
+      "source": "唱える",
+      "targets": [
+        "ui.presentation.actionLabel.term.e820d061dd"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.72581708f4a5": {
+      "source": "受け取る",
+      "targets": [
+        "ui.presentation.actionLabel.term.72581708f4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.cc2f84a3cf89": {
+      "source": "交換する",
+      "targets": [
+        "ui.presentation.actionLabel.term.cc2f84a3cf"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2c01205b05f1": {
+      "source": "選ぶ",
+      "targets": [
+        "ui.presentation.actionLabel.term.2c01205b05"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.65948d1ca2b1": {
+      "source": "魔力減少",
+      "targets": [
+        "ui.presentation.effectText.term.65948d1ca2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.80ae933b0a05": {
+      "source": "敵による魔力減少を防ぎました",
+      "targets": [
+        "ui.presentation.effectText.term.80ae933b0a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1e7e3645d41a": {
+      "source": "レベルアップ！",
+      "targets": [
+        "ui.presentation.effectText.term.1e7e3645d4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.bbd9b68ac9aa": {
+      "source": "体力と魔力を回復しました",
+      "targets": [
+        "ui.presentation.effectText.term.bbd9b68ac9"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5c1258eb222c": {
+      "source": "勝利！",
+      "targets": [
+        "ui.presentation.effectText.term.5c1258eb22"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.fe48e7608cfc": {
+      "source": "勇者は倒れました",
+      "targets": [
+        "ui.presentation.effectText.term.fe48e7608c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.16f45eee7937": {
+      "source": "王冠が砕けた！ 次の予告を確認",
+      "targets": [
+        "ui.presentation.effectText.term.16f45eee79"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.259dba4a7bfd": {
+      "source": "100マス目。魔王の城に到着",
+      "targets": [
+        "ui.presentation.effectText.term.259dba4a7b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0782e07d55f0": {
+      "source": "罠を回避",
+      "targets": [
+        "ui.presentation.effectText.term.0782e07d55"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4461d155d225": {
+      "source": "装備を付け替えました",
+      "targets": [
+        "ui.presentation.effectText.term.4461d155d2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.492338405418": {
+      "source": "新しい職業になりました",
+      "targets": [
+        "ui.presentation.effectText.term.4923384054"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e6492ad16383": {
+      "source": "仲間が加わりました",
+      "targets": [
+        "ui.presentation.effectText.term.e6492ad163"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.163303ac9931": {
+      "source": "呪文を準備しました",
+      "targets": [
+        "ui.presentation.effectText.term.163303ac99"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7ae4f178b61f": {
+      "source": "宝箱の品を受け取りました",
+      "targets": [
+        "ui.presentation.effectText.term.7ae4f178b6"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.24c2ea9bb88f": {
+      "source": "勇者",
+      "targets": [
+        "ui.presentation.effectText.term.24c2ea9bb8"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0711b934a291": {
+      "source": "敵",
+      "targets": [
+        "ui.presentation.effectText.term.0711b934a2"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7c6a6d4cefd2": {
+      "source": "無効化",
+      "targets": [
+        "ui.presentation.effectText.term.7c6a6d4cef"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.524b3ea8b7e1": {
+      "source": "分身が受け止めた",
+      "targets": [
+        "ui.presentation.effectText.term.524b3ea8b7"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.d45cfd7c4c89": {
+      "source": "対象効果で傷なし",
+      "targets": [
+        "ui.presentation.effectText.term.d45cfd7c4c"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1d803ae5c382": {
+      "source": "効果で防いだ",
+      "targets": [
+        "ui.presentation.effectText.term.1d803ae5c3"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.94a3a96243b2": {
+      "source": "ダメージ軽減",
+      "targets": [
+        "ui.presentation.effectText.term.94a3a96243"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.4f4e1d90f4ca": {
+      "source": "体力回復",
+      "targets": [
+        "ui.presentation.effectText.term.4f4e1d90f4"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.8f707b601d3e": {
+      "source": "魔力回復",
+      "targets": [
+        "ui.presentation.effectText.term.8f707b601d"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.202a059d9b1b": {
+      "source": "ダメージ",
+      "targets": [
+        "ui.presentation.effectText.term.202a059d9b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.fa133cb7c121": {
+      "source": "通常攻撃 ",
+      "targets": [
+        "ui.presentation.comparisonText.term.fa133cb7c1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.48cf4313fd70": {
+      "source": "防御 ",
+      "targets": [
+        "ui.presentation.comparisonText.term.48cf4313fd"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.47c2d0dece19": {
+      "source": "条件の記載なし",
+      "targets": [
+        "ui.presentation.comparisonText.term.47c2d0dece"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5a640c533a8c": {
+      "source": " 魔王城",
+      "targets": [
+        "ui.presentation.mapTiles.term.5a640c533a"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.2dd001097420": {
+      "source": " 宿場",
+      "targets": [
+        "ui.presentation.mapTiles.term.2dd0010974"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e5dd88917257": {
+      "source": "選んだ答えは合っています。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.e5dd889172"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.9ba91d66ae1c": {
+      "source": "選んだ答えは違います。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.9ba91d66ae"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e0eb85275035": {
+      "source": "2つの数は同じくらい近いです。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.e0eb852750"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.5393dcb0d0ff": {
+      "source": "順序はすべて合っています。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.5393dcb0d0"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.0676f2a38b30": {
+      "source": "失敗を確定せず、もう一度答えられます。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.0676f2a38b"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.07c62073c19d": {
+      "source": "手掛かりを確認しました。",
+      "targets": [
+        "ui.presentation.puzzleHintText.term.07c62073c1"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.6b0d89b965e2": {
+      "source": "マスの冒険",
+      "targets": [
+        "ui.app.confirmStart.runSuffix"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.868310e193d1": {
+      "source": "なし",
+      "targets": [
+        "ui.app.actionForm.noAid"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.7483f8ec95d8": {
+      "source": "道具",
+      "targets": [
+        "ui.presentation.effectText.itemFallback"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e33f375c045f": {
+      "source": "{p0}/{p1}キーを提供。全文翻訳の受入は未完了です。",
+      "targets": [
+        "ui.app.settings.coverage"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.e54db82879e9": {
+      "source": "端末内の下書きです。この版では投稿は有効になっていません。",
+      "targets": [
+        "ui.app.sharePanel.localOnly"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.1ec775aad70e": {
+      "source": "コピーしました",
+      "targets": [
+        "ui.app.sharePanel.copied"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    },
+    "ui.literal.73e284529f7c": {
+      "source": "コピーを利用できません",
+      "targets": [
+        "ui.app.sharePanel.copyUnavailable"
+      ],
+      "proof": "sha256 exact UTF-8 Japanese source; no placeholder/text changes"
+    }
+  }
+}

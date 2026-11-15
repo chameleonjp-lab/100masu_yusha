@@ -1,0 +1,765 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "M1-01": {
+      "options": [
+        {
+          "id": "match",
+          "label": "ヒナギクの絵を白い花に、スミレの絵を紫の花に結ぶ",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 100
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "M1-01",
+        "kind": "matching",
+        "candidates": [
+          "daisy",
+          "violet"
+        ],
+        "targets": [
+          "white",
+          "purple"
+        ],
+        "labels": {
+          "daisy": "ヒナギクの絵",
+          "violet": "スミレの絵",
+          "white": "白い花",
+          "purple": "紫の花"
+        },
+        "answer": {
+          "daisy": "white",
+          "violet": "purple"
+        },
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 100
+          }
+        ],
+        "onWrong": []
+      }
+    },
+    "M1-02": {
+      "options": [
+        {
+          "id": "cover",
+          "label": "袋を横にし、穴に布を当てて荷ひもで押さえる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 160
+            }
+          ]
+        }
+      ],
+      "puzzle": {
+        "id": "M1-02",
+        "kind": "sequence",
+        "candidates": [
+          "layBag",
+          "coverHole",
+          "tieRope"
+        ],
+        "labels": {
+          "layBag": "袋を横にする",
+          "coverHole": "穴に布を当てる",
+          "tieRope": "荷ひもで押さえる"
+        },
+        "answer": [
+          "layBag",
+          "coverHole",
+          "tieRope"
+        ],
+        "onCorrect": [
+          {
+            "op": "awardGold",
+            "amount": 160
+          }
+        ],
+        "onWrong": []
+      }
+    },
+    "M1-03": {
+      "options": [
+        {
+          "id": "measure",
+          "label": "かかしを草に寝かせ、肩からすそまでひもを当てる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 140
+            }
+          ]
+        }
+      ]
+    },
+    "M1-04": {
+      "options": [
+        {
+          "id": "peel",
+          "label": "左の皿を持ち上げ、裏の古いチーズをはがす",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 180
+            }
+          ]
+        }
+      ]
+    },
+    "M1-05": {
+      "options": [
+        {
+          "id": "bell",
+          "label": "ひもをほどき、客の手が届く所で鈴を鳴らす",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 120
+            }
+          ]
+        }
+      ]
+    },
+    "M1-06": {
+      "options": [
+        {
+          "id": "sort",
+          "label": "底の印を見て、合うかごへ一つずつ移す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 200
+            }
+          ]
+        }
+      ]
+    },
+    "M1-07": {
+      "options": [
+        {
+          "id": "hang",
+          "label": "旗の先を高いくぎへ掛け、牛の前を空ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 150
+            }
+          ]
+        }
+      ]
+    },
+    "M1-08": {
+      "options": [
+        {
+          "id": "rewind",
+          "label": "空の糸巻きの切れ目に糸の端をはさみ、巻き戻す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 130
+            }
+          ]
+        }
+      ]
+    },
+    "M1-09": {
+      "options": [
+        {
+          "id": "return",
+          "label": "星の跡を追い、柵で待つ旅人に靴を返す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 170
+            }
+          ]
+        }
+      ]
+    },
+    "M1-10": {
+      "options": [
+        {
+          "id": "tray",
+          "label": "木皿を客の前に置き、その中で釣り銭を渡す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 220
+            }
+          ]
+        }
+      ]
+    },
+    "M1-11": {
+      "options": [
+        {
+          "id": "lift",
+          "label": "二人の染め屋に両端を持ってもらい、真ん中を少しずつ上げる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 190
+            }
+          ]
+        }
+      ]
+    },
+    "M1-12": {
+      "options": [
+        {
+          "id": "nest",
+          "label": "箱の中に干し草を丸く敷き、一つずつくぼみを作る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 210
+            }
+          ]
+        }
+      ]
+    },
+    "M1-13": {
+      "options": [
+        {
+          "id": "sign",
+          "label": "御者に合図をもらいながら、板を道の正面へ向ける",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 250
+            }
+          ]
+        }
+      ]
+    },
+    "M1-14": {
+      "options": [
+        {
+          "id": "stage",
+          "label": "荷をおろした木の板を草の上に並べ、小さな舞台を作る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 230
+            }
+          ]
+        }
+      ]
+    },
+    "M1-15": {
+      "options": [
+        {
+          "id": "fold",
+          "label": "角と角を重ねて底を折り、豆を入れて確かめる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 240
+            }
+          ]
+        }
+      ]
+    },
+    "M1-16": {
+      "options": [
+        {
+          "id": "shade",
+          "label": "白い布を日陰に広げ、その上にガラスと見本を並べる",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 280
+            }
+          ]
+        }
+      ]
+    },
+    "M1-17": {
+      "options": [
+        {
+          "id": "slide",
+          "label": "ふたを線がつながる向きにずらし、中の剣を取る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW02"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-18": {
+      "options": [
+        {
+          "id": "tie",
+          "label": "ひもを輪に通して結ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR03"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-19": {
+      "options": [
+        {
+          "id": "sword",
+          "label": "剣の包みの革ひもを結ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW05"
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "防具の包みの革ひもを結ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR05"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-20": {
+      "options": [
+        {
+          "id": "sheath",
+          "label": "剣先から厚い布をかぶせ、持ち手の下でしばる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW08"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-21": {
+      "options": [
+        {
+          "id": "free",
+          "label": "すそを引かずに枝をしならせ、布を外す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR09"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-22": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN01"
+        }
+      ]
+    },
+    "M1-23": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M1-24": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN09"
+        }
+      ]
+    },
+    "M1-25": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M1-26": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN01"
+        }
+      ]
+    },
+    "M1-27": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN02"
+        }
+      ]
+    },
+    "M1-28": {
+      "options": [
+        {
+          "id": "basket",
+          "label": "板の下に浅いかごを差し入れて豆を受ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT01"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-29": {
+      "options": [
+        {
+          "id": "ribbon",
+          "label": "かばんを押さえ、リボンを枝へ移してやる",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD02"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-30": {
+      "options": [
+        {
+          "id": "leaf",
+          "label": "びんを横に倒し、葉を差し入れて虫を逃がす",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE03"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-31": {
+      "options": [
+        {
+          "id": "drawer",
+          "label": "引き出しの内と外から取っ手を押さえ直す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD06"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-32": {
+      "options": [
+        {
+          "id": "sandbag",
+          "label": "砂袋に砂を入れて台の両側へ置く",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT07"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-33": {
+      "options": [
+        {
+          "id": "spatula",
+          "label": "木べらで包みを手前に寄せて取り出す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE09"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-34": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 5
+        }
+      ]
+    },
+    "M1-35": {
+      "onLand": [
+        {
+          "op": "mp",
+          "delta": 3
+        }
+      ]
+    },
+    "M1-36": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 6
+        }
+      ]
+    },
+    "M1-37": {
+      "onLand": [
+        {
+          "op": "hp",
+          "delta": 2
+        },
+        {
+          "op": "mp",
+          "delta": 2
+        }
+      ]
+    },
+    "M1-38": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M1-39": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M1-40": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M1-41": {
+      "inn": {
+        "services": []
+      }
+    },
+    "M1-42": {
+      "options": [
+        {
+          "id": "wage",
+          "label": "給金をもらう（150G）",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 150
+            }
+          ]
+        },
+        {
+          "id": "lunch",
+          "label": "温かい昼食を食べる（体力7回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "M1-43": {
+      "options": [
+        {
+          "id": "red",
+          "label": "赤いふたを選ぶ（AT04）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT04"
+            }
+          ]
+        },
+        {
+          "id": "white",
+          "label": "白いふたを選ぶ（HE04）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE04"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-44": {
+      "options": [
+        {
+          "id": "carrot",
+          "label": "ニンジンの畝へ運ぶ（体力6回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            }
+          ]
+        },
+        {
+          "id": "herb",
+          "label": "香草の畝へ運ぶ（魔力4回復）",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "M1-45": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "いすで休む（体力4回復）",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            }
+          ]
+        },
+        {
+          "id": "demo",
+          "label": "立ち見台で実演を見る（BD08）",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD08"
+            }
+          ]
+        }
+      ]
+    },
+    "M1-46": {
+      "options": [
+        {
+          "id": "help",
+          "label": "手伝って箱を運ぶ（体力2を使う。最低1。240G）",
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          },
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 240
+            }
+          ]
+        },
+        {
+          "id": "pass",
+          "label": "力を残して通りすぎる",
+          "effects": []
+        }
+      ]
+    },
+    "M1-47": {
+      "options": [
+        {
+          "id": "drink",
+          "label": "70Gで飲む（体力5・魔力2回復）",
+          "cost": {
+            "gold": 70
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "pass",
+          "label": "買わずに進む",
+          "effects": []
+        }
+      ]
+    },
+    "M1-48": {
+      "options": [
+        {
+          "id": "hire",
+          "label": "荷運びに60Gを払う",
+          "cost": {
+            "gold": 60,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "push",
+          "label": "自分で丸太を押す（体力3を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M1-49": {
+      "options": [
+        {
+          "id": "pull",
+          "label": "靴ひもをしばり直し、草の根をつかんで足を抜く（体力2を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    },
+    "M1-50": {
+      "options": [
+        {
+          "id": "mat",
+          "label": "敷物を80Gで借りて皿を止める",
+          "cost": {
+            "gold": 80,
+            "trapLoss": true
+          },
+          "effects": []
+        },
+        {
+          "id": "catch",
+          "label": "自分で受け止める（体力4を使う。最低1）",
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          },
+          "effects": []
+        }
+      ]
+    }
+  }
+}

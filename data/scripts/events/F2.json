@@ -1,0 +1,1477 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "F2-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "布で見つけた突起を削り、舟を一往復させる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 360
+            }
+          ]
+        }
+      ]
+    },
+    "F2-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "空の皿で針を中央に合わせ、預かった荷を量り直す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 220
+            }
+          ]
+        }
+      ]
+    },
+    "F2-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "三つの爪に合わせて曲がりを戻し、空の網を引く。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 410
+            }
+          ]
+        }
+      ]
+    },
+    "F2-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "釘頭を板の面より低く沈め、当て布を往復させる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 260
+            }
+          ]
+        }
+      ]
+    },
+    "F2-05": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "札を水に浸して離し、刻んだ番号で棚へ戻す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 190
+            }
+          ]
+        }
+      ]
+    },
+    "F2-06": {
+      "options": [
+        {
+          "id": "water",
+          "label": "右の門を開いて水車を回す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW11",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "hand",
+          "label": "手回しで仕上げる",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW12",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F2-07": {
+      "options": [
+        {
+          "id": "wrap",
+          "label": "板を添えて布で巻く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW13",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "船頭に任せる",
+          "effects": []
+        }
+      ]
+    },
+    "F2-08": {
+      "options": [
+        {
+          "id": "forge",
+          "label": "風よけを回して自分で打つ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW14",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "hire",
+          "label": "職人に170G払う",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW14",
+              "paidGold": 170
+            }
+          ],
+          "cost": {
+            "gold": 170
+          }
+        }
+      ]
+    },
+    "F2-09": {
+      "options": [
+        {
+          "id": "one",
+          "label": "一本線を刻む",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW15",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "二本線を刻む",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW16",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-10": {
+      "options": [
+        {
+          "id": "knot",
+          "label": "櫂先の固結びを引く",
+          "effects": []
+        },
+        {
+          "id": "loop",
+          "label": "柄のほどき輪を引く",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW17",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-11": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "SW18を790Gで買う",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW18",
+              "paidGold": 790
+            }
+          ],
+          "cost": {
+            "gold": 790
+          }
+        },
+        {
+          "id": "trade",
+          "label": "BD11を1個渡す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW18",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "items": [
+              "BD11"
+            ]
+          }
+        },
+        {
+          "id": "skip",
+          "label": "見送る",
+          "effects": []
+        }
+      ]
+    },
+    "F2-12": {
+      "options": [
+        {
+          "id": "blue",
+          "label": "青の浮きを手繰る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW19",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "white",
+          "label": "白の浮きを手繰る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR11",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-13": {
+      "options": [
+        {
+          "id": "edge",
+          "label": "木の端から測る",
+          "effects": []
+        },
+        {
+          "id": "zero",
+          "label": "刻まれた0から測る",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW20",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-14": {
+      "options": [
+        {
+          "id": "thread",
+          "label": "結び目を切らずにゆるめ、替え紐を元の穴へ通す。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR12",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-15": {
+      "options": [
+        {
+          "id": "short",
+          "label": "短い束を渡す",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR13",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "long",
+          "label": "長い束を担いで往復",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR14",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F2-16": {
+      "options": [
+        {
+          "id": "wash",
+          "label": "真水にくぐらせてつるす",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR15",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "dry",
+          "label": "塩をつけたまま日に当てる",
+          "effects": []
+        }
+      ]
+    },
+    "F2-17": {
+      "options": [
+        {
+          "id": "donate",
+          "label": "HE11を1個寄付",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR16",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "items": [
+              "HE11"
+            ]
+          }
+        },
+        {
+          "id": "water",
+          "label": "河原で水をくむ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR16",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        }
+      ]
+    },
+    "F2-18": {
+      "options": [
+        {
+          "id": "adjust",
+          "label": "穴を一つ上へずらして再試着",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR17",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "return",
+          "label": "職人に返す",
+          "effects": []
+        }
+      ]
+    },
+    "F2-19": {
+      "options": [
+        {
+          "id": "band",
+          "label": "前へ落ちた帯を詰める",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR18",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "other",
+          "label": "身幅の違う一着を試着",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR19",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-20": {
+      "options": [
+        {
+          "id": "paid",
+          "label": "検品代180Gを払う",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR20",
+              "paidGold": 180
+            }
+          ],
+          "cost": {
+            "gold": 180
+          }
+        },
+        {
+          "id": "plain",
+          "label": "普通の品にする",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR12",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-21": {
+      "options": [
+        {
+          "id": "weapon",
+          "label": "水を切って武器を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW12",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "armor",
+          "label": "乾いた防具を選ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR14",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "F2-22": {
+      "options": [
+        {
+          "id": "deep",
+          "label": "深い側を敵に向ける",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": [
+                {
+                  "id": "deep",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "capDamage",
+                      "amount": 0
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shallow",
+          "label": "浅い側から剣を差す",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": [
+                {
+                  "id": "shallow",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "F2-23": {
+      "options": [
+        {
+          "id": "sail",
+          "label": "明るい帆を背にする",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": [
+                {
+                  "id": "sail",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "door",
+          "label": "暗い戸口で待つ",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": [
+                {
+                  "id": "door",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "attack"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "F2-24": {
+      "options": [
+        {
+          "id": "lower",
+          "label": "下段で浅瀬ガニに挑む",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": []
+            }
+          ]
+        },
+        {
+          "id": "upper",
+          "label": "上段で灯りコウモリに挑む",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F2-25": {
+      "options": [
+        {
+          "id": "fire",
+          "label": "皿の火を借りる",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": [
+                {
+                  "id": "fire",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "spell"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "extinguish",
+          "label": "火を消して降ろす",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": [
+                {
+                  "id": "safe",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 2
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "F2-26": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "浜へ下りて戦う",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": []
+            }
+          ]
+        },
+        {
+          "id": "skip",
+          "label": "堤防の上を通る",
+          "effects": []
+        }
+      ]
+    },
+    "F2-27": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "HE12を45Gで買って向かう",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE12"
+            },
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": []
+            }
+          ],
+          "cost": {
+            "gold": 45
+          }
+        },
+        {
+          "id": "go",
+          "label": "手持ちのまま向かう",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F2-28": {
+      "options": [
+        {
+          "id": "shell",
+          "label": "貝を片方のハサミに置く",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": [
+                {
+                  "id": "shell",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "attack"
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.attackHit"
+                          },
+                          true
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "empty",
+          "label": "両方空のまま浅瀬へ出る",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "F2-29": {
+      "options": [
+        {
+          "id": "dry",
+          "label": "乾いた包みを取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT12"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "手当て用を救う",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE13"
+            }
+          ]
+        }
+      ]
+    },
+    "F2-30": {
+      "options": [
+        {
+          "id": "loop",
+          "label": "見本と同じ輪を残す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD12"
+            }
+          ]
+        },
+        {
+          "id": "tight",
+          "label": "端を二本とも締め切る",
+          "effects": []
+        }
+      ]
+    },
+    "F2-31": {
+      "options": [
+        {
+          "id": "take",
+          "label": "荷札を直して支給品を取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT13"
+            }
+          ]
+        },
+        {
+          "id": "decline",
+          "label": "荷札だけ直して辞退",
+          "effects": []
+        }
+      ]
+    },
+    "F2-32": {
+      "options": [
+        {
+          "id": "trade",
+          "label": "BD13を1個渡す",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE14"
+            }
+          ],
+          "cost": {
+            "items": [
+              "BD13"
+            ]
+          }
+        },
+        {
+          "id": "keep",
+          "label": "今の品を持って進む",
+          "effects": []
+        }
+      ]
+    },
+    "F2-33": {
+      "options": [
+        {
+          "id": "left",
+          "label": "左の箱を下ろす",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD14"
+            }
+          ]
+        },
+        {
+          "id": "right",
+          "label": "右の箱を下ろす",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT14"
+            }
+          ]
+        }
+      ]
+    },
+    "F2-34": {
+      "options": [
+        {
+          "id": "repair",
+          "label": "小石を抜く",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE15"
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "buy",
+          "label": "包みを67Gで買う",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE15"
+            }
+          ],
+          "cost": {
+            "gold": 67
+          }
+        }
+      ]
+    },
+    "F2-35": {
+      "options": [
+        {
+          "id": "cup",
+          "label": "一杯だけ飲む",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "refill",
+          "label": "90Gでおかわり",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 10,
+              "floor": 1
+            }
+          ],
+          "cost": {
+            "gold": 90
+          }
+        }
+      ]
+    },
+    "F2-36": {
+      "options": [
+        {
+          "id": "sleep",
+          "label": "舟底で目を閉じる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "id": "waves",
+          "label": "舷で波を数える",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F2-37": {
+      "options": [
+        {
+          "id": "wash",
+          "label": "ぬるい桶で先に足を洗い、石の桶で休める。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "F2-38": {
+      "options": [
+        {
+          "id": "tea",
+          "label": "熱い湯を飲む",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "light",
+          "label": "灯の動きに集中",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "F2-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "bread",
+            "label": "同行者とパンを分ける",
+            "effects": [
+              {
+                "op": "hp",
+                "delta": {
+                  "min": [
+                    6,
+                    {
+                      "mul": [
+                        2,
+                        {
+                          "add": [
+                            1,
+                            {
+                              "ref": "companionCount"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "floor": 1
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "F2-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "buckets",
+            "label": "水桶を並べて礼を選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "warm",
+                    "label": "温水",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 4,
+                        "floor": 1
+                      }
+                    ]
+                  },
+                  {
+                    "id": "cold",
+                    "label": "冷水",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "F2-42": {
+      "options": [
+        {
+          "id": "box",
+          "label": "対岸の箱を取りに行く",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 350
+            }
+          ],
+          "cost": {
+            "hp": {
+              "amount": 2,
+              "floor": 1
+            }
+          }
+        },
+        {
+          "id": "craft",
+          "label": "小物を作る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD15"
+            }
+          ]
+        }
+      ]
+    },
+    "F2-43": {
+      "options": [
+        {
+          "id": "forge",
+          "label": "研ぎ場へ届ける",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW11",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "pharmacy",
+          "label": "薬店へ届ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE16"
+            }
+          ]
+        }
+      ]
+    },
+    "F2-44": {
+      "options": [
+        {
+          "id": "support",
+          "label": "堰板を支える",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 280
+            }
+          ]
+        },
+        {
+          "id": "breathe",
+          "label": "職人と息を整える",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "F2-45": {
+      "options": [
+        {
+          "id": "boat",
+          "label": "船に座って食べる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "shore",
+          "label": "岸で包みを受け取る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE17"
+            }
+          ]
+        }
+      ]
+    },
+    "F2-46": {
+      "options": [
+        {
+          "id": "buy",
+          "label": "540Gで右舷の防具",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR11",
+              "paidGold": 540
+            }
+          ],
+          "cost": {
+            "gold": 540
+          }
+        },
+        {
+          "id": "trade",
+          "label": "AT15で左舷の防具",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR18",
+              "paidGold": 0
+            }
+          ],
+          "cost": {
+            "items": [
+              "AT15"
+            ]
+          }
+        },
+        {
+          "id": "skip",
+          "label": "見送る",
+          "effects": []
+        }
+      ]
+    },
+    "F2-47": {
+      "options": [
+        {
+          "id": "grandfather",
+          "label": "川側の祖父へ手渡す",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 230
+            }
+          ]
+        },
+        {
+          "id": "grandmother",
+          "label": "道側の祖母の店まで運ぶ",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "F2-48": {
+      "options": [
+        {
+          "id": "post",
+          "label": "杭へ鎖を回す",
+          "effects": []
+        },
+        {
+          "id": "pull",
+          "label": "力まかせに引く",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F2-49": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "舟に80Gで荷を載せる",
+          "effects": [],
+          "cost": {
+            "gold": 80,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "step",
+          "label": "荷を肩に上げてまたぐ",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F2-50": {
+      "options": [
+        {
+          "id": "cover",
+          "label": "窓際からふたをかぶせる",
+          "effects": []
+        },
+        {
+          "id": "smoke",
+          "label": "煙へ身を乗り出す",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 3
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    },
+    "F2-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "inspect",
+            "label": "船頭に次の罠を聞く（なければここから先はなし）",
+            "once": false,
+            "effects": [
+              {
+                "op": "reveal",
+                "info": "nextTrapInBand"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

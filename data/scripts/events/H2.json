@@ -1,0 +1,4077 @@
+{
+  "format": "event-scripts-1",
+  "events": {
+    "H2-01": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "空き樽を結んで机を浮かせ、岸まで引き寄せる。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 300
+            }
+          ]
+        }
+      ]
+    },
+    "H2-02": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "網の側面に小さな出口を編み、漁師と一緒に水へ戻す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 240
+            }
+          ]
+        }
+      ]
+    },
+    "H2-03": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "母船の鐘を短く三度ずつ鳴らし、舟の返事を待つ。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 330
+            }
+          ]
+        }
+      ]
+    },
+    "H2-04": {
+      "options": [
+        {
+          "id": "complete",
+          "label": "板の泥を洗い、元の釘穴に合わせて立て直す。",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 280
+            }
+          ]
+        }
+      ]
+    },
+    "H2-05": {
+      "options": [
+        {
+          "id": "help",
+          "label": "鞘の裏に笛の輪を縫い留め、両手でこげるようにする。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW11",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H2-06": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AR11",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR11",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR13",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR13",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H2-07": {
+      "options": [
+        {
+          "id": "help",
+          "label": "代わりの小枝を巣の下に置き、鳥が落とした棒を拾う。",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW14",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H2-08": {
+      "options": [
+        {
+          "id": "one",
+          "label": "SW16",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "SW16",
+              "paidGold": 0
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AR15",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR15",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H2-09": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "乗客の座る位置を戻し、岸から櫂を差し入れる。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": [
+                {
+                  "id": "oar",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "and": [
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.round"
+                          },
+                          1
+                        ]
+                      },
+                      {
+                        "eq": [
+                          {
+                            "ref": "battle.heroAction"
+                          },
+                          "guard"
+                        ]
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "capDamage",
+                      "amount": 0
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-10": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "手前の灯を低くして、足場の確かな船着き場まで敵を導く。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": [
+                {
+                  "id": "light",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-11": {
+      "onLand": [
+        {
+          "op": "battle",
+          "enemy": "EN10"
+        }
+      ]
+    },
+    "H2-12": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "窓を横から開け、灯りコウモリを空き舟の方に放つ。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "battle",
+              "enemy": "EN04",
+              "rules": []
+            }
+          ]
+        }
+      ]
+    },
+    "H2-13": {
+      "options": [
+        {
+          "id": "fight",
+          "label": "渡りたい人を岸に待たせ、切った短い綱で敵を引き離す。",
+          "effects": [
+            {
+              "op": "battle",
+              "enemy": "EN03",
+              "rules": [
+                {
+                  "id": "rope",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      1
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-14": {
+      "options": [
+        {
+          "id": "help",
+          "label": "ふたに詰まった泥を抜き、乾いた布を皿の間に挟む。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE11"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-15": {
+      "options": [
+        {
+          "id": "one",
+          "label": "BD11",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD11"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT11",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT11"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-16": {
+      "options": [
+        {
+          "id": "help",
+          "label": "隣の空籠を沈め、底から支えて一緒に持ち上げる。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE12"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-17": {
+      "options": [
+        {
+          "id": "help",
+          "label": "取水口につかえた落ち葉をざるですくい、水が澄むまで見守る。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "mp"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "giveItem",
+              "id": "HE13"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-18": {
+      "options": [
+        {
+          "id": "usual",
+          "label": "BD12",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD12"
+            }
+          ]
+        },
+        {
+          "id": "companion",
+          "label": "同行者がいればBD13",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD13"
+            }
+          ],
+          "requires": {
+            "gt": [
+              {
+                "ref": "companionCount"
+              },
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "H2-19": {
+      "options": [
+        {
+          "id": "help",
+          "label": "引き潮のうちに枝を曲げ、札の紋と同じ色の船へ渡す。",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD14"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-20": {
+      "options": [
+        {
+          "id": "one",
+          "label": "HE14",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE14"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "HE15",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE15"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-21": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT12",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT12"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "AT13",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT13"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-22": {
+      "options": [
+        {
+          "id": "help",
+          "label": "棚板を順にはずし、木箱を立てて通り道を空ける。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "eq": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "BD15"
+                },
+                {
+                  "op": "giveItem",
+                  "id": "HE16"
+                }
+              ],
+              "else": [
+                {
+                  "op": "giveItem",
+                  "id": "BD15"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-23": {
+      "options": [
+        {
+          "id": "one",
+          "label": "AT14",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT14"
+            }
+          ]
+        },
+        {
+          "id": "two",
+          "label": "BD16",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD16"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-24": {
+      "options": [
+        {
+          "id": "item",
+          "label": "HE17",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE17"
+            }
+          ]
+        },
+        {
+          "id": "heal",
+          "label": "手当て",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H2-25": {
+      "options": [
+        {
+          "id": "eat",
+          "label": "食べる",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "bag",
+          "label": "満タンならHE18を持ち帰る",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE18"
+            }
+          ],
+          "requires": {
+            "gte": [
+              {
+                "ref": "hp"
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H2-26": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "開ききった花の前で、水番と同じ長さだけ静かに呼吸する。",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            },
+            {
+              "op": "if",
+              "cond": {
+                "lt": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 2,
+                  "floor": 1
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H2-27": {
+      "options": [
+        {
+          "id": "cold",
+          "label": "冷水",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            },
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H2-27",
+              "label": "H2-27",
+              "rules": [
+                {
+                  "id": "H2-27",
+                  "hook": "enemyDamage",
+                  "when": {
+                    "gt": [
+                      {
+                        "ref": "battle.damage"
+                      },
+                      0
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "reduceDamage",
+                      "amount": 1
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "warm",
+          "label": "湯",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H2-28": {
+      "options": [
+        {
+          "id": "bowl",
+          "label": "小椀",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        },
+        {
+          "id": "bag",
+          "label": "旅の包み",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "HE19"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-29": {
+      "options": [
+        {
+          "id": "water",
+          "label": "身を乗り出さず耳を寄せ、水音の切れ間に合図する。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "reserve",
+                  "slot": "nextBattle",
+                  "filter": "any",
+                  "unique": "H2-29",
+                  "label": "H2-29",
+                  "rules": [
+                    {
+                      "id": "H2-29",
+                      "hook": "heroAttackDamage",
+                      "when": {
+                        "eq": [
+                          {
+                            "ref": "battle.attackKind"
+                          },
+                          "spell"
+                        ]
+                      },
+                      "effects": [
+                        {
+                          "op": "addDamage",
+                          "amount": 3
+                        }
+                      ],
+                      "limit": {
+                        "perBattle": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        }
+      ]
+    },
+    "H2-30": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "身につけた荷を岸へ渡し、平らな石に腰を下ろす。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 2
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": {
+                    "ceilDiv": [
+                      {
+                        "sub": [
+                          {
+                            "ref": "maxHp"
+                          },
+                          {
+                            "ref": "hp"
+                          }
+                        ]
+                      },
+                      2
+                    ]
+                  },
+                  "floor": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-31": {
+      "options": [
+        {
+          "id": "star",
+          "label": "舟を受け取り、張った糸を切らずに星の形へ返す。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "gte": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "gte": [
+                        {
+                          "ref": "hp"
+                        },
+                        {
+                          "ref": "maxHp"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": 5,
+                  "floor": 1
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": 3,
+                  "floor": 1
+                }
+              ]
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "H2-32": {
+      "options": [
+        {
+          "id": "short",
+          "label": "短い板",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "long",
+          "label": "長い板",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "ceilDiv": [
+                  {
+                    "sub": [
+                      {
+                        "ref": "maxMp"
+                      },
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  },
+                  2
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "H2-33": {
+      "options": [
+        {
+          "id": "light",
+          "label": "薄味",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ]
+        },
+        {
+          "id": "rich",
+          "label": "濃い椀",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H2-34": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "日陰",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "give",
+          "label": "席を譲る",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            },
+            {
+              "op": "giveItem",
+              "id": "BD17"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-35": {
+      "options": [
+        {
+          "id": "rest",
+          "label": "網棚の下で髪をふき、濡れた荷を入れ替える。",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 3,
+              "floor": 1
+            },
+            {
+              "op": "if",
+              "cond": {
+                "lte": [
+                  {
+                    "ref": "bagCount"
+                  },
+                  3
+                ]
+              },
+              "then": [
+                {
+                  "op": "mp",
+                  "delta": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    "H2-36": {
+      "options": [
+        {
+          "id": "listen",
+          "label": "いちばん丸い光のそばで、夜番の話を一つ聞く。",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "and": [
+                  {
+                    "gte": [
+                      {
+                        "ref": "hp"
+                      },
+                      {
+                        "ref": "maxHp"
+                      }
+                    ]
+                  },
+                  {
+                    "gte": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "op": "giveItem",
+                  "id": "AT15"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "H2-37": {
+      "inn": {
+        "services": [
+          {
+            "id": "trade",
+            "label": "消耗品1個をBD18へ交換",
+            "effects": [
+              {
+                "op": "loseItem",
+                "choose": true
+              },
+              {
+                "op": "giveItem",
+                "id": "BD18"
+              }
+            ],
+            "requires": {
+              "gt": [
+                {
+                  "ref": "bagCount"
+                },
+                0
+              ]
+            },
+            "once": true
+          }
+        ]
+      }
+    },
+    "H2-38": {
+      "inn": {
+        "services": [
+          {
+            "id": "extra",
+            "label": "追加で休む",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "hp",
+                    "label": "体力3",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 3,
+                        "floor": 1
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mp",
+                    "label": "魔力3",
+                    "effects": [
+                      {
+                        "op": "mp",
+                        "delta": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H2-39": {
+      "inn": {
+        "services": [
+          {
+            "id": "gift",
+            "label": "届け物を一つ選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "heal",
+                    "label": "HE20",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "HE20"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "board",
+                    "label": "BD19",
+                    "effects": [
+                      {
+                        "op": "giveItem",
+                        "id": "BD19"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H2-40": {
+      "inn": {
+        "services": [
+          {
+            "id": "shadow",
+            "label": "影絵を選ぶ",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "shield",
+                    "label": "盾",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextBattle",
+                        "filter": "any",
+                        "unique": "H2-40",
+                        "label": "H2-40",
+                        "rules": [
+                          {
+                            "id": "H2-40",
+                            "hook": "enemyDamage",
+                            "when": {
+                              "gt": [
+                                {
+                                  "ref": "battle.damage"
+                                },
+                                0
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "op": "reduceDamage",
+                                "amount": 2
+                              }
+                            ],
+                            "limit": {
+                              "perBattle": 1
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "sword",
+                    "label": "剣",
+                    "effects": [
+                      {
+                        "op": "reserve",
+                        "slot": "nextBattle",
+                        "filter": "any",
+                        "unique": "H2-40",
+                        "label": "H2-40",
+                        "rules": [
+                          {
+                            "id": "H2-40",
+                            "hook": "heroAttackDamage",
+                            "when": {
+                              "eq": [
+                                {
+                                  "ref": "battle.attackKind"
+                                },
+                                "attack"
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "op": "addDamage",
+                                "amount": 2
+                              }
+                            ],
+                            "limit": {
+                              "perBattle": 1
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "once": true
+          }
+        ]
+      }
+    },
+    "H2-41": {
+      "inn": {
+        "services": [
+          {
+            "id": "exchange",
+            "label": "回復用品を1個渡す",
+            "effects": [
+              {
+                "op": "choice",
+                "options": [
+                  {
+                    "id": "HE01",
+                    "label": "HE01を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE01"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE02",
+                    "label": "HE02を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE02"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE03",
+                    "label": "HE03を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE03"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE04",
+                    "label": "HE04を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE04"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE05",
+                    "label": "HE05を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE05"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE06",
+                    "label": "HE06を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE06"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE07",
+                    "label": "HE07を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE07"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE08",
+                    "label": "HE08を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE08"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE09",
+                    "label": "HE09を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE09"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE10",
+                    "label": "HE10を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE10"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE11",
+                    "label": "HE11を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE11"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE12",
+                    "label": "HE12を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE12"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE13",
+                    "label": "HE13を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE13"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE14",
+                    "label": "HE14を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE14"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE15",
+                    "label": "HE15を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE15"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE16",
+                    "label": "HE16を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE16"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE17",
+                    "label": "HE17を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE17"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE18",
+                    "label": "HE18を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE18"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE19",
+                    "label": "HE19を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE19"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE20",
+                    "label": "HE20を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE20"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE21",
+                    "label": "HE21を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE21"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE22",
+                    "label": "HE22を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE22"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE23",
+                    "label": "HE23を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE23"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE24",
+                    "label": "HE24を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE24"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE25",
+                    "label": "HE25を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE25"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE26",
+                    "label": "HE26を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE26"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE27",
+                    "label": "HE27を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE27"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE28",
+                    "label": "HE28を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE28"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE29",
+                    "label": "HE29を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE29"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE30",
+                    "label": "HE30を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE30"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE31",
+                    "label": "HE31を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE31"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE32",
+                    "label": "HE32を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE32"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE33",
+                    "label": "HE33を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE33"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE34",
+                    "label": "HE34を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE34"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE35",
+                    "label": "HE35を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE35"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE36",
+                    "label": "HE36を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE36"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE37",
+                    "label": "HE37を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE37"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE38",
+                    "label": "HE38を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE38"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE39",
+                    "label": "HE39を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE39"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE40",
+                    "label": "HE40を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE40"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE41",
+                    "label": "HE41を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE41"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE42",
+                    "label": "HE42を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE42"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE43",
+                    "label": "HE43を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE43"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE44",
+                    "label": "HE44を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE44"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE45",
+                    "label": "HE45を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE45"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE46",
+                    "label": "HE46を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE46"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE47",
+                    "label": "HE47を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE47"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE48",
+                    "label": "HE48を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE48"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE49",
+                    "label": "HE49を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE49"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "HE50",
+                    "label": "HE50を渡す",
+                    "effects": [
+                      {
+                        "op": "hp",
+                        "delta": 5,
+                        "floor": 1
+                      },
+                      {
+                        "op": "mp",
+                        "delta": 5
+                      }
+                    ],
+                    "cost": {
+                      "items": [
+                        "HE50"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "requires": {
+              "or": [
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE01"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE02"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE03"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE04"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE05"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE06"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE07"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE08"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE09"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE10"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE11"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE12"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE13"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE14"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE15"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE16"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE17"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE18"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE19"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE20"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE21"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE22"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE23"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE24"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE25"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE26"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE27"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE28"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE29"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE30"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE31"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE32"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE33"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE34"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE35"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE36"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE37"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE38"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE39"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE40"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE41"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE42"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE43"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE44"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE45"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE46"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE47"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE48"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE49"
+                    },
+                    0
+                  ]
+                },
+                {
+                  "gt": [
+                    {
+                      "ref": "itemCount",
+                      "id": "HE50"
+                    },
+                    0
+                  ]
+                }
+              ]
+            },
+            "once": true
+          }
+        ]
+      }
+    },
+    "H2-42": {
+      "options": [
+        {
+          "id": "boat",
+          "label": "舟を送る",
+          "effects": [
+            {
+              "op": "awardGold",
+              "amount": 360
+            }
+          ]
+        },
+        {
+          "id": "water",
+          "label": "水筒を届ける",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "BD20"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-43": {
+      "options": [
+        {
+          "id": "table",
+          "label": "食卓",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7,
+              "floor": 1
+            }
+          ]
+        },
+        {
+          "id": "boat",
+          "label": "舟へ",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT16"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-44": {
+      "options": [
+        {
+          "id": "board",
+          "label": "板を下ろす",
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ]
+        },
+        {
+          "id": "load",
+          "label": "荷を運ぶ",
+          "effects": [
+            {
+              "op": "giveGear",
+              "id": "AR18",
+              "paidGold": 0
+            }
+          ]
+        }
+      ]
+    },
+    "H2-45": {
+      "options": [
+        {
+          "id": "load",
+          "label": "重い荷",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H2-45",
+              "label": "H2-45",
+              "rules": [
+                {
+                  "id": "H2-45",
+                  "hook": "afterHeroAction",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.heroAction"
+                      },
+                      "guard"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addMark",
+                      "mark": {
+                        "id": "H2-45-guard",
+                        "hook": "enemyDamage",
+                        "effects": [
+                          {
+                            "op": "absorbDamage",
+                            "amount": 3
+                          }
+                        ],
+                        "expires": {
+                          "enemyActions": 1
+                        }
+                      }
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "wind",
+          "label": "追い風",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H2-45",
+              "label": "H2-45",
+              "rules": [
+                {
+                  "id": "H2-45",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 3
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-46": {
+      "options": [
+        {
+          "id": "ship",
+          "label": "船便60G",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4,
+              "floor": 1
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ],
+          "cost": {
+            "gold": 60
+          }
+        },
+        {
+          "id": "deliver",
+          "label": "手渡し",
+          "effects": [
+            {
+              "op": "giveItem",
+              "id": "AT18"
+            }
+          ]
+        }
+      ]
+    },
+    "H2-47": {
+      "options": [
+        {
+          "id": "altar",
+          "label": "祭壇",
+          "effects": [
+            {
+              "op": "reserve",
+              "slot": "nextBattle",
+              "filter": "any",
+              "unique": "H2-47",
+              "label": "H2-47",
+              "rules": [
+                {
+                  "id": "H2-47",
+                  "hook": "heroAttackDamage",
+                  "when": {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "op": "addDamage",
+                      "amount": 4
+                    }
+                  ],
+                  "limit": {
+                    "perBattle": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bench",
+          "label": "長椅子",
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6,
+              "floor": 1
+            }
+          ]
+        }
+      ]
+    },
+    "H2-48": {
+      "options": [
+        {
+          "id": "pay",
+          "label": "縄ばしご50G",
+          "effects": [],
+          "cost": {
+            "gold": 50,
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "climb",
+          "label": "自力で登る",
+          "effects": [
+            {
+              "op": "if",
+              "cond": {
+                "gt": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "op": "hp",
+                  "delta": -2,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ],
+              "else": [
+                {
+                  "op": "hp",
+                  "delta": -4,
+                  "floor": 1,
+                  "trapLoss": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "H2-49": {
+      "options": [
+        {
+          "id": "edge",
+          "label": "縁を渡る",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 3,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "float",
+          "label": "盤面用道具を浮きにする",
+          "effects": [
+            {
+              "op": "choice",
+              "options": [
+                {
+                  "id": "BD01",
+                  "label": "BD01を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD01"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD02",
+                  "label": "BD02を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD02"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD03",
+                  "label": "BD03を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD03"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD04",
+                  "label": "BD04を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD04"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD05",
+                  "label": "BD05を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD05"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD06",
+                  "label": "BD06を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD06"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD07",
+                  "label": "BD07を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD07"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD08",
+                  "label": "BD08を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD08"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD09",
+                  "label": "BD09を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD09"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD10",
+                  "label": "BD10を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD10"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD11",
+                  "label": "BD11を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD11"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD12",
+                  "label": "BD12を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD12"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD13",
+                  "label": "BD13を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD13"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD14",
+                  "label": "BD14を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD14"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD15",
+                  "label": "BD15を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD15"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD16",
+                  "label": "BD16を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD16"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD17",
+                  "label": "BD17を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD17"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD18",
+                  "label": "BD18を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD18"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD19",
+                  "label": "BD19を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD19"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD20",
+                  "label": "BD20を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD20"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD21",
+                  "label": "BD21を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD21"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD22",
+                  "label": "BD22を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD22"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD23",
+                  "label": "BD23を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD23"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD24",
+                  "label": "BD24を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD24"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD25",
+                  "label": "BD25を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD25"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD26",
+                  "label": "BD26を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD26"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD27",
+                  "label": "BD27を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD27"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD28",
+                  "label": "BD28を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD28"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD29",
+                  "label": "BD29を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD29"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD30",
+                  "label": "BD30を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD30"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD31",
+                  "label": "BD31を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD31"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD32",
+                  "label": "BD32を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD32"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD33",
+                  "label": "BD33を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD33"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD34",
+                  "label": "BD34を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD34"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD35",
+                  "label": "BD35を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD35"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD36",
+                  "label": "BD36を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD36"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD37",
+                  "label": "BD37を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD37"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD38",
+                  "label": "BD38を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD38"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD39",
+                  "label": "BD39を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD39"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD40",
+                  "label": "BD40を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD40"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD41",
+                  "label": "BD41を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD41"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD42",
+                  "label": "BD42を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD42"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD43",
+                  "label": "BD43を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD43"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD44",
+                  "label": "BD44を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD44"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD45",
+                  "label": "BD45を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD45"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD46",
+                  "label": "BD46を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD46"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD47",
+                  "label": "BD47を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD47"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD48",
+                  "label": "BD48を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD48"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD49",
+                  "label": "BD49を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD49"
+                    ],
+                    "trapLoss": true
+                  }
+                },
+                {
+                  "id": "BD50",
+                  "label": "BD50を手放す",
+                  "effects": [],
+                  "cost": {
+                    "items": [
+                      "BD50"
+                    ],
+                    "trapLoss": true
+                  }
+                }
+              ]
+            }
+          ],
+          "requires": {
+            "or": [
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD01"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD02"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD03"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD04"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD05"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD06"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD07"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD08"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD09"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD10"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD11"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD12"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD13"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD14"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD15"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD16"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD17"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD18"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD19"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD20"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD21"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD22"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD23"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD24"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD25"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD26"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD27"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD28"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD29"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD30"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD31"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD32"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD33"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD34"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD35"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD36"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD37"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD38"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD39"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD40"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD41"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD42"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD43"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD44"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD45"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD46"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD47"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD48"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD49"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "itemCount",
+                    "id": "BD50"
+                  },
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "H2-50": {
+      "options": [
+        {
+          "id": "magic",
+          "label": "魔力2で軸を止める",
+          "effects": [],
+          "cost": {
+            "mp": {
+              "amount": 2,
+              "strict": true
+            },
+            "trapLoss": true
+          }
+        },
+        {
+          "id": "back",
+          "label": "裏を回る",
+          "effects": [],
+          "cost": {
+            "hp": {
+              "amount": 4,
+              "floor": 1
+            },
+            "trapLoss": true
+          }
+        }
+      ]
+    }
+  }
+}

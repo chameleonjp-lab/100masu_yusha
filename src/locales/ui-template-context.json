@@ -1,0 +1,2011 @@
+{
+  "ui.app.scene.f51ade3b85": {
+    "file": "app.js",
+    "function": "scene",
+    "parameters": {
+      "p0": "v.rolled.die"
+    }
+  },
+  "ui.app.render.bdfdbc6d58": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.rolls"
+    }
+  },
+  "ui.app.render.7dcec7dac2": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.board.nextStop===100?'魔王城':'次の宿場'",
+      "p1": "v.board.distanceToNextStop"
+    }
+  },
+  "ui.app.render.f65841c006": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.pos",
+      "p1": "v.board.currentName"
+    }
+  },
+  "ui.app.render.f1030d5885": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "st.label",
+      "p1": "st.kinds.map(k=>({attackDown:'攻撃低下',defenseDown:'防御低下',turnEndHpLoss:'手の終わりの体力減少'}[k]||k)).join('・')",
+      "p2": "st.amount",
+      "p3": "st.remainingTurns"
+    }
+  },
+  "ui.app.render.75ca5568df": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "f.round",
+      "p1": "f.name",
+      "p2": "name",
+      "p3": "f.damage"
+    }
+  },
+  "ui.app.render.bc7ba68654": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "r.round",
+      "p1": "r.dealt",
+      "p2": "r.hpLost",
+      "p3": "r.enemy"
+    }
+  },
+  "ui.app.render.2c8ca60f57": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.revision"
+    }
+  },
+  "ui.app.render.ad5147affc": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.reward.gold",
+      "p1": "v.reward.xp"
+    }
+  },
+  "ui.app.render.7c9988bef2": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.route.name",
+      "p1": "v.furthest",
+      "p2": "v.rolls"
+    }
+  },
+  "ui.app.render.40d7f7fcb6": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.hero.job.name",
+      "p1": "v.hero.companions.map(c=>c.name).join('・')||'ひとり旅'"
+    }
+  },
+  "ui.app.render.8b25e3dabf": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.hero.bag.items.length",
+      "p1": "v.hero.bag.capacity"
+    }
+  },
+  "ui.app.render.c938ee4c06": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "it.name",
+      "p1": "it.category",
+      "p2": "it.timing",
+      "p3": "it.limit||'個別条件なし'",
+      "p4": "it.effect"
+    }
+  },
+  "ui.app.render.66bc9851e6": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.hero.attack",
+      "p1": "v.hero.defense"
+    }
+  },
+  "ui.app.module.9876c43d0b": {
+    "file": "app.js",
+    "function": "module",
+    "parameters": {
+      "p0": "JSON.stringify(g.diff)"
+    }
+  },
+  "ui.app.render.0c81238d33": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "g.equipped?'装備中 · ':''",
+      "p1": "g.name",
+      "p2": "g.baseStat",
+      "p3": "g.timing||content.gear[g.id]?.timing||''",
+      "p4": "g.effect||''",
+      "p5": "g.diff?`差分 ${JSON.stringify(g.diff)}`:''"
+    }
+  },
+  "ui.app.render.c5af446173": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {
+      "p0": "v.inn.rest.hp",
+      "p1": "v.inn.rest.mp"
+    }
+  },
+  "ui.app.home.fd5b9323a8": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {
+      "p0": "session.run.pos"
+    }
+  },
+  "ui.app.worldMap.250a2572a7": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {
+      "p0": "v.route.name",
+      "p1": "v.pos",
+      "p2": "v.board.band.name"
+    }
+  },
+  "ui.app.jobs.83411198f0": {
+    "file": "app.js",
+    "function": "jobs",
+    "parameters": {
+      "p0": "v.hero.job.name"
+    }
+  },
+  "ui.app.choose.4363446e2e": {
+    "file": "app.js",
+    "function": "choose",
+    "parameters": {
+      "p0": "j.name"
+    }
+  },
+  "ui.app.confirmStart.3b2526dd1a": {
+    "file": "app.js",
+    "function": "confirmStart",
+    "parameters": {
+      "p0": "session.run?session.run.pos+'マスの冒険':'読み取れない保存'",
+      "p1": "content.routes[route].name"
+    }
+  },
+  "ui.app.actionForm.057c340753": {
+    "file": "app.js",
+    "function": "actionForm",
+    "parameters": {
+      "p0": "{gold:'金貨',mp:'魔力',hp:'体力'}[k]",
+      "p1": "n"
+    }
+  },
+  "ui.app.field.c2468207e2": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "i+1"
+    }
+  },
+  "ui.app.field.182703a068": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "spec.minCount",
+      "p1": "spec.maxCount",
+      "p2": "spec.min",
+      "p3": "spec.max"
+    }
+  },
+  "ui.app.field.bd0857ba8b": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "option.name",
+      "p1": "inputLabel(input.id)"
+    }
+  },
+  "ui.app.field.aa465ce801": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.bcdcee45fa": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "a.excludedTarget+1"
+    }
+  },
+  "ui.app.field.3160f4515d": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "target.index+1",
+      "p1": "target.footprint==='fresh'?'新しい':'古い'"
+    }
+  },
+  "ui.app.field.655d98e002": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "t.index+1",
+      "p1": "t.footprint==='fresh'?'新しい':'古い'"
+    }
+  },
+  "ui.app.field.a7d2446f4f": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "a.preview.hp>=0?'+':''",
+      "p1": "a.preview.hp",
+      "p2": "a.preview.mp>=0?'+':''",
+      "p3": "a.preview.mp",
+      "p4": "a.preview.gold>=0?'+':''",
+      "p5": "a.preview.gold"
+    }
+  },
+  "ui.app.field.f4d7448414": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "a.preview.discarded"
+    }
+  },
+  "ui.app.module.372ed15a46": {
+    "file": "app.js",
+    "function": "module",
+    "parameters": {
+      "p0": "a.shortfall"
+    }
+  },
+  "ui.app.field.f51588c994": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "a.afterGold",
+      "p1": "a.shortfall?` / あと${a.shortfall}G必要`:''"
+    }
+  },
+  "ui.app.field.f0660cb661": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "a.diff.before",
+      "p1": "a.diff.after",
+      "p2": "a.diff.delta>=0?'+':''",
+      "p3": "a.diff.delta"
+    }
+  },
+  "ui.app.field.38b970aa00": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {
+      "p0": "v.hero.spells.slots"
+    }
+  },
+  "ui.app.reveals.2ecfe17754": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "rec.turn"
+    }
+  },
+  "ui.app.reveals.242ff05421": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "d.count"
+    }
+  },
+  "ui.app.reveals.8d3671ff6e": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "sq.pos",
+      "p1": "sq.name"
+    }
+  },
+  "ui.app.reveals.564d3fc158": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "d.reward.gold",
+      "p1": "d.reward.xp"
+    }
+  },
+  "ui.app.reveals.678663b34e": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "d.square.pos",
+      "p1": "d.square.kind",
+      "p2": "d.square.name"
+    }
+  },
+  "ui.app.reveals.2c7aa1a6cb": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "x.die",
+      "p1": "x.to",
+      "p2": "x.kind"
+    }
+  },
+  "ui.app.reveals.a31812f03c": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {
+      "p0": "x.pos",
+      "p1": "x.enemyName||x.name",
+      "p2": "x.kind"
+    }
+  },
+  "ui.app.records.bf06ba048e": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {
+      "p0": "route==='all'?'全ルート':content.routes[route]?.name||route",
+      "p1": "b.furthest",
+      "p2": "b.rolls",
+      "p3": "b.defeated?'討伐済み':''"
+    }
+  },
+  "ui.app.puzzlePanel.425f470c0b": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {
+      "p0": "{cupCount:'杯の数',unit:'単位',scaleMax:'目盛りの上限'}[key]||key",
+      "p1": "value"
+    }
+  },
+  "ui.app.previewResult.f9cf40edb7": {
+    "file": "app.js",
+    "function": "previewResult",
+    "parameters": {
+      "p0": "o.die"
+    }
+  },
+  "ui.app.previewResult.537a8bb364": {
+    "file": "app.js",
+    "function": "previewResult",
+    "parameters": {
+      "p0": "o.input"
+    }
+  },
+  "ui.app.previewResult.731021acf4": {
+    "file": "app.js",
+    "function": "previewResult",
+    "parameters": {
+      "p0": "o.hp>=0?'+':''",
+      "p1": "o.hp",
+      "p2": "o.mp>=0?'+':''",
+      "p3": "o.mp",
+      "p4": "o.gold>=0?'+':''",
+      "p5": "o.gold"
+    }
+  },
+  "ui.presentation.actionLabel.6761a80589": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {
+      "p0": "a.adjust?'出目を調整して':'そのまま'",
+      "p1": "a.preview?.to",
+      "p2": "a.preview?.steps"
+    }
+  },
+  "ui.presentation.module.08cdd31706": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "a.cost"
+    }
+  },
+  "ui.presentation.actionLabel.e198b06c50": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {
+      "p0": "name",
+      "p1": "verbs[a.type]",
+      "p2": "a.price!==undefined?` ${a.price}G`:''",
+      "p3": "a.cost&&typeof a.cost==='number'?` 魔力${a.cost}`:''"
+    }
+  },
+  "ui.presentation.actionLabel.8d74518bd6": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {
+      "p0": "a.target+1"
+    }
+  },
+  "ui.presentation.module.9f1325ba95": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "p.hitCount"
+    }
+  },
+  "ui.presentation.module.f453197cb3": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "p.enemyHeal"
+    }
+  },
+  "ui.presentation.telegraphText.4396e4e53a": {
+    "file": "presentation.js",
+    "function": "telegraphText",
+    "parameters": {
+      "p0": "p.label",
+      "p1": "p.damage",
+      "p2": "p.hitCount>1?`（${p.hitCount}回の合計）`:''",
+      "p3": "p.enemyHeal?`、敵の回復 ${p.enemyHeal}`:''"
+    }
+  },
+  "ui.presentation.telegraphText.34d7dc13af": {
+    "file": "presentation.js",
+    "function": "telegraphText",
+    "parameters": {
+      "p0": "p.label"
+    }
+  },
+  "ui.presentation.module.3342610749": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "t.hitCount"
+    }
+  },
+  "ui.presentation.module.4fe4ceb4c7": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "t.heal"
+    }
+  },
+  "ui.presentation.telegraphText.385c7693f0": {
+    "file": "presentation.js",
+    "function": "telegraphText",
+    "parameters": {
+      "p0": "t.name",
+      "p1": "t.damageIfUnguarded",
+      "p2": "t.damageIfGuarded",
+      "p3": "t.hitCount>1?` ${t.hitCount}回攻撃の合計。`:\"\"",
+      "p4": "t.heal?` 敵は体力を ${t.heal} 回復。`:\"\""
+    }
+  },
+  "ui.presentation.parseInput.4c8676d516": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {
+      "p0": "s.min",
+      "p1": "s.max"
+    }
+  },
+  "ui.presentation.effectText.dc07eb9875": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.status.label",
+      "p1": "f.status.kinds.map(k=>stateNames[k]||k).join('・')",
+      "p2": "f.status.amount",
+      "p3": "f.status.remainingTurns"
+    }
+  },
+  "ui.presentation.effectText.eb38a6c9c7": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "(f.kinds||[]).map(k=>stateNames[k]||k).join('・')"
+    }
+  },
+  "ui.presentation.effectText.29732299fb": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "(f.kinds||[]).map(k=>stateNames[k]||k).join('・')"
+    }
+  },
+  "ui.presentation.effectText.4a549c3761": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.die"
+    }
+  },
+  "ui.presentation.module.c773149047": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "f.discarded"
+    }
+  },
+  "ui.presentation.effectText.725bb6952a": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.to",
+      "p1": "f.steps",
+      "p2": "f.discarded?`。残り${f.discarded}歩は使いません`:''"
+    }
+  },
+  "ui.presentation.effectText.c17c38754f": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.delta>=0?'+':''",
+      "p1": "f.delta??0"
+    }
+  },
+  "ui.presentation.effectText.bae0a4f845": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.delta>=0?'+':''",
+      "p1": "f.delta??0"
+    }
+  },
+  "ui.presentation.module.734597997f": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "f.after"
+    }
+  },
+  "ui.presentation.effectText.2e76f976e0": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.delta>=0?'+':''",
+      "p1": "f.delta??0",
+      "p2": "f.after!==undefined?`（現在${f.after}）`:''"
+    }
+  },
+  "ui.presentation.module.fc72b13abf": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "f.blocked"
+    }
+  },
+  "ui.presentation.module.99d1e21eb1": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "{immune:'無効化',decoy:'分身が受け止めた',scenario:'対象効果で傷なし'}[f.blocked]||'効果で防いだ'"
+    }
+  },
+  "ui.presentation.module.cc337aafbf": {
+    "file": "presentation.js",
+    "function": "module",
+    "parameters": {
+      "p0": "f.hp",
+      "p1": "f.maxHp"
+    }
+  },
+  "ui.presentation.effectText.00dead7c1b": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.target==='hero'?'勇者':'敵'",
+      "p1": "f.amount",
+      "p2": "typeof f.blocked==='number'?`（軽減 ${f.blocked}）`:f.blocked?`（${{immune:'無効化',decoy:'分身が受け止めた',scenario:'対象効果で傷なし'}[f.blocked]||'効果で防いだ'}）`:''",
+      "p3": "f.hp!==undefined?`。残り体力 ${f.hp}/${f.maxHp}`:''"
+    }
+  },
+  "ui.presentation.effectText.9f13ef9c90": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.items?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.5227884745": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.items?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.1e5340989a": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.items?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.162863673d": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.gear?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.aa61a666e2": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.gear?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.c0a6782b5e": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.gear?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.09579b842a": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.companions?.[f.id]?.name||f.id",
+      "p1": "f.amount",
+      "p2": "{shield:'ダメージ軽減',medic:'体力回復',lantern:'魔力回復',thrower:'ダメージ'}[f.role]||''"
+    }
+  },
+  "ui.presentation.effectText.e70315cd2b": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.spells?.[f.id]?.name||f.id",
+      "p1": "f.cost"
+    }
+  },
+  "ui.presentation.effectText.da677eabdb": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.spells?.[f.id]?.name||f.id"
+    }
+  },
+  "ui.presentation.effectText.9b6225b8a7": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.from",
+      "p1": "f.to"
+    }
+  },
+  "ui.presentation.effectText.0c52ec6339": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.items?.[f.id]?.name||c.gear?.[f.id]?.name||f.id",
+      "p1": "f.price"
+    }
+  },
+  "ui.presentation.effectText.575541df64": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "f.name"
+    }
+  },
+  "ui.presentation.effectText.0d62c72c8c": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {
+      "p0": "c.items?.[f.id]?.name||'道具'"
+    }
+  },
+  "ui.presentation.companionSummary.abc98baddf": {
+    "file": "presentation.js",
+    "function": "companionSummary",
+    "parameters": {
+      "p0": "c.name",
+      "p1": "c.triggerText",
+      "p2": "c.line"
+    }
+  },
+  "ui.presentation.comparisonText.0c89e01828": {
+    "file": "presentation.js",
+    "function": "comparisonText",
+    "parameters": {
+      "p0": "g.name",
+      "p1": "g.normalAttack!==undefined?'通常攻撃 '+g.normalAttack:'防御 '+g.defense",
+      "p2": "g.timing||'条件の記載なし'",
+      "p3": "g.effect"
+    }
+  },
+  "ui.presentation.mapTiles.08442435a3": {
+    "file": "presentation.js",
+    "function": "mapTiles",
+    "parameters": {
+      "p0": "pos",
+      "p1": "pos===100?' 魔王城':inn?' 宿場':''"
+    }
+  },
+  "ui.presentation.puzzleHintText.a9c2b8caa0": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "name(h.candidate)"
+    }
+  },
+  "ui.presentation.puzzleHintText.4f10746b6d": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "h.values.map(name).join(' → ')"
+    }
+  },
+  "ui.presentation.puzzleHintText.4ab8d5ce99": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "name(h.source)",
+      "p1": "name(h.target)"
+    }
+  },
+  "ui.presentation.puzzleHintText.f6f13a02a3": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "h.index+1"
+    }
+  },
+  "ui.presentation.puzzleHintText.7fcd4d48cc": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "h.scene",
+      "p1": "h.option"
+    }
+  },
+  "ui.presentation.puzzleHintText.38ff71b2a6": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "h.index+1"
+    }
+  },
+  "ui.presentation.puzzleHintText.1de0d24430": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {
+      "p0": "name(h.id)"
+    }
+  },
+  "ui.app.scene.literal.6144904b4d": {
+    "file": "app.js",
+    "function": "scene",
+    "parameters": {}
+  },
+  "ui.app.scene.literal.7baa586810": {
+    "file": "app.js",
+    "function": "scene",
+    "parameters": {}
+  },
+  "ui.app.render.literal.624fe166e6": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.c1fa727cb7": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.bb1f5b26d4": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.f1c2c7d3df": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.998f75677a": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.b6e1addfac": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.cd7539d915": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.78ea180ba1": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.34675f17d7": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.87577bfcf3": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.518564feda": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.c08e3524c9": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.def16f80b1": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.726055e48f": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.e485399357": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.3f905081bb": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.3a301ecd5f": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.5308c10dab": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.e5ed7aa5db": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.1ae67cfcaf": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.f544044d74": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.cd1c50af42": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.1ae4f6667f": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.d27f9b9772": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.2dcfd06424": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.6b5afaa3e9": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.c531094d93": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.literal.4ba28e355e": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.home.literal.491d174221": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.literal.79285a8cf1": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.literal.97225fd46a": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.literal.4617dfec2e": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.literal.3041e9cda8": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.worldMap.literal.34eb96f43d": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {}
+  },
+  "ui.app.worldMap.literal.76f47004cc": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {}
+  },
+  "ui.app.worldMap.literal.7d01e2c98c": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {}
+  },
+  "ui.app.choose.literal.8a4ba79f47": {
+    "file": "app.js",
+    "function": "choose",
+    "parameters": {}
+  },
+  "ui.app.help.literal.dd817f4395": {
+    "file": "app.js",
+    "function": "help",
+    "parameters": {}
+  },
+  "ui.app.help.literal.298c2d3866": {
+    "file": "app.js",
+    "function": "help",
+    "parameters": {}
+  },
+  "ui.app.help.literal.9bb2c9eceb": {
+    "file": "app.js",
+    "function": "help",
+    "parameters": {}
+  },
+  "ui.app.help.literal.4661ec53d0": {
+    "file": "app.js",
+    "function": "help",
+    "parameters": {}
+  },
+  "ui.app.modal.literal.f6c244f988": {
+    "file": "app.js",
+    "function": "modal",
+    "parameters": {}
+  },
+  "ui.app.confirmStart.literal.7f915bacbc": {
+    "file": "app.js",
+    "function": "confirmStart",
+    "parameters": {}
+  },
+  "ui.app.field.literal.31da45f17e": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.literal.89a49ca24d": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.reveals.literal.1f0b8387d4": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {}
+  },
+  "ui.app.reveals.literal.89c2708c66": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {}
+  },
+  "ui.app.reveals.literal.f2c0caf487": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {}
+  },
+  "ui.app.audioSettings.literal.0500c422a8": {
+    "file": "app.js",
+    "function": "audioSettings",
+    "parameters": {}
+  },
+  "ui.app.settings.literal.909c6a9dea": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.literal.08b0f55b18": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.literal.8b3a5cfc45": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.literal.0d19921a25": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.literal.b4fd2d361a": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.records.literal.2283159eea": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.literal.46dff6e77f": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.literal.de1412f35a": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.literal.2bd7c73f69": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.literal.073be543a8": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.literal.b3ee49dd39": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.literal.c32448f77b": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.previewResult.literal.1167aecc2e": {
+    "file": "app.js",
+    "function": "previewResult",
+    "parameters": {}
+  },
+  "ui.app.previewResult.literal.1ac10759b5": {
+    "file": "app.js",
+    "function": "previewResult",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.39e49d98b6": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.90f469937d": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.dd31eada2a": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.da9a20904c": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.22b0b9c5b5": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.f5ac3e066e": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.presentation.parseInput.literal.a9e35e0efa": {
+    "file": "presentation.js",
+    "function": "parseInput",
+    "parameters": {}
+  },
+  "ui.app.scene.term.828b8feda9": {
+    "file": "app.js",
+    "function": "scene",
+    "parameters": {}
+  },
+  "ui.app.render.term.d6d2aa99fd": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.522148a1fd": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.a4c5f93082": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.6038669e41": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.bb59eb7119": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.862a6a31e3": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.082937427d": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.2a21905f43": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.2e483eb82e": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.1177af8a7d": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.1e05a3a6d6": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.52203486d8": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.17bd5d6c12": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.6217280784": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.b396c18ea5": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.0ad8cdd51e": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.b5989f74c7": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.86e8df92c1": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.f8f6a2fe31": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.93a200dea7": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.23480562a4": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.render.term.bf2bbcdd02": {
+    "file": "app.js",
+    "function": "render",
+    "parameters": {}
+  },
+  "ui.app.home.term.9d9261bab9": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.415fdf3171": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.b92ccd5451": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.6dd2e4b41c": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.28656d4702": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.2a21905f43": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.home.term.d520e6c000": {
+    "file": "app.js",
+    "function": "home",
+    "parameters": {}
+  },
+  "ui.app.worldMap.term.b6e1addfac": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {}
+  },
+  "ui.app.worldMap.term.c4fd09e10a": {
+    "file": "app.js",
+    "function": "worldMap",
+    "parameters": {}
+  },
+  "ui.app.jobs.term.a9e0b26002": {
+    "file": "app.js",
+    "function": "jobs",
+    "parameters": {}
+  },
+  "ui.app.help.term.16679487f2": {
+    "file": "app.js",
+    "function": "help",
+    "parameters": {}
+  },
+  "ui.app.confirmStart.term.f60f49b1c2": {
+    "file": "app.js",
+    "function": "confirmStart",
+    "parameters": {}
+  },
+  "ui.app.confirmStart.term.3eac9e4bd4": {
+    "file": "app.js",
+    "function": "confirmStart",
+    "parameters": {}
+  },
+  "ui.app.start.term.ed4b98dc3e": {
+    "file": "app.js",
+    "function": "start",
+    "parameters": {}
+  },
+  "ui.app.showError.term.d590327e68": {
+    "file": "app.js",
+    "function": "showError",
+    "parameters": {}
+  },
+  "ui.app.showError.term.a0ade14b58": {
+    "file": "app.js",
+    "function": "showError",
+    "parameters": {}
+  },
+  "ui.app.showError.term.67d55c7ff2": {
+    "file": "app.js",
+    "function": "showError",
+    "parameters": {}
+  },
+  "ui.app.showError.term.4cbfc7c680": {
+    "file": "app.js",
+    "function": "showError",
+    "parameters": {}
+  },
+  "ui.app.showError.term.9a3bad2d43": {
+    "file": "app.js",
+    "function": "showError",
+    "parameters": {}
+  },
+  "ui.app.actionForm.term.e8bafc9506": {
+    "file": "app.js",
+    "function": "actionForm",
+    "parameters": {}
+  },
+  "ui.app.actionForm.term.522148a1fd": {
+    "file": "app.js",
+    "function": "actionForm",
+    "parameters": {}
+  },
+  "ui.app.actionForm.term.d6d2aa99fd": {
+    "file": "app.js",
+    "function": "actionForm",
+    "parameters": {}
+  },
+  "ui.app.field.term.d6d2aa99fd": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.522148a1fd": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.81b406f806": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.8885e4f225": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.bbfa5ff846": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.20a04e7533": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.08468ea02e": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.4f0311747e": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.4fd2597dc0": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.3c2a5d9e66": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.58603adad8": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.699be4b745": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.2ba9627cc7": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.5a430d6bb0": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.eaa4774367": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.96105c98cf": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.field.term.a517fdcb64": {
+    "file": "app.js",
+    "function": "field",
+    "parameters": {}
+  },
+  "ui.app.reveals.term.5349965875": {
+    "file": "app.js",
+    "function": "reveals",
+    "parameters": {}
+  },
+  "ui.app.audioSettings.term.982348c769": {
+    "file": "app.js",
+    "function": "audioSettings",
+    "parameters": {}
+  },
+  "ui.app.audioSettings.term.dd5f9601f1": {
+    "file": "app.js",
+    "function": "audioSettings",
+    "parameters": {}
+  },
+  "ui.app.audioSettings.term.edcfda31c2": {
+    "file": "app.js",
+    "function": "audioSettings",
+    "parameters": {}
+  },
+  "ui.app.settings.term.49b0ac0f54": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.term.8320984b0b": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.settings.term.6e7fdac4f9": {
+    "file": "app.js",
+    "function": "settings",
+    "parameters": {}
+  },
+  "ui.app.records.term.9200344787": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.23dad3af9c": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.327f2f0129": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.0361316afc": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.294293277d": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.2987781405": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.2a21905f43": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.records.term.c2c66b3886": {
+    "file": "app.js",
+    "function": "records",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.24ab53a2bb": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.c820c1e60f": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.73b972d71b": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.140ede2642": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.3d191b6233": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.c2c1bfe05a": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.puzzlePanel.term.118b3ffebc": {
+    "file": "app.js",
+    "function": "puzzlePanel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.c39536b5d4": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.2946d1a6e3": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.72c18b8836": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.e8a5a465a6": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.a7ee428ae7": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.c8c4cefc60": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.a2e319e114": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.300439317c": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.9596ee6f51": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.15971d7654": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.bad37f8166": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.3b81999de7": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.c83db6da15": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.fcff419205": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.cc19e2407a": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.02b85d978f": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.2882b00920": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.8de09130b2": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.7a961d6b2d": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.7920e38dd6": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.26146f5dc5": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.app.inputLabel.term.0cdffca379": {
+    "file": "app.js",
+    "function": "inputLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.15a29a11fb": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.0c72a412ed": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.265884f569": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.6842a05a7d": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.7c23ed85b4": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.c898ab0b08": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.5654451e02": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.b72518fa3a": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.1f19864a58": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.0b6b5dd89d": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.5a0363134a": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.318895d26d": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.844aef5157": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.7029b6cd0f": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.f2484b15f4": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.9e28794262": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.e492104f82": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.46be5c3f4e": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.2d686d9ec4": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.2952009576": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.e6ad56414e": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.3b472f63bd": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.7247483901": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.603fe04580": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.12413235d3": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.e820d061dd": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.72581708f4": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.cc2f84a3cf": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.actionLabel.term.2c01205b05": {
+    "file": "presentation.js",
+    "function": "actionLabel",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.bb59eb7119": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.862a6a31e3": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.082937427d": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.65948d1ca2": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.2a21905f43": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.80ae933b0a": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.1e7e3645d4": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.bbd9b68ac9": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.5c1258eb22": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.fe48e7608c": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.16f45eee79": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.259dba4a7b": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.0782e07d55": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.4461d155d2": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.4923384054": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.e6492ad163": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.163303ac99": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.7ae4f178b6": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.24c2ea9bb8": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.0711b934a2": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.7c6a6d4cef": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.524b3ea8b7": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.d45cfd7c4c": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.1d803ae5c3": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.94a3a96243": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.4f4e1d90f4": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.8f707b601d": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.effectText.term.202a059d9b": {
+    "file": "presentation.js",
+    "function": "effectText",
+    "parameters": {}
+  },
+  "ui.presentation.comparisonText.term.fa133cb7c1": {
+    "file": "presentation.js",
+    "function": "comparisonText",
+    "parameters": {}
+  },
+  "ui.presentation.comparisonText.term.48cf4313fd": {
+    "file": "presentation.js",
+    "function": "comparisonText",
+    "parameters": {}
+  },
+  "ui.presentation.comparisonText.term.47c2d0dece": {
+    "file": "presentation.js",
+    "function": "comparisonText",
+    "parameters": {}
+  },
+  "ui.presentation.mapTiles.term.5a640c533a": {
+    "file": "presentation.js",
+    "function": "mapTiles",
+    "parameters": {}
+  },
+  "ui.presentation.mapTiles.term.2dd0010974": {
+    "file": "presentation.js",
+    "function": "mapTiles",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.e5dd889172": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.9ba91d66ae": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.e0eb852750": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.5393dcb0d0": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.0676f2a38b": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  },
+  "ui.presentation.puzzleHintText.term.07c62073c1": {
+    "file": "presentation.js",
+    "function": "puzzleHintText",
+    "parameters": {}
+  }
+}

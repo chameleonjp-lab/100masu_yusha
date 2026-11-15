@@ -1,0 +1,105 @@
+{
+  "patchVersion": "encounters-balance-draft-2",
+  "source": "data/balance-draft-2.json#proposedNormalEncounterEvents",
+  "baseContentSha256": "817740b5b7980c90efea435e116ab686d6e65a558fab43eca36fae8fa36adcd9",
+  "note": "EN09-13 replace name/scene/action/result/refs of five existing 戦闘 events (id, route, band, kind and the 50-per-band count are kept). The original enemies stay on other candidates of the same route/band (checked by buildContent). bandEnemyAdditions extends bands[].enemyIds.",
+  "events": [
+    {
+      "id": "M1-24",
+      "route": "M",
+      "band": 1,
+      "kind": "戦闘",
+      "replacesEnemyId": "EN01",
+      "originalEnemyId": "EN01",
+      "monsterId": "EN09",
+      "name": "ほどける草の荷札",
+      "scene": "出荷を待つ干し草の束が歩き出した。積み荷の影から、草を盾にしたタヌキが顔を出す。",
+      "action": "荷車を止め、草の盾がほどけるところを狙う。",
+      "refs": [
+        "EN09"
+      ],
+      "result": "草盾タヌキと通常戦。勝利で140G・経験値10を得て、装備と道具は別々に抽選する。逃走・敗北時の勝利報酬はない。"
+    },
+    {
+      "id": "H2-11",
+      "route": "H",
+      "band": 2,
+      "kind": "戦闘",
+      "replacesEnemyId": "EN03",
+      "originalEnemyId": "EN03",
+      "monsterId": "EN10",
+      "name": "逆まわりの水車",
+      "scene": "水路の水車が流れに逆らって回り、桶が石段まで流される。カワウソが車輪を踏み台にしている。",
+      "action": "人を石段の上に離し、車輪からの飛びこみに備える。",
+      "refs": [
+        "EN10"
+      ],
+      "result": "水車カワウソと通常戦。勝利で250G・経験値17を得て、装備と道具は別々に抽選する。逃走・敗北時の勝利報酬はない。"
+    },
+    {
+      "id": "F3-27",
+      "route": "F",
+      "band": 3,
+      "kind": "戦闘",
+      "replacesEnemyId": "EN05",
+      "originalEnemyId": "EN05",
+      "monsterId": "EN11",
+      "name": "鉱灯が歩く坑口",
+      "scene": "坑口で揺れていた作業灯が線路を横切る。灯の正体は鉱石の殻に住みついた大きなヤドカリだ。",
+      "action": "作業員を脇に避け、殻が開く予告を見て戦う。",
+      "refs": [
+        "EN11"
+      ],
+      "result": "鉱灯ヤドカリと通常戦。勝利で360G・経験値26を得て、装備と道具は別々に抽選する。逃走・敗北時の勝利報酬はない。"
+    },
+    {
+      "id": "B4-27",
+      "route": "B",
+      "band": 4,
+      "kind": "戦闘",
+      "replacesEnemyId": "EN07",
+      "originalEnemyId": "EN07",
+      "monsterId": "EN12",
+      "name": "霧に落ちる丸い影",
+      "scene": "木立に霧が下り、足元に丸い影が浮かぶ。霧鈴フクロウが枝から狩りの姿勢を取っている。",
+      "action": "地面の影と翼の形を見ながら、急降下に備える。",
+      "refs": [
+        "EN12"
+      ],
+      "result": "霧鈴フクロウと通常戦。勝利で480G・経験値37を得て、装備と道具は別々に抽選する。逃走・敗北時の勝利報酬はない。"
+    },
+    {
+      "id": "M5-25",
+      "route": "M",
+      "band": 5,
+      "kind": "戦闘",
+      "replacesEnemyId": "EN08",
+      "originalEnemyId": "EN08",
+      "monsterId": "EN13",
+      "name": "城壁の槍と荷車",
+      "scene": "城下の荷車が急に止まった。前には長槍を石畳に寝かせたコボルトがいて、通り道をふさいでいる。",
+      "action": "荷車を壁際へ寄せ、槍先が向いた石畳の線から目を離さずに戦う。",
+      "refs": [
+        "EN13"
+      ],
+      "result": "城壁槍コボルトと通常戦。勝利で640G・経験値47を得て、装備と道具は別々に抽選する。逃走・敗北時の勝利報酬はない。"
+    }
+  ],
+  "bandEnemyAdditions": {
+    "1": [
+      "EN09"
+    ],
+    "2": [
+      "EN10"
+    ],
+    "3": [
+      "EN11"
+    ],
+    "4": [
+      "EN12"
+    ],
+    "5": [
+      "EN13"
+    ]
+  }
+}

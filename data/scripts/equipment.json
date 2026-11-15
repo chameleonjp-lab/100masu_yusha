@@ -1,0 +1,4548 @@
+{
+  "format": "equipment-scripts-1",
+  "_note": "個別原文から型付け。未収録IDは未実装であり、全件validatorで不合格になる。",
+  "equipment": {
+    "SW01": {
+      "rules": []
+    },
+    "AR01": {
+      "rules": []
+    },
+    "SW07": {
+      "rules": [
+        {
+          "id": "riposte",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hpLost",
+                    "offset": -1
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "limit": {
+            "perBattle": 1
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ]
+        }
+      ]
+    },
+    "SW50": {
+      "rules": [
+        {
+          "id": "dawn-strike",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "actions": {
+                  "rounds": [
+                    -2,
+                    -1
+                  ],
+                  "anyOrder": [
+                    "attack",
+                    "guard"
+                  ]
+                }
+              }
+            ]
+          },
+          "limit": {
+            "perBattle": 1
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 9
+            },
+            {
+              "op": "hp",
+              "delta": 4
+            }
+          ]
+        }
+      ]
+    },
+    "AR07": {
+      "rules": [
+        {
+          "id": "one-step-brooch",
+          "hook": "moveConfirm",
+          "when": {
+            "eq": [
+              {
+                "ref": "move.die"
+              },
+              1
+            ]
+          },
+          "limit": {
+            "perMove": 1
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 2
+            }
+          ]
+        }
+      ]
+    },
+    "AR29": {
+      "rules": [
+        {
+          "id": "safety-belt",
+          "hook": "victory",
+          "when": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "hp"
+                  },
+                  4
+                ]
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          },
+          "limit": {
+            "perBattle": 1
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 7
+            }
+          ]
+        }
+      ]
+    },
+    "SW02": {
+      "rules": [
+        {
+          "id": "SW02",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  1
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW03": {
+      "rules": [
+        {
+          "id": "SW03",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "ref": "battle.guarded",
+                "offset": -1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW05": {
+      "rules": [
+        {
+          "id": "SW05",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "between": [
+                  {
+                    "ref": "die"
+                  },
+                  1,
+                  3
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW06": {
+      "rules": [
+        {
+          "id": "SW06",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              true
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW08": {
+      "rules": [
+        {
+          "id": "SW08",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "battle.enemyMaxHp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW22": {
+      "rules": [
+        {
+          "id": "SW22",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  2
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": {
+                "ref": "die"
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW39": {
+      "rules": [
+        {
+          "id": "SW39",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.count",
+                    "what": "attackHits"
+                  },
+                  2
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 8
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW41": {
+      "rules": [
+        {
+          "id": "SW41",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      4
+                    ]
+                  },
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.enemyMaxHp"
+                      },
+                      3
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 6
+            }
+          ],
+          "limit": {
+            "perBattle": 2
+          }
+        }
+      ]
+    },
+    "SW46": {
+      "rules": [
+        {
+          "id": "SW46",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  {
+                    "ref": "die"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 8
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW25": {
+      "rules": [
+        {
+          "id": "SW25",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  1
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "subDamage",
+              "amount": 3,
+              "min": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR02": {
+      "rules": [
+        {
+          "id": "AR02",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "gt": [
+                  {
+                    "ref": "battle.damage"
+                  },
+                  0
+                ]
+              },
+              true
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR09": {
+      "rules": [
+        {
+          "id": "AR09",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR12": {
+      "rules": [
+        {
+          "id": "AR12",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "mp"
+                  },
+                  0
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR19": {
+      "rules": [
+        {
+          "id": "AR19",
+          "hook": "enemyDamage",
+          "when": {
+            "lte": [
+              {
+                "mul": [
+                  {
+                    "ref": "battle.startHp"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR24": {
+      "rules": [
+        {
+          "id": "AR24",
+          "hook": "enemyDamage",
+          "when": {
+            "eq": [
+              {
+                "ref": "hp"
+              },
+              {
+                "ref": "maxHp"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR41": {
+      "rules": [
+        {
+          "id": "AR41",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "gt": [
+                  {
+                    "ref": "battle.damage"
+                  },
+                  0
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR05": {
+      "rules": [
+        {
+          "id": "AR05",
+          "hook": "victory",
+          "when": {
+            "eq": [
+              {
+                "ref": "battle.count",
+                "what": "spells"
+              },
+              0
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR20": {
+      "rules": [
+        {
+          "id": "AR20",
+          "hook": "victory",
+          "when": {
+            "gte": [
+              {
+                "ref": "battle.count",
+                "what": "guards"
+              },
+              2
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR31": {
+      "rules": [
+        {
+          "id": "AR31",
+          "hook": "battleStart",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR49": {
+      "rules": [
+        {
+          "id": "AR49",
+          "hook": "victory",
+          "when": {
+            "and": [
+              {
+                "gte": [
+                  {
+                    "ref": "battle.count",
+                    "what": "attackSpells"
+                  },
+                  1
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.count",
+                    "what": "guards"
+                  },
+                  1
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 8
+            },
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR03": {
+      "rules": [
+        {
+          "id": "AR03",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR06": {
+      "rules": [
+        {
+          "id": "AR06",
+          "hook": "afterEnemyHit",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hitHpLost"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "dealDamage",
+              "amount": 2,
+              "leave": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR08": {
+      "rules": [
+        {
+          "id": "AR08",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  1
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction"
+                  },
+                  "item"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR14": {
+      "rules": [
+        {
+          "id": "AR14",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR26": {
+      "rules": [
+        {
+          "id": "AR26",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.hpLost"
+                  },
+                  6
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR27": {
+      "rules": [
+        {
+          "id": "AR27",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.hpLost"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR39": {
+      "rules": [
+        {
+          "id": "AR39",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "not": {
+                  "ref": "battle.guarded"
+                }
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hpLost"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR47": {
+      "rules": [
+        {
+          "id": "AR47",
+          "hook": "afterHeroAction",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  3
+                ]
+              },
+              {
+                "actions": {
+                  "abs": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "distinct": true
+                }
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR15": {
+      "rules": [
+        {
+          "id": "AR15",
+          "hook": "restConfirm",
+          "when": true,
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "AR37": {
+      "rules": [
+        {
+          "id": "AR37",
+          "hook": "restBefore",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "lt": [
+                  {
+                    "ref": "mp"
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 5
+            }
+          ]
+        }
+      ]
+    },
+    "AR16": {
+      "rules": [
+        {
+          "id": "AR16",
+          "hook": "trapLoss",
+          "when": true,
+          "effects": [
+            {
+              "op": "reduceTrapLoss",
+              "amount": 3
+            }
+          ]
+        }
+      ]
+    },
+    "SW09": {
+      "rules": [
+        {
+          "id": "SW09",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "ref": "battle.attackHit",
+                "offset": -1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW10": {
+      "rules": [
+        {
+          "id": "SW10",
+          "hook": "victory",
+          "when": {
+            "and": [
+              {
+                "lte": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  3
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.count",
+                    "what": "guards"
+                  },
+                  1
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW11": {
+      "rules": [
+        {
+          "id": "SW11",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.startMp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW12": {
+      "rules": [
+        {
+          "id": "SW12",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              {
+                "ref": "battle.attackHit",
+                "offset": -1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW15": {
+      "rules": [
+        {
+          "id": "SW15",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  6
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": -2
+            },
+            {
+              "op": "addDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW16": {
+      "rules": [
+        {
+          "id": "SW16",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW17": {
+      "rules": [
+        {
+          "id": "SW17",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      3
+                    ]
+                  },
+                  {
+                    "ref": "battle.guarded",
+                    "abs": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW20": {
+      "rules": [
+        {
+          "id": "SW20",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      3
+                    ]
+                  },
+                  {
+                    "actions": {
+                      "abs": [
+                        1,
+                        2
+                      ],
+                      "distinct": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW21": {
+      "rules": [
+        {
+          "id": "SW21",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "item"
+                ]
+              },
+              true
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW26": {
+      "rules": [
+        {
+          "id": "SW26",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "in": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  [
+                    2,
+                    4
+                  ]
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 2,
+            "perRound": 1
+          }
+        }
+      ]
+    },
+    "SW27": {
+      "rules": [
+        {
+          "id": "SW27",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "大技"
+                    ]
+                  },
+                  {
+                    "ref": "battle.guarded",
+                    "offset": -1
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW28": {
+      "rules": [
+        {
+          "id": "SW28",
+          "hook": "spellHeal",
+          "when": {
+            "ref": "battle.attackHit",
+            "offset": -1
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW30": {
+      "rules": [
+        {
+          "id": "SW30",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  2
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  3
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": -3
+            },
+            {
+              "op": "addDamage",
+              "amount": 8
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW32": {
+      "rules": [
+        {
+          "id": "SW32",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.heroAction",
+                        "abs": 1
+                      },
+                      "item"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW33": {
+      "rules": [
+        {
+          "id": "SW33",
+          "hook": "afterEnemyHit",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hitHpLost"
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "min": [
+                  5,
+                  {
+                    "ref": "battle.hitHpLost"
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW35": {
+      "rules": [
+        {
+          "id": "SW35",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "mp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxMp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW36": {
+      "rules": [
+        {
+          "id": "SW36",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "通常攻撃"
+                    ]
+                  },
+                  {
+                    "gt": [
+                      {
+                        "ref": "battle.hpLost",
+                        "offset": -1
+                      },
+                      0
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": {
+                "min": [
+                  7,
+                  {
+                    "ref": "battle.hpLost",
+                    "offset": -1
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW37": {
+      "rules": [
+        {
+          "id": "SW37",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "gte": [
+                      {
+                        "ref": "battle.count",
+                        "what": "spells"
+                      },
+                      1
+                    ]
+                  },
+                  {
+                    "lt": [
+                      {
+                        "ref": "mp"
+                      },
+                      {
+                        "ref": "maxMp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": {
+                "min": [
+                  6,
+                  {
+                    "sub": [
+                      {
+                        "ref": "maxMp"
+                      },
+                      {
+                        "ref": "mp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW38": {
+      "rules": [
+        {
+          "id": "SW38",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.spellMpAfter"
+                      },
+                      0
+                    ]
+                  },
+                  {
+                    "gte": [
+                      {
+                        "ref": "battle.spellCost"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 8
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW40": {
+      "rules": [
+        {
+          "id": "SW40",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "大技"
+                    ]
+                  },
+                  {
+                    "ref": "battle.guarded",
+                    "offset": -1
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 8
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW43": {
+      "rules": [
+        {
+          "id": "SW43",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.round"
+                      },
+                      4
+                    ]
+                  },
+                  {
+                    "actions": {
+                      "abs": [
+                        1,
+                        2,
+                        3
+                      ],
+                      "anyOrder": [
+                        "attack",
+                        "guard",
+                        "spell"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 10
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW44": {
+      "rules": [
+        {
+          "id": "SW44",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "mp"
+                  },
+                  2
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": -2
+            },
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW45": {
+      "rules": [
+        {
+          "id": "SW45",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "gt": [
+                  {
+                    "ref": "battle.damage"
+                  },
+                  0
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "increaseDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW48": {
+      "rules": [
+        {
+          "id": "SW48",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.dealt"
+                  },
+                  4
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "min": [
+                  5,
+                  {
+                    "floorDiv": [
+                      {
+                        "ref": "battle.dealt"
+                      },
+                      4
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR17": {
+      "rules": [
+        {
+          "id": "AR17",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded",
+                "offset": -1
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hpLost",
+                    "offset": -1
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": {
+                "min": [
+                  4,
+                  {
+                    "ref": "battle.hpLost",
+                    "offset": -1
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR18": {
+      "rules": [
+        {
+          "id": "AR18",
+          "hook": "afterEnemyHit",
+          "when": {
+            "and": [
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "mul": [
+                      {
+                        "add": [
+                          {
+                            "ref": "hp"
+                          },
+                          {
+                            "ref": "battle.hitHpLost"
+                          }
+                        ]
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR21": {
+      "rules": [
+        {
+          "id": "AR21",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  1
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR23": {
+      "rules": [
+        {
+          "id": "AR23",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "ref": "battle.attackHit",
+                "offset": -1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR25": {
+      "rules": [
+        {
+          "id": "AR25",
+          "hook": "heroAttackDamage",
+          "when": {
+            "eq": [
+              {
+                "ref": "battle.attackKind"
+              },
+              "spell"
+            ]
+          },
+          "effects": [
+            {
+              "op": "subDamage",
+              "amount": 2,
+              "min": 0
+            }
+          ],
+          "limit": {
+            "perRound": 1
+          }
+        }
+      ]
+    },
+    "AR30": {
+      "rules": [
+        {
+          "id": "AR30",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "ref": "battle.guarded",
+                "offset": -1
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "hp"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            },
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR33": {
+      "rules": [
+        {
+          "id": "AR33",
+          "hook": "afterHeroAction",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.heroAction"
+                  },
+                  "item"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.count",
+                    "what": "distinctItems"
+                  },
+                  2
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 5
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR36": {
+      "rules": [
+        {
+          "id": "AR36",
+          "hook": "moveConfirm",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "move.adjustItem"
+                  },
+                  "BD01"
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "move.adjustDelta"
+                  },
+                  -1
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perMove": 1
+          }
+        }
+      ]
+    },
+    "AR43": {
+      "rules": [
+        {
+          "id": "AR43",
+          "hook": "afterHeroAction",
+          "when": {
+            "eq": [
+              {
+                "ref": "battle.heroAction"
+              },
+              "guard"
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": {
+                "mul": [
+                  2,
+                  {
+                    "ref": "companionCount"
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR45": {
+      "rules": [
+        {
+          "id": "AR45",
+          "hook": "spellHeal",
+          "when": true,
+          "effects": [
+            {
+              "op": "subDamage",
+              "amount": 4,
+              "min": 0
+            }
+          ],
+          "limit": {
+            "perRound": 1
+          }
+        }
+      ]
+    },
+    "AR46": {
+      "rules": [
+        {
+          "id": "AR46",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "lte": [
+                  {
+                    "ref": "companionCount"
+                  },
+                  1
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": {
+                "if": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "companionCount"
+                      },
+                      0
+                    ]
+                  },
+                  6,
+                  3
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 2
+          }
+        }
+      ]
+    },
+    "SW04": {
+      "rules": [
+        {
+          "id": "SW04",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              },
+              true
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW04-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW13": {
+      "rules": [
+        {
+          "id": "SW13",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.count",
+                    "what": "guards"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW13-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 4
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW24": {
+      "rules": [
+        {
+          "id": "SW24",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "spell"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "add": [
+                          {
+                            "ref": "battle.enemyHp"
+                          },
+                          {
+                            "ref": "battle.dealt"
+                          }
+                        ]
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "battle.enemyMaxHp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW24-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW31": {
+      "rules": [
+        {
+          "id": "SW31",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.count",
+                        "what": "spells"
+                      },
+                      0
+                    ]
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.count",
+                        "what": "items"
+                      },
+                      0
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW31-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": 4
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW42": {
+      "rules": [
+        {
+          "id": "SW42",
+          "hook": "victory",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "not": {
+                  "ref": "battle.enemyActed"
+                }
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": 6
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR40": {
+      "rules": [
+        {
+          "id": "AR40",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "ref": "battle.enemyHp"
+                  },
+                  0
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "大技"
+                    ]
+                  },
+                  {
+                    "ref": "battle.guarded",
+                    "offset": -1
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR40-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 8
+                  },
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW14": {
+      "rules": [
+        {
+          "id": "SW14",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "even": {
+                  "ref": "die"
+                }
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW14",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 3
+                  }
+                ],
+                "uses": 1,
+                "when": true,
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW19": {
+      "rules": [
+        {
+          "id": "SW19-reset",
+          "hook": "battleStart",
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.SW19.used",
+              "value": false
+            },
+            {
+              "op": "setFlag",
+              "key": "gear.SW19.armedRound",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "id": "SW19-arm",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  {
+                    "and": [
+                      {
+                        "gt": [
+                          {
+                            "ref": "battle.enemyHp"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "lte": [
+                          {
+                            "mul": [
+                              {
+                                "ref": "battle.enemyHp"
+                              },
+                              2
+                            ]
+                          },
+                          {
+                            "ref": "battle.enemyMaxHp"
+                          }
+                        ]
+                      },
+                      {
+                        "gt": [
+                          {
+                            "mul": [
+                              {
+                                "add": [
+                                  {
+                                    "ref": "battle.enemyHp"
+                                  },
+                                  {
+                                    "ref": "battle.dealt"
+                                  }
+                                ]
+                              },
+                              2
+                            ]
+                          },
+                          {
+                            "ref": "battle.enemyMaxHp"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "ref": "flag",
+                  "key": "gear.SW19.used"
+                }
+              },
+              {
+                "ne": [
+                  {
+                    "ref": "flag",
+                    "key": "gear.SW19.armedRound"
+                  },
+                  {
+                    "ref": "battle.round"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.SW19.armedRound",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW19",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 4
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "gear.SW19.used",
+                    "value": true
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "not": {
+                    "ref": "flag",
+                    "key": "gear.SW19.used"
+                  }
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "SW29": {
+      "rules": [
+        {
+          "id": "SW29",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.attackHit"
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 2
+          }
+        }
+      ]
+    },
+    "AR11": {
+      "rules": [
+        {
+          "id": "AR11",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "battle.attackHit"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 4
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR13": {
+      "rules": [
+        {
+          "id": "AR13",
+          "hook": "afterHeroAction",
+          "when": {
+            "eq": [
+              {
+                "ref": "battle.heroAction"
+              },
+              "spell"
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR13",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 3
+                  }
+                ],
+                "uses": 1,
+                "when": true,
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR22": {
+      "rules": [
+        {
+          "id": "AR22-reset",
+          "hook": "battleStart",
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR22.used",
+              "value": false
+            },
+            {
+              "op": "setFlag",
+              "key": "gear.AR22.armedRound",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "id": "AR22-arm",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "item"
+                ]
+              },
+              {
+                "not": {
+                  "ref": "flag",
+                  "key": "gear.AR22.used"
+                }
+              },
+              {
+                "ne": [
+                  {
+                    "ref": "flag",
+                    "key": "gear.AR22.armedRound"
+                  },
+                  {
+                    "ref": "battle.round"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR22.armedRound",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR22",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 5
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "gear.AR22.used",
+                    "value": true
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "not": {
+                    "ref": "flag",
+                    "key": "gear.AR22.used"
+                  }
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AR28": {
+      "rules": [
+        {
+          "id": "AR28",
+          "hook": "moveConfirm",
+          "when": {
+            "lt": [
+              {
+                "ref": "move.steps"
+              },
+              {
+                "ref": "move.die"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "mp",
+              "delta": 2
+            }
+          ],
+          "limit": {
+            "perMove": 1
+          }
+        }
+      ]
+    },
+    "AR38": {
+      "rules": [
+        {
+          "id": "AR38-reset",
+          "hook": "battleStart",
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR38.used",
+              "value": false
+            },
+            {
+              "op": "setFlag",
+              "key": "gear.AR38.armedRound",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "id": "AR38-arm",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "spell"
+                    ]
+                  },
+                  {
+                    "ref": "battle.attackHit",
+                    "offset": -1
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "ref": "flag",
+                  "key": "gear.AR38.used"
+                }
+              },
+              {
+                "ne": [
+                  {
+                    "ref": "flag",
+                    "key": "gear.AR38.armedRound"
+                  },
+                  {
+                    "ref": "battle.round"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR38.armedRound",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR38",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 6
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "gear.AR38.used",
+                    "value": true
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "not": {
+                    "ref": "flag",
+                    "key": "gear.AR38.used"
+                  }
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AR48": {
+      "rules": [
+        {
+          "id": "AR48-reset",
+          "hook": "battleStart",
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR48.used",
+              "value": false
+            },
+            {
+              "op": "setFlag",
+              "key": "gear.AR48.armedRound",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "id": "AR48-arm",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "and": [
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.attackKind"
+                      },
+                      "attack"
+                    ]
+                  },
+                  {
+                    "eq": [
+                      {
+                        "ref": "battle.enemyKind",
+                        "offset": -1
+                      },
+                      "大技"
+                    ]
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "ref": "flag",
+                  "key": "gear.AR48.used"
+                }
+              },
+              {
+                "ne": [
+                  {
+                    "ref": "flag",
+                    "key": "gear.AR48.armedRound"
+                  },
+                  {
+                    "ref": "battle.round"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR48.armedRound",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR48",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 7
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "gear.AR48.used",
+                    "value": true
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "not": {
+                    "ref": "flag",
+                    "key": "gear.AR48.used"
+                  }
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AR50": {
+      "rules": [
+        {
+          "id": "AR50",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.damage"
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 8
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR50",
+                "hook": "afterEnemyAction",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "gt": [
+                    {
+                      "ref": "hp"
+                    },
+                    0
+                  ]
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR34": {
+      "rules": [
+        {
+          "id": "AR34",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "gt": [
+                  {
+                    "ref": "battle.damage"
+                  },
+                  0
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind"
+                  },
+                  "通常攻撃"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 3
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR34-second",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 2
+                  },
+                  {
+                    "op": "addMark",
+                    "mark": {
+                      "id": "AR34-third",
+                      "hook": "enemyDamage",
+                      "effects": [
+                        {
+                          "op": "reduceDamage",
+                          "amount": 1
+                        }
+                      ],
+                      "uses": 1,
+                      "when": {
+                        "and": [
+                          {
+                            "gt": [
+                              {
+                                "ref": "battle.damage"
+                              },
+                              0
+                            ]
+                          },
+                          {
+                            "eq": [
+                              {
+                                "ref": "battle.enemyKind"
+                              },
+                              "通常攻撃"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "and": [
+                    {
+                      "gt": [
+                        {
+                          "ref": "battle.damage"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "eq": [
+                        {
+                          "ref": "battle.enemyKind"
+                        },
+                        "通常攻撃"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW23": {
+      "rules": [
+        {
+          "id": "SW23",
+          "hook": "spellCost",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.spellKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.spellCost"
+                  },
+                  2
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceCost",
+              "amount": 2,
+              "min": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW34": {
+      "rules": [
+        {
+          "id": "SW34",
+          "hook": "spellCost",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.spellKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.spellCost"
+                  },
+                  4
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "hp"
+                  },
+                  3
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "hp"
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": -2
+            },
+            {
+              "op": "reduceCost",
+              "amount": 3,
+              "min": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW49": {
+      "rules": [
+        {
+          "id": "SW49",
+          "hook": "heroHit",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "gt": [
+                      {
+                        "ref": "battle.enemyHp"
+                      },
+                      0
+                    ]
+                  },
+                  {
+                    "lte": [
+                      {
+                        "mul": [
+                          {
+                            "ref": "battle.enemyHp"
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "battle.enemyMaxHp"
+                      }
+                    ]
+                  },
+                  {
+                    "gt": [
+                      {
+                        "mul": [
+                          {
+                            "add": [
+                              {
+                                "ref": "battle.enemyHp"
+                              },
+                              {
+                                "ref": "battle.dealt"
+                              }
+                            ]
+                          },
+                          2
+                        ]
+                      },
+                      {
+                        "ref": "battle.enemyMaxHp"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW49-attack",
+                "hook": "heroAttackDamage",
+                "effects": [
+                  {
+                    "op": "addDamage",
+                    "amount": 8
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.attackKind"
+                    },
+                    "attack"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "SW49-guard",
+                "hook": "afterHeroAction",
+                "effects": [
+                  {
+                    "op": "mp",
+                    "delta": 3
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "eq": [
+                    {
+                      "ref": "battle.heroAction"
+                    },
+                    "guard"
+                  ]
+                },
+                "expires": {
+                  "heroTurns": 1
+                }
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW47": {
+      "rules": [
+        {
+          "id": "SW47",
+          "hook": "spellCost",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.spellKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gte": [
+                  {
+                    "ref": "battle.spellCost"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "battle.guarded",
+                "offset": -1
+              },
+              {
+                "ref": "battle.enemyHit",
+                "offset": -1
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.hpLost",
+                    "offset": -1
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceCost",
+              "amount": 3,
+              "min": 1
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR10": {
+      "rules": [
+        {
+          "id": "AR10",
+          "hook": "afterEnemyAction",
+          "when": {
+            "and": [
+              {
+                "ref": "battle.guarded"
+              },
+              {
+                "ref": "battle.enemyHit"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR10-win",
+                "hook": "victory",
+                "effects": [
+                  {
+                    "op": "hp",
+                    "delta": 4
+                  }
+                ],
+                "uses": 1,
+                "when": true
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR32": {
+      "rules": [
+        {
+          "id": "AR32",
+          "hook": "enemyDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.round"
+                  },
+                  2
+                ]
+              },
+              {
+                "ref": "battle.enemyHit",
+                "abs": 1
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "battle.hpLost",
+                    "abs": 1
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "reduceDamage",
+              "amount": 6
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR35": {
+      "rules": [
+        {
+          "id": "AR35",
+          "hook": "spellHeal",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.enemyKind",
+                    "offset": -1
+                  },
+                  "大技"
+                ]
+              },
+              {
+                "ref": "battle.enemyHit",
+                "offset": -1
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.hpAfterEnemy",
+                    "offset": -1
+                  },
+                  0
+                ]
+              },
+              {
+                "lte": [
+                  {
+                    "mul": [
+                      {
+                        "ref": "battle.hpAfterEnemy",
+                        "offset": -1
+                      },
+                      2
+                    ]
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 7
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "SW18": {
+      "rules": [
+        {
+          "id": "SW18",
+          "hook": "heroAttackDamage",
+          "when": {
+            "and": [
+              {
+                "eq": [
+                  {
+                    "ref": "battle.attackKind"
+                  },
+                  "attack"
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "ref": "battle.spellHpRestored",
+                    "offset": -1
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 6
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR04": {
+      "rules": [
+        {
+          "id": "AR04",
+          "hook": "itemHeal",
+          "when": true,
+          "effects": [
+            {
+              "op": "addDamage",
+              "amount": 3
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    },
+    "AR42": {
+      "rules": [
+        {
+          "id": "AR42-reset",
+          "hook": "battleStart",
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR42.used",
+              "value": false
+            },
+            {
+              "op": "setFlag",
+              "key": "gear.AR42.armedRound",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "id": "AR42-arm",
+          "hook": "hpRestored",
+          "when": {
+            "and": [
+              {
+                "in": [
+                  {
+                    "ref": "battle.restoreSource"
+                  },
+                  [
+                    "item",
+                    "spell"
+                  ]
+                ]
+              },
+              {
+                "lt": [
+                  {
+                    "ref": "battle.hpBeforeRestore"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "eq": [
+                  {
+                    "ref": "hp"
+                  },
+                  {
+                    "ref": "maxHp"
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "ref": "flag",
+                  "key": "gear.AR42.used"
+                }
+              },
+              {
+                "ne": [
+                  {
+                    "ref": "flag",
+                    "key": "gear.AR42.armedRound"
+                  },
+                  {
+                    "ref": "battle.round"
+                  }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "setFlag",
+              "key": "gear.AR42.armedRound",
+              "value": {
+                "ref": "battle.round"
+              }
+            },
+            {
+              "op": "addMark",
+              "mark": {
+                "id": "AR42",
+                "hook": "enemyDamage",
+                "effects": [
+                  {
+                    "op": "reduceDamage",
+                    "amount": 6
+                  },
+                  {
+                    "op": "setFlag",
+                    "key": "gear.AR42.used",
+                    "value": true
+                  }
+                ],
+                "uses": 1,
+                "when": {
+                  "not": {
+                    "ref": "flag",
+                    "key": "gear.AR42.used"
+                  }
+                },
+                "expires": {
+                  "enemyActions": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AR44": {
+      "rules": [
+        {
+          "id": "AR44",
+          "hook": "mpRestored",
+          "when": {
+            "gte": [
+              {
+                "ref": "battle.restoredMp"
+              },
+              2
+            ]
+          },
+          "effects": [
+            {
+              "op": "hp",
+              "delta": {
+                "min": [
+                  6,
+                  {
+                    "floorDiv": [
+                      {
+                        "ref": "battle.restoredMp"
+                      },
+                      2
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "limit": {
+            "perBattle": 1
+          }
+        }
+      ]
+    }
+  }
+}

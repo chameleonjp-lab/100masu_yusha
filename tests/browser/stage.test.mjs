@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+const m=await import('../../src/ui/stage.js').catch(()=>({}));
+test('3D cuboid has six shaded faces, depth and finite vertices',()=>{assert.equal(typeof m.cuboid,'function');const a=m.cuboid(0,0,0,2,3,4,[1,.5,.2]);assert.equal(a.length,36*6);assert.ok(a.every(Number.isFinite));const depths=a.filter((_,i)=>i%6===2);assert.equal(Math.max(...depths)-Math.min(...depths),4)});
+test('stage projection preserves depth and places DOM actors inside stage',()=>{assert.equal(typeof m.project,'function');const a=m.project(-2,0,2),b=m.project(2,0,-2);assert.ok(a.x>0&&b.x<100);assert.ok(a.x<b.x);assert.ok(a.y>b.y)});
+test('five regions have distinct low-poly silhouettes, castle only at final region',()=>{const lists=[1,2,3,4,5].map(m.regionProps);assert.equal(new Set(lists.map(x=>JSON.stringify(x))).size,5);for(let i=0;i<5;i++){assert.ok(lists[i].length<60);assert.ok(lists[i].every(b=>b.length===7));assert.equal(lists[i].some(b=>b[6]==='afb5b7'),i===4)}assert.ok(lists[1].some(b=>b[4]<.1));});

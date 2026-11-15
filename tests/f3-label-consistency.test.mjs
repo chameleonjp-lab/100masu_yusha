@@ -1,0 +1,36 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const events = JSON.parse(readFileSync(new URL('../data/scripts/events/F3.json', import.meta.url))).events;
+test('F3 choices describe their actual source action and preserve costs and enemy', () => {
+  const paid=events['F3-09'].options[0];
+  assert.equal(paid.label,'当番へ230Gを渡して手伝ってもらう');
+  assert.deepEqual(paid.cost,{gold:230});
+  assert.equal(paid.effects[0].id,'SW25');
+  const fight=events['F3-28'].options[0];
+  assert.equal(fight.label,'石門番に挑む');
+  assert.equal(fight.effects[0].enemy,'MB01');
+  const work=events['F3-43'].options[0];
+  assert.equal(work.label,'粉をふるう役を引き受ける');
+  assert.deepEqual(work.cost,{hp:{amount:3,floor:1}});
+  assert.deepEqual(work.effects,[{op:'awardGold',amount:460}]);
+});
+test('F3 six additional labels reflect the source actions without changing branch outcomes', () => {
+  const e=events;
+  assert.equal(e['F3-07'].options[0].label,'上段へ炉を押し上げる');
+  assert.equal(e['F3-07'].options[1].label,'下段の平らな線路で炉を押す');
+  assert.equal(e['F3-07'].options[0].effects[0].id,'SW22');
+  assert.deepEqual(e['F3-07'].options[0].cost,{hp:{amount:3,floor:1}});
+  assert.equal(e['F3-07'].options[1].effects[0].id,'SW23');
+  assert.equal(e['F3-07'].options[1].cost,undefined);
+  assert.equal(e['F3-22'].options[0].label,'粉の濃い腕に防御を合わせる');
+  assert.equal(e['F3-22'].options[0].effects[0].enemy,'EN05');
+  assert.deepEqual(e['F3-22'].options[0].effects[0].rules[0].effects,[{op:'reduceDamage',amount:5}]);
+  assert.equal(e['F3-34'].options[0].label,'真ん中の引き出しを開く');
+  assert.deepEqual(e['F3-34'].options[0].effects,[{op:'giveItem',id:'HE24'}]);
+  assert.equal(e['F3-48'].options[0].label,'線路脇へ下がって止め棒を差す');
+  assert.equal(e['F3-48'].options[1].label,'車体を正面から押し返す');
+  assert.deepEqual(e['F3-48'].options[0].effects,[]);
+  assert.equal(e['F3-48'].options[0].cost,undefined);
+  assert.deepEqual(e['F3-48'].options[1].cost,{hp:{amount:5,floor:1},trapLoss:true});
+});
