@@ -242,3 +242,130 @@ test('CLI malformed tree schema cannot pass without --exact', () => {
   const { status, result } = run(['--check', '--source', f.dir, '--tree', p]);
   assert.equal(status, 1); fails(result, 'TREE_METADATA');
 });
+
+// Q2 build uses reviewed real runtime bytes in fresh private directories.
+// Only Git commit/tree metadata is synthetic; no product module is evaluated.
+import * as pagesBuilder from '../tools/build-pages.mjs';
+const runtimeRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const buildFiles = ["assets/characters/comp-lantern-idle.svg", "assets/characters/comp-lantern-support.svg", "assets/characters/comp-medic-idle.svg", "assets/characters/comp-medic-support.svg", "assets/characters/comp-shield-idle.svg", "assets/characters/comp-shield-support.svg", "assets/characters/comp-thrower-idle.svg", "assets/characters/comp-thrower-support.svg", "assets/characters/dk01-p1-attack.svg", "assets/characters/dk01-p1-big.svg", "assets/characters/dk01-p1-guard.svg", "assets/characters/dk01-p1-idle.svg", "assets/characters/dk01-p1-open.svg", "assets/characters/dk01-p2-attack.svg", "assets/characters/dk01-p2-big.svg", "assets/characters/dk01-p2-guard.svg", "assets/characters/dk01-p2-idle.svg", "assets/characters/dk01-p2-open.svg", "assets/characters/en01-attack.svg", "assets/characters/en01-big.svg", "assets/characters/en01-guard.svg", "assets/characters/en01-hit.svg", "assets/characters/en01-idle.svg", "assets/characters/en01-open.svg", "assets/characters/en02-attack.svg", "assets/characters/en02-big.svg", "assets/characters/en02-guard.svg", "assets/characters/en02-hit.svg", "assets/characters/en02-idle.svg", "assets/characters/en02-open.svg", "assets/characters/en03-attack.svg", "assets/characters/en03-big.svg", "assets/characters/en03-guard.svg", "assets/characters/en03-hit.svg", "assets/characters/en03-idle.svg", "assets/characters/en03-open.svg", "assets/characters/en04-attack.svg", "assets/characters/en04-big.svg", "assets/characters/en04-guard.svg", "assets/characters/en04-hit.svg", "assets/characters/en04-idle.svg", "assets/characters/en04-open.svg", "assets/characters/en05-attack.svg", "assets/characters/en05-big.svg", "assets/characters/en05-guard.svg", "assets/characters/en05-hit.svg", "assets/characters/en05-idle.svg", "assets/characters/en05-open.svg", "assets/characters/en06-attack.svg", "assets/characters/en06-big.svg", "assets/characters/en06-guard.svg", "assets/characters/en06-hit.svg", "assets/characters/en06-idle.svg", "assets/characters/en06-open.svg", "assets/characters/en07-attack.svg", "assets/characters/en07-big.svg", "assets/characters/en07-guard.svg", "assets/characters/en07-hit.svg", "assets/characters/en07-idle.svg", "assets/characters/en07-open.svg", "assets/characters/en08-attack.svg", "assets/characters/en08-big.svg", "assets/characters/en08-guard.svg", "assets/characters/en08-hit.svg", "assets/characters/en08-idle.svg", "assets/characters/en08-open.svg", "assets/characters/en09-attack.svg", "assets/characters/en09-big.svg", "assets/characters/en09-guard.svg", "assets/characters/en09-hit.svg", "assets/characters/en09-idle.svg", "assets/characters/en09-open.svg", "assets/characters/en10-attack.svg", "assets/characters/en10-big.svg", "assets/characters/en10-guard.svg", "assets/characters/en10-hit.svg", "assets/characters/en10-idle.svg", "assets/characters/en10-open.svg", "assets/characters/en11-attack.svg", "assets/characters/en11-big.svg", "assets/characters/en11-guard.svg", "assets/characters/en11-hit.svg", "assets/characters/en11-idle.svg", "assets/characters/en11-open.svg", "assets/characters/en12-attack.svg", "assets/characters/en12-big.svg", "assets/characters/en12-guard.svg", "assets/characters/en12-hit.svg", "assets/characters/en12-idle.svg", "assets/characters/en12-open.svg", "assets/characters/en13-attack.svg", "assets/characters/en13-big.svg", "assets/characters/en13-guard.svg", "assets/characters/en13-hit.svg", "assets/characters/en13-idle.svg", "assets/characters/en13-open.svg", "assets/characters/hero-bard-attack.svg", "assets/characters/hero-bard-cast.svg", "assets/characters/hero-bard-down.svg", "assets/characters/hero-bard-guard.svg", "assets/characters/hero-bard-hit.svg", "assets/characters/hero-bard-idle.svg", "assets/characters/hero-bard-victory.svg", "assets/characters/hero-bard-walk1.svg", "assets/characters/hero-bard-walk2.svg", "assets/characters/hero-mage-attack.svg", "assets/characters/hero-mage-cast.svg", "assets/characters/hero-mage-down.svg", "assets/characters/hero-mage-guard.svg", "assets/characters/hero-mage-hit.svg", "assets/characters/hero-mage-idle.svg", "assets/characters/hero-mage-victory.svg", "assets/characters/hero-mage-walk1.svg", "assets/characters/hero-mage-walk2.svg", "assets/characters/hero-traveler-attack.svg", "assets/characters/hero-traveler-cast.svg", "assets/characters/hero-traveler-down.svg", "assets/characters/hero-traveler-guard.svg", "assets/characters/hero-traveler-hit.svg", "assets/characters/hero-traveler-idle.svg", "assets/characters/hero-traveler-victory.svg", "assets/characters/hero-traveler-walk1.svg", "assets/characters/hero-traveler-walk2.svg", "assets/characters/hero-warrior-attack.svg", "assets/characters/hero-warrior-cast.svg", "assets/characters/hero-warrior-down.svg", "assets/characters/hero-warrior-guard.svg", "assets/characters/hero-warrior-hit.svg", "assets/characters/hero-warrior-idle.svg", "assets/characters/hero-warrior-victory.svg", "assets/characters/hero-warrior-walk1.svg", "assets/characters/hero-warrior-walk2.svg", "assets/characters/mb01-attack.svg", "assets/characters/mb01-big.svg", "assets/characters/mb01-guard.svg", "assets/characters/mb01-hit.svg", "assets/characters/mb01-idle.svg", "assets/characters/mb01-open.svg", "assets/characters/mb02-attack.svg", "assets/characters/mb02-big.svg", "assets/characters/mb02-guard.svg", "assets/characters/mb02-hit.svg", "assets/characters/mb02-idle.svg", "assets/characters/mb02-open.svg", "assets/characters/mb03-attack.svg", "assets/characters/mb03-big.svg", "assets/characters/mb03-guard.svg", "assets/characters/mb03-hit.svg", "assets/characters/mb03-idle.svg", "assets/characters/mb03-open.svg", "assets/characters/metrics.js", "data/adventure-content.json", "data/balance-draft-2.json", "data/patches/encounters-balance-draft-2.json", "data/scripts/_samples-equipment.json", "data/scripts/_samples-items.json", "data/scripts/equipment.json", "data/scripts/events/B1.json", "data/scripts/events/B2.json", "data/scripts/events/B3.json", "data/scripts/events/B4.json", "data/scripts/events/B5.json", "data/scripts/events/F1.json", "data/scripts/events/F2.json", "data/scripts/events/F3.json", "data/scripts/events/F4.json", "data/scripts/events/F5.json", "data/scripts/events/H1.json", "data/scripts/events/H2.json", "data/scripts/events/H3.json", "data/scripts/events/H4.json", "data/scripts/events/H5.json", "data/scripts/events/M1.json", "data/scripts/events/M2.json", "data/scripts/events/M3.json", "data/scripts/events/M4.json", "data/scripts/events/M5.json", "data/scripts/events/_samples.json", "data/scripts/items.json", "data/scripts/manifest.json", "data/tuning.json", "index.html", "src/content/browser.js", "src/content/index.js", "src/content/validate.js", "src/engine/battle.js", "src/engine/board.js", "src/engine/core.js", "src/engine/custom/index.js", "src/engine/events.js", "src/engine/expr.js", "src/engine/formats.js", "src/engine/index.js", "src/engine/info-items.js", "src/engine/inn.js", "src/engine/items.js", "src/engine/landing-kind-items.js", "src/engine/ops-basic.js", "src/engine/options.js", "src/engine/puzzles.js", "src/engine/results.js", "src/engine/rng.js", "src/engine/runner.js", "src/engine/state.js", "src/engine/status.js", "src/engine/trap-items.js", "src/engine/util.js", "src/engine/view.js", "src/locales/catalogs.js", "src/locales/key-manifest.json", "src/locales/messages/de.json", "src/locales/messages/en.json", "src/locales/messages/es.json", "src/locales/messages/fr.json", "src/locales/messages/id.json", "src/locales/messages/it.json", "src/locales/messages/ja.json", "src/locales/messages/ko.json", "src/locales/messages/pt-BR.json", "src/locales/messages/ru.json", "src/locales/messages/th.json", "src/locales/messages/tr.json", "src/locales/messages/vi.json", "src/locales/messages/zh-Hans.json", "src/locales/messages/zh-Hant.json", "src/locales/ui-templates.js", "src/ranking/local.js", "src/save/core.js", "src/save/index.js", "src/save/indexeddb.js", "src/save/memory.js", "src/style.css", "src/ui/app.js", "src/ui/audio-recipes.js", "src/ui/audio.js", "src/ui/i18n.js", "src/ui/presentation.js", "src/ui/ranking.js", "src/ui/session.js", "src/ui/stage.js"];
+const digest = b => createHash('sha256').update(b).digest('hex');
+const gitObject = (kind, b) => createHash('sha1').update(`${kind} ${b.length}\0`).update(b).digest('hex');
+function syntheticTree(files) {
+  const nodes = new Map([['', new Map()]]);
+  for (const [p,b] of Object.entries(files)) {
+    const parts=p.split('/'); let dir='';
+    for (const part of parts.slice(0,-1)) { const next=dir?`${dir}/${part}`:part; if(!nodes.has(next))nodes.set(next,new Map()); nodes.get(dir).set(part,{type:'tree',path:next});dir=next; }
+    nodes.get(dir).set(parts.at(-1),{type:'blob',path:p,sha:gitObject('blob',b),size:b.length,mode:'100644'});
+  }
+  const tree=[];
+  function visit(dir) {
+    const rows=[];
+    for (const [name,e] of nodes.get(dir)) {
+      if(e.type==='tree') {e.sha=visit(e.path);e.mode='040000';tree.push({path:e.path,type:'tree',mode:e.mode,sha:e.sha});}
+      else tree.push({...e});
+      rows.push({key:Buffer.from(name+(e.type==='tree'?'/':'')),value:Buffer.concat([Buffer.from(`${e.type==='tree'?'40000':e.mode} ${name}\0`),Buffer.from(e.sha,'hex')])});
+    }
+    rows.sort((a,b)=>Buffer.compare(a.key,b.key));return gitObject('tree',Buffer.concat(rows.map(x=>x.value)));
+  }
+  const sha=visit('');return {sha,truncated:false,tree:tree.sort((a,b)=>a.path.localeCompare(b.path))};
+}
+function realFixture() {
+  const dir=fs.mkdtempSync(path.join(fixtures,'real-runtime-'));
+  const files={};for(const p of buildFiles) {files[p]=fs.readFileSync(path.join(runtimeRoot,p));fs.mkdirSync(path.dirname(path.join(dir,p)),{recursive:true});fs.writeFileSync(path.join(dir,p),files[p],{flag:'wx'});}
+  files['docs/private-test-marker.txt']=Buffer.from('PRIVATE_TEST_MARKER_NOT_FOR_ARTIFACT');fs.mkdirSync(path.join(dir,'docs'));fs.writeFileSync(path.join(dir,'docs/private-test-marker.txt'),files['docs/private-test-marker.txt'],{flag:'wx'});
+  const expectedTree=syntheticTree(files),sourceSha='a'.repeat(40),commit={sha:sourceSha,tree:{sha:expectedTree.sha}};
+  return {source:dir,expectedTree,sourceSha,commit,out:path.join(fixtures,`out-${path.basename(dir)}`),files};
+}
+const buildOptions=f=>({source:f.source,expectedTree:f.expectedTree,commit:f.commit,sourceSha:f.sourceSha,out:f.out});
+function build(f,extra={}) {assert.equal(typeof pagesBuilder.buildPages,'function','buildPages must be implemented');return pagesBuilder.buildPages({...buildOptions(f),...extra});}
+function noBuild(r,code){assert.equal(r.ok,false);assert.equal(r.publicationReady,false);assert.equal(r.artifact,null);if(code)assert.ok(r.diagnostics.some(d=>d.code===code),JSON.stringify(r));}
+function replaceFixture(f,p,b) {const value=Buffer.from(b);fs.writeFileSync(path.join(f.source,p),value);f.files[p]=value;f.expectedTree=syntheticTree(f.files);f.commit.tree.sha=f.expectedTree.sha;}
+let common;
+function fixtureShared(){return common??=realFixture();}
+function uniqueOut(f,suffix){return {...f,out:f.out+'-'+suffix};}
+
+test('build: reviewed byte fixture produces exact envelope and transformed manifest',()=>{
+ const f=fixtureShared(),before=snapshot(f.source),r=build(f);assert.equal(r.ok,true,JSON.stringify(r));assert.equal(r.publicationReady,false);assert.deepEqual(snapshot(f.source),before);
+ const manifest=JSON.parse(fs.readFileSync(path.join(f.out,'publication.json'),'utf8'));
+ assert.equal(manifest.sourceSha,f.sourceSha);assert.equal(manifest.treeSha,f.expectedTree.sha);assert.equal(manifest.status,'preview');assert.equal(manifest.storage.database,'yusha100-publication-preview-v1');assert.equal(manifest.storage.formalPublicationStorage,'undecided');assert.equal(manifest.labRankingIntegration,false);
+ assert.equal(manifest.resources.length,240);assert.ok(!manifest.resources.some(x=>x.path==='publication.json'));
+ for(const e of manifest.resources){const b=fs.readFileSync(path.join(f.out,e.path));assert.equal(b.length,e.bytes);assert.equal(digest(b),e.sha256);}
+ assert.equal(digest(fs.readFileSync(path.join(f.out,'publication.json'))),r.artifact.manifestSha256);
+ assert.equal(snapshot(f.out).filter(x=>x[1]!=='directory').length,241);assert.ok(!JSON.stringify(manifest).includes(f.source));assert.ok(!JSON.stringify(manifest).includes('PRIVATE_TEST_MARKER'));
+ const html=fs.readFileSync(path.join(f.out,'index.html'),'utf8');assert.ok(html.indexOf('publication-status')<html.indexOf('<main id="app">'));assert.ok(html.includes(f.sourceSha));assert.ok(html.includes('yusha100-publication-preview-v1'));
+ assert.equal(digest(fs.readFileSync(path.join(f.source,'index.html'))),digest(f.files['index.html']));
+ for(const base of ['https://fixture.invalid/','https://fixture.invalid/project/']){for(const rel of ['./src/style.css','./src/ui/app.js','./assets/characters/hero-traveler-idle.svg','./data/scripts/manifest.json'])assert.ok(new URL(rel,base).pathname.startsWith(new URL(base).pathname));}
+});
+for(const [name,mutate] of [
+ ['source SHA mismatch',o=>o.sourceSha='b'.repeat(40)],
+ ['commit tree mismatch',o=>o.commit={...o.commit,tree:{sha:'c'.repeat(40)}}],
+ ['tree root mismatch',o=>o.expectedTree={...o.expectedTree,sha:'d'.repeat(40)}],
+ ['tree child hash mismatch',o=>{o.expectedTree=structuredClone(o.expectedTree);o.expectedTree.tree.find(e=>e.type==='tree').sha='e'.repeat(40)}],
+ ['truncated tree',o=>o.expectedTree={...o.expectedTree,truncated:true}],
+ ['duplicate entry',o=>o.expectedTree={...o.expectedTree,tree:[...o.expectedTree.tree,o.expectedTree.tree[0]]}],
+ ['missing parent tree',o=>o.expectedTree={...o.expectedTree,tree:o.expectedTree.tree.filter(e=>e.path!=='src/ui')}],
+ ['submodule',o=>{o.expectedTree=structuredClone(o.expectedTree);o.expectedTree.tree[0]={...o.expectedTree.tree[0],type:'commit',mode:'160000'}}],
+ ['unknown policy override',o=>o.policy={}],
+ ['unknown storage override',o=>o.namespace='yusha100'],
+])test(`build: rejects ${name}`,()=>{const f=uniqueOut(fixtureShared(),name.replaceAll(' ','-')),o=buildOptions(f);mutate(o);assert.equal(typeof pagesBuilder.buildPages,'function');const r=pagesBuilder.buildPages(o);noBuild(r);assert.equal(fs.existsSync(f.out),false)});
+for(const [name,p,b] of [
+ ['unwired app','src/ui/app.js',()=>fs.readFileSync(path.join(runtimeRoot,'src/ui/app.js'),'utf8').replace("{name:'yusha100-publication-preview-v1'}",'')],
+ ['changed JS','src/ui/audio.js',()=>fs.readFileSync(path.join(runtimeRoot,'src/ui/audio.js'),'utf8')+'\n// changed'],
+ ['external CSS','src/style.css',()=>fs.readFileSync(path.join(runtimeRoot,'src/style.css'),'utf8')+'\n@import "https://example.invalid/secret.css";'],
+ ['external HTML','index.html',()=>fs.readFileSync(path.join(runtimeRoot,'index.html'),'utf8').replace('</head>','<script src="https://example.invalid/x.js"></script></head>')],
+ ['external SVG','assets/characters/hero-traveler-idle.svg',()=>'<svg xmlns="http://www.w3.org/2000/svg"><image href="https://example.invalid/a"/></svg>'],
+ ['script traversal','data/scripts/manifest.json',()=>JSON.stringify({format:'script-manifest-1',events:['../secret.json'],items:[],equipment:[]})],
+])test(`build: fixed policy rejects ${name} despite internally matching synthetic tree`,()=>{const f=realFixture();replaceFixture(f,p,b());noBuild(build(f));assert.equal(fs.existsSync(f.out),false)});
+test('build: missing declared locale fails without output',()=>{const f=realFixture();fs.renameSync(path.join(f.source,'src/locales/messages/ja.json'),path.join(f.source,'src/locales/messages/ja.json.kept'));noBuild(build(f));assert.equal(fs.existsSync(f.out),false)});
+test('build: existing output is retained',()=>{const f=uniqueOut(fixtureShared(),'existing');fs.mkdirSync(f.out);fs.writeFileSync(path.join(f.out,'keep'),'retained');noBuild(build(f));assert.equal(fs.readFileSync(path.join(f.out,'keep'),'utf8'),'retained')});
+test('build: source child and ancestor output rejected',()=>{const f=fixtureShared();noBuild(build(f,{out:path.join(f.source,'new-out')}));noBuild(build(f,{out:path.dirname(f.source)}));assert.equal(fs.existsSync(path.join(f.source,'new-out')),false)});
+test('build: output symlink is not followed',()=>{const f=uniqueOut(fixtureShared(),'symlink');fs.symlinkSync(f.source,f.out);noBuild(build(f));assert.equal(fs.lstatSync(f.out).isSymbolicLink(),true)});
+test('build: parent symlink is not followed',()=>{const f=uniqueOut(fixtureShared(),'parent-link');fs.symlinkSync(path.dirname(f.source),f.out);noBuild(build(f,{out:path.join(f.out,'new-output')}));assert.equal(fs.existsSync(path.join(path.dirname(f.source),'new-output')),false)});
+test('build: CLI successful fixture and receipt',()=>{const f=uniqueOut(fixtureShared(),'cli'),tree=path.join(fixtures,'build-tree.json'),commit=path.join(fixtures,'build-commit.json');fs.writeFileSync(tree,JSON.stringify(f.expectedTree),{flag:'wx'});fs.writeFileSync(commit,JSON.stringify(f.commit),{flag:'wx'});const r=run(['--build','--source',f.source,'--tree',tree,'--commit',commit,'--source-sha',f.sourceSha,'--out',f.out]);assert.equal(r.status,0,JSON.stringify(r));assert.equal(r.result.ok,true);assert.equal(r.result.publicationReady,false)});
+for(const args of [['--build'],['--build','--check'],['--build','--policy','x'],['--build','--source-sha','x']])test(`build: CLI refuses incomplete or override arguments ${JSON.stringify(args)}`,()=>assert.equal(run(args).status,2));
+
+// Faults are injected only in this sequential test process; no production hooks.
+function duringWrite(f,hook){
+ const original=fs.writeFileSync;let calls=0;
+ fs.writeFileSync=function(target,data,...rest){const value=original.call(fs,target,data,...rest);if(typeof target==='number')hook(++calls,data,original);return value;};
+ try{return build(f)}finally{fs.writeFileSync=original;}
+}
+test('build: write failure preserves partial output without a success receipt',()=>{
+ const f=uniqueOut(fixtureShared(),'write-fault'),before=snapshot(f.source),original=fs.writeFileSync;let n=0,r;
+ fs.writeFileSync=function(target,...rest){if(typeof target==='number'&&++n===3)throw Object.assign(Error('synthetic ENOSPC'),{code:'ENOSPC'});return original.call(fs,target,...rest)};
+ try{r=build(f)}finally{fs.writeFileSync=original}
+ noBuild(r);assert.equal(r.partialOutput,true);assert.equal(fs.existsSync(f.out),true);assert.equal(fs.existsSync(path.join(f.out,'publication.json')),false);assert.deepEqual(snapshot(f.source),before);
+});
+test('build: output rename and replacement cannot return success for a pinned old directory',()=>{
+ const f=uniqueOut(fixtureShared(),'rename');const r=duringWrite(f,n=>{if(n===1){fs.renameSync(f.out,f.out+'-kept');fs.mkdirSync(f.out);}});
+ noBuild(r,'PATH_IDENTITY');assert.equal(r.partialOutput,true);assert.equal(fs.existsSync(path.join(f.out+'-kept','publication.json')),true);assert.equal(fs.readdirSync(f.out).length,0);
+});
+test('build: output parent replacement cannot return success',()=>{
+ const f=uniqueOut(fixtureShared(),'parent'),parent=fs.mkdtempSync(path.join(fixtures,'out-parent-'));f.out=path.join(parent,'out');
+ const r=duringWrite(f,n=>{if(n===1){fs.renameSync(parent,parent+'-kept');fs.mkdirSync(parent)}});
+ noBuild(r);assert.equal(r.partialOutput,true);assert.equal(fs.existsSync(path.join(parent+'-kept','out','publication.json')),true);assert.equal(fs.readdirSync(parent).length,0);
+});
+test('build: output symlink replacement fails without following or deleting it',()=>{
+ const f=uniqueOut(fixtureShared(),'replace-link'),before=snapshot(f.source);
+ const r=duringWrite(f,n=>{if(n===1){fs.renameSync(f.out,f.out+'-kept');fs.symlinkSync(f.source,f.out)}});
+ noBuild(r);assert.equal(fs.lstatSync(f.out).isSymbolicLink(),true);assert.deepEqual(snapshot(f.source),before);
+});
+test('build: source ancestor replacement fails after pinned old reads',()=>{
+ const f=realFixture(),holder=fs.mkdtempSync(path.join(fixtures,'source-parent-'));fs.renameSync(f.source,path.join(holder,'source'));f.source=path.join(holder,'source');
+ const r=duringWrite(f,n=>{if(n===1){fs.renameSync(holder,holder+'-kept');fs.mkdirSync(holder);fs.mkdirSync(path.join(holder,'source'));}});
+ noBuild(r,'PATH_IDENTITY');assert.equal(r.partialOutput,true);assert.equal(fs.existsSync(path.join(holder+'-kept','source','src/ui/app.js')),true);
+});
+test('build: concurrent source byte change prevents success',()=>{
+ const f=realFixture();const r=duringWrite(f,(n,data,write)=>{if(n===1)write(path.join(f.source,'docs/private-test-marker.txt'),'changed synthetic source')});
+ noBuild(r,'SOURCE_BYTES');assert.equal(r.partialOutput,true);
+});
+test('build: artifact corruption after manifest write prevents success',()=>{
+ const f=uniqueOut(fixtureShared(),'corrupt');let done=false;
+ const r=duringWrite(f,(n,data,write)=>{if(!done&&String(data).includes('\"schema\": \"yusha100-pages-1\"')){done=true;write(path.join(f.out,'index.html'),'corrupted synthetic artifact')}});
+ assert.equal(done,true);noBuild(r,'OUTPUT_BYTES');assert.equal(r.partialOutput,true);
+});
+test('build: dangling output symlink is retained and rejected',()=>{const f=uniqueOut(fixtureShared(),'dangling');fs.symlinkSync(f.out+'-absent',f.out);noBuild(build(f));assert.equal(fs.lstatSync(f.out).isSymbolicLink(),true)});
+test('build: receipt identifies executing tool separately from source commit',()=>{
+ const f=uniqueOut(fixtureShared(),'generator'),r=build(f);assert.equal(r.ok,true);const p=JSON.parse(fs.readFileSync(path.join(f.out,'publication.json'),'utf8'));
+ assert.ok(p.generator,'manifest must name executing builder');assert.equal(p.generator.toolFileSha256,digest(fs.readFileSync(cli)));assert.equal(p.generator.policyVersion,'reviewed-preview-resource-envelope-1');assert.equal(p.generator.matchesSourceTool,false);assert.equal(p.generator.sourceToolSha256,null);assert.deepEqual(r.artifact.generator,p.generator);
+});
