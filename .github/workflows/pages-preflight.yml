@@ -1,0 +1,38 @@
+name: Pages environment preflight
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/pages-preflight.yml
+
+permissions: {}
+
+jobs:
+  environment-metadata:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Report bounded environment metadata
+        shell: bash --noprofile --norc -euo pipefail {0}
+        run: |
+          printf 'runner_os=%s\n' "${RUNNER_OS:-unavailable}"
+          printf 'image_os=%s\n' "${ImageOS:-unavailable}"
+          printf 'image_version=%s\n' "${ImageVersion:-unavailable}"
+          if command -v node >/dev/null 2>&1; then
+            printf 'node_version='
+            node --version
+          else
+            printf 'node_version=unavailable\n'
+          fi
+          for executable in /usr/bin/google-chrome /usr/bin/chromium /usr/bin/chromium-browser; do
+            if [ -f "$executable" ] && [ -x "$executable" ]; then
+              printf 'browser_path=%s present=true\n' "$executable"
+            else
+              printf 'browser_path=%s present=false\n' "$executable"
+            fi
+          done
+          printf 'browser_execution=not_attempted\n'
+          printf 'game_execution=not_attempted\n'
+          printf 'native_storage=not_attempted\n'
+          printf 'deployment=not_attempted\n'
