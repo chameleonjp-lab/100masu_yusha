@@ -6,7 +6,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import vm f
 import {getContent,exampleRun,place,walk} from '../../tests/fixtures/helpers.mjs';
 import {createSession} from '../../src/ui/session.js';import {createMemoryStore} from '../../src/save/index.js';import {createMeta,dispatch} from '../../src/engine/index.js';
 import {planPresentation,createPresentationPlayer} from '../../src/ui/presentation-timeline.js';import {effectText,telegraphText} from '../../src/ui/presentation.js';
-import {displayText,loadMessages} from '../../src/ui/i18n.js';
+import {displayText,loadMessages,localizedView,msg} from '../../src/ui/i18n.js';
 const content=await getContent(),source=readFileSync(new URL('../../src/ui/app.js',import.meta.url),'utf8');
 async function fixture(seed=1,full=false,hp=1){const store=createMemoryStore(),gate=walk(content,place(exampleRun(content,'M',seed),99,{level:20,xp:912,hp:78,mp:48,spells:{learned:['SP01'],prepared:['SP01']}}),1).state,run=dispatch(content,gate,{type:'challengeKing'}).state;run.battle.enemy.hp=hp;if(full)run.bag=Array(12).fill('HE01');await store.startNew({run,meta:createMeta()});const session=createSession(content,store);await session.load();const before=structuredClone(session.view),effects=await session.act({type:'spell',spellId:'SP01'}),after=structuredClone(session.view);return {session,store,before,after,effects};}
 function setup(f,settings={},api=true,audio){
@@ -18,7 +18,7 @@ function setup(f,settings={},api=true,audio){
  enemy.parentElement=root;
  const session={run:f.after,meta:{settings},view:f.after};
  const planner=planPresentation;
- const c=vm.createContext({spriteMetrics,createKingCrownRenderer:opts=>createKingCrownRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),translate:()=>({sourceLocale:'ja',text:'魔王を たおした！'}),createKingVictoryRenderer:opts=>createKingVictoryRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),planPresentation:planner,createPresentationPlayer,structuredClone,Set,document:{hidden:false,createElement:()=>node(),createElementNS:()=>node()},session,screen:'game',reduced:{matches:false},root,stage:{update(){}},lastAction:'',notice:'confirmed result',content,
+ const c=vm.createContext({localizedView,msg,spriteMetrics,createKingCrownRenderer:opts=>createKingCrownRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),translate:()=>({sourceLocale:'ja',text:'魔王を たおした！'}),createKingVictoryRenderer:opts=>createKingVictoryRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),planPresentation:planner,createPresentationPlayer,structuredClone,Set,document:{hidden:false,createElement:()=>node(),createElementNS:()=>node()},session,screen:'game',reduced:{matches:false},root,stage:{update(){}},lastAction:'',notice:'confirmed result',content,
  render:v=>calls.push(['render',v]),sound:audio.api,el:(tag,cls,text)=>Object.assign(node(),{className:cls,textContent:text||''}),actionLabel:()=>'',
  effectText,telegraphText,localizedContent:x=>x,displayText,locale:()=> settings.language||'ja',pendingCommittedSound:null,setArt:(actor,key)=>{actor.pose=key;calls.push(['pose',actor,key])},getComputedStyle:()=>({width:'132px',transform:'matrix(1,0,0,1,-40,-70)'}),
  scheduleCommittedSound:(...args)=>calls.push(['effects',...args]),setTimeout:(fn,ms)=>{timers.set(++id,{fn,at:now+ms});return id},clearTimeout:id=>timers.delete(id)});

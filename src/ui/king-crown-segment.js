@@ -28,7 +28,7 @@ export function planKingCrownSegment({before,after,effects=[],settings={}}={}){
  if(index<1||effects[index-1]!==hit||actIndex<=index||!positive(hit.amount)||hit.hp!==phase.hp||
  hit.hp!==a.enemy.hp||hit.maxHp!==a.enemy.maxHp||b.enemy.hp-hit.amount!==hit.hp||
  act.round!==b.round||act.name!==b.telegraph.name||act.kind!==b.telegraph.kind)return null;
- // Only a prepared SP01 single-hit attack spell prefix is supported here.
+ // Only prepared SP01 attack or SP04 finisher single-hit spell prefixes are supported.
  // Companion, healing, item and multi-hit effects remain unimplemented, not ignored.
  const casts=effects.filter(e=>e.t==='spellCast'),mps=effects.filter(e=>e.t==='mp');
  const recordedSpell=Array.isArray(a.history)&&a.history.some(r=>r?.round===b.round&&r.action?.type==='spell');
@@ -38,7 +38,8 @@ export function planKingCrownSegment({before,after,effects=[],settings={}}={}){
   const records=Array.isArray(a.history)?a.history.filter(r=>r?.round===b.round):[];
   const offers=Array.isArray(b.spells)?b.spells.filter(s=>s?.id===cast.id):[];
   const rec=records[0],action=rec?.action,offer=offers[0];
-  if(effects[0]!==mp||effects[1]!==cast||effects[2]!==hit||cast.id!=='SP01'||cast.kind!=='attack'||!positive(cast.cost)||
+  const supportedSpell=(cast.id==='SP01'&&cast.kind==='attack')||(cast.id==='SP04'&&cast.kind==='finisher');
+  if(effects[0]!==mp||effects[1]!==cast||effects[2]!==hit||!supportedSpell||!positive(cast.cost)||
    !nonnegative(before.hero.mp)||!nonnegative(after.hero.mp)||mp.reason!=='spell'||
    mp.before!==before.hero.mp||mp.after!==after.hero.mp||mp.delta!==-cast.cost||mp.before+mp.delta!==mp.after||
    records.length!==1||action?.type!=='spell'||action.spellId!==cast.id||action.spellKind!==cast.kind||

@@ -1,5 +1,6 @@
 import {planKingTurn} from './king-turn-plan.js';
 import {planKingSpellTimeline} from './king-spell-timeline.js';
+import {appendKingRewardSequence} from './king-reward-sequence.js';
 // Board timeline plus a visual-only normal-attack slice; battle is not connected to app/stage/audio/CSS.
 // Contract: before/after are plain view snapshots around ONE successful session.act + readback.
 // Effects are that act's returned array. Reload/start/failed or superseded commits must not replay.
@@ -51,9 +52,10 @@ function normalAttackTurn(before,after,effects){
  return {round:b.round,action,enemyAct,enemyHit,heroHit,soften};
 }
 // Nonpersistent opt-in: existing app callers remain board-only until the battle renderer is wired.
-export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,regionVisual=false,castleVisual=false}){
+export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,kingRewardVisual=false,regionVisual=false,castleVisual=false}){
  const finalView=copy(after),steps=[];let time=0,resultEffects=[],parallelEnd=0;
  const result=()=>freeze({steps,durationMs:time,finalView,resultEffects});
+ const kingResult=turn=>kingRewardVisual===true&&turn?.mode==='king-victory-turn'?(appendKingRewardSequence(turn,settings)??result()):(turn??result());
  // Not proof of persistence: the caller must supply only successfully committed pairs.
  if(!before||!after||before.runId!==after.runId||!Number.isSafeInteger(before.revision)||!Number.isSafeInteger(after.revision)||after.revision!==before.revision+1)return result();
  if(!Array.isArray(effects)||effects.some(e=>!e||typeof e!=='object'))return result();
@@ -70,9 +72,9 @@ export function planPresentation({before,after,effects=[],settings={},battleVisu
  // Only app callers with complete renderer/audio ownership may opt in. A failed
  // recognized spell is static, not a partial reroute to another planner.
  if(kingSpellTimeline===true&&before.battle?.kind==='king'&&(recordedSpell||effects.some(e=>e.t==='spellCast')))
-  return planKingSpellTimeline({before,after,effects,settings,spellVisual,victoryVisual})??result();
+  return kingResult(planKingSpellTimeline({before,after,effects,settings,spellVisual,victoryVisual}));
  const spellTurn=spellVisual===true&&recordedSpell;
- if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual});if(turn)return turn;}
+ if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual});if(turn)return kingResult(turn);}
  const moved=effects.find(e=>e.t==='moved'),rolled=effects.find(e=>e.t==='dieRolled');
  const battle=battleVisual===true&&!moved&&!rolled?normalAttackTurn(before,after,effects):null;
  if(!moved&&!rolled&&!battle)return result();
