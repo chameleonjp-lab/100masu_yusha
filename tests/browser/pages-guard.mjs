@@ -19,7 +19,7 @@ export async function installGuard(context,allows,blocked,verifyResponse=null){
   const request=route.request();
   if(!allows(request.url(),request.method())||request.redirectedFrom()) {blocked.push({kind:'request'});await route.abort('blockedbyclient');return;}
   // Never continue(): route.fetch with maxRedirects=0 prevents an unchecked hop.
-  const response=await route.fetch({maxRedirects:0,maxRetries:0});
+  let response;try{response=await route.fetch({maxRedirects:0,maxRetries:0});}catch{blocked.push({kind:'fetch'});await route.abort('blockedbyclient');return;}
   if(response.status()>=300&&response.status()<400){blocked.push({kind:'redirect'});await route.abort('blockedbyclient');return;}
   if(verifyResponse)try{await verifyResponse(request.url(),response.status(),response.headers(),await response.body());}catch{blocked.push({kind:'response'});await route.abort('blockedbyclient');return;}
   await route.fulfill({response});

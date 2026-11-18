@@ -189,7 +189,7 @@ function playCommittedPresentation(before,after,effects,audio){
  if(kingVictoryVisual&&(typeof sound.kingVictory!=='function'||!victoryText.sourceLocale||!victoryText.text))return false;
  const kingTurnVisual=plan.mode==='king-turn',crownVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.crown.'));
  if(kingTurnVisual&&typeof sound.kingTurn!=='function')return false;
- const spellVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.turn.spell.'));
+ const spellVisual=(kingTurnVisual||kingVictoryVisual)&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.turn.spell.'));
  const spellOutfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id];
  if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]))return false;
  if(spellVisual&&(typeof sound.spell!=='function'||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!=='SP01')))return false;

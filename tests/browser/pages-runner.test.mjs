@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runPublicationGate} from './pages-smoke.mjs';
+test('runner import is inert and invalid artifact fails before launch',async()=>{let launched=false;await assert.rejects(runPublicationGate({baseURL:'https://example.org/',artifact:'/missing',chromium:{launch(){launched=true}}}));assert.equal(launched,false)});
+import * as runner from './pages-smoke.mjs';
+test('result identity distinguishes normalized root and subpath with both manifest pins',()=>{const sha='a'.repeat(64);assert.equal(typeof runner.gateIdentity,'function');for(const input of ['http://127.0.0.1:8123/','http://127.0.0.1:8123/project/']){const result=runner.gateIdentity({base:new URL(input),artifactSha256:sha},sha);assert.equal(result.baseURL,new URL(input).href);assert.equal(result.expectedManifestSha256,sha);assert.equal(result.artifactSha256,sha)}});

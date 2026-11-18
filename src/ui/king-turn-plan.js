@@ -5,7 +5,7 @@ function freeze(x){if(x&&typeof x==='object'){Object.values(x).forEach(freeze);O
 // Committed, surviving single-hit normal attack by the hero against DK01 only.
 // Unsupported/unknown effects fall back as a WHOLE turn; no effects are discarded.
 export function planKingTurn({before,after,effects=[],settings={},spellVisual=false,victoryVisual=false}={}){
- if(victoryVisual===true&&['battleReward','bagFull'].includes(after?.phase))return planVictoryTurn({before,after,effects,settings});
+ if(victoryVisual===true&&['battleReward','bagFull'].includes(after?.phase))return planVictoryTurn({before,after,effects,settings,spellVisual});
  const b=before?.battle,a=after?.battle,nn=n=>Number.isSafeInteger(n)&&n>=0;
  if(!settings||typeof settings!=='object'||Array.isArray(settings)||!before||!after||!before.runId||typeof before.runId!=='string'||before.runId!==after.runId||!nn(before.revision)||!Number.isSafeInteger(after.revision)||after.revision!==before.revision+1||before.pos!==100||after.pos!==100||before.phase!=='battle'||after.phase!=='battle'||!b||!a||b.kind!=='king'||a.kind!=='king'||b.stage!=='fight'||a.stage!=='fight'||!nn(b.id)||b.id!==a.id||!nn(b.round)||b.round<1||a.round!==b.round+1||b.enemy?.id!=='DK01'||a.enemy?.id!=='DK01'||!Array.isArray(a.history)||!Array.isArray(effects)||effects.some(e=>!e||!['hit','phaseChange','enemyAct','dieSoften','enemyTell','mp','spellCast'].includes(e.t)))return null;
  if(![0,1].includes(b.phase?.index)||![0,1].includes(a.phase?.index)||typeof b.phase.changed!=='boolean'||typeof a.phase.changed!=='boolean'||b.phase.changed!==(b.phase.index===1)||a.phase.changed!==(a.phase.index===1))return null;
@@ -64,35 +64,49 @@ export function planKingTurn({before,after,effects=[],settings={},spellVisual=fa
 
 // Deliberately narrow reward gate: no level-up, hooks, healing, gear or added items.
 // bagFull may be retained as a pending prompt; no choice or continueReward is issued.
-function planVictoryTurn({before,after,effects,settings}){
+function planVictoryTurn({before,after,effects,settings,spellVisual}){
  const segment=planKingVictorySegment({before,after,effects,settings});if(!segment)return null;
  const b=before.battle,a=after.battle,nn=n=>Number.isSafeInteger(n)&&n>=0;
  if(!nn(after.revision)||!nn(b.id)||![0,1].includes(b.phase?.index)||![0,1].includes(a.phase?.index)||typeof b.phase.changed!=='boolean'||typeof a.phase.changed!=='boolean'||b.phase.changed!==(b.phase.index===1)||a.phase.changed!==(a.phase.index===1))return null;
- if(effects.some(e=>!['hit','victory','gold','xp','rewards','bagFull'].includes(e.t))||!Array.isArray(a.history)||a.history.some(r=>!r||typeof r!=='object'||Array.isArray(r)))return null;
+ if(effects.some(e=>!['hit','victory','gold','xp','rewards','bagFull','mp','spellCast'].includes(e.t))||!Array.isArray(a.history)||a.history.some(r=>!r||typeof r!=='object'||Array.isArray(r)))return null;
  const records=a.history.filter(r=>r.round===b.round);if(records.length!==1)return null;
  const rec=records[0],action=rec.action;
- if(action?.type!=='attack'||action.choiceId!==undefined||action.targets!==undefined||action.target!=null||rec.hpLost!==0||rec.enemy!==b.telegraph?.name||a.telegraph?.name!==b.telegraph?.name||a.telegraph?.kind!==b.telegraph?.kind||a.telegraph?.attack!==b.telegraph?.attack||a.telegraph?.defense!==b.telegraph?.defense||a.phase?.index!==b.phase?.index||a.phase?.changed!==b.phase?.changed)return null;
- for(const k of ['hp','maxHp','mp','maxMp','level'])if(!nn(before.hero[k])||after.hero[k]!==before.hero[k])return null;
+ const spell=action?.type==='spell';
+ if((spell?spellVisual!==true:action?.type!=='attack')||action.choiceId!==undefined||action.targets!==undefined||action.target!=null||rec.hpLost!==0||rec.enemy!==b.telegraph?.name||a.telegraph?.name!==b.telegraph?.name||a.telegraph?.kind!==b.telegraph?.kind||a.telegraph?.attack!==b.telegraph?.attack||a.telegraph?.defense!==b.telegraph?.defense||a.phase?.index!==b.phase?.index||a.phase?.changed!==b.phase?.changed)return null;
+ for(const k of ['hp','maxHp','maxMp','level',...(spell?[]:['mp'])])if(!nn(before.hero[k])||after.hero[k]!==before.hero[k])return null;
  if(before.hero.hp>before.hero.maxHp||before.hero.mp>before.hero.maxMp)return null;
  const one=t=>effects.filter(e=>e.t===t),hits=one('hit'),wins=one('victory'),golds=one('gold'),xps=one('xp'),rewards=one('rewards'),bags=one('bagFull');
  if(hits.length!==1||wins.length!==1||golds.length!==1||xps.length!==1||rewards.length!==1||bags.length>1)return null;
- const h=hits[0],gold=golds[0],xp=xps[0],reward=rewards[0],ix=e=>effects.indexOf(e);
- if(h.target!=='enemy'||h.blocked!==undefined||rec.dealt!==h.amount||ix(h)!==0||ix(wins[0])!==1||ix(gold)!==2||ix(xp)!==3||ix(reward)!==4)return null;
+ const h=hits[0],gold=golds[0],xp=xps[0],reward=rewards[0],ix=e=>effects.indexOf(e),mps=one('mp'),casts=one('spellCast'),offset=spell?2:0;
+ if(spell){
+  if(mps.length!==1||casts.length!==1||('companionActed' in rec&&(!Array.isArray(rec.companionActed)||rec.companionActed.length!==0)))return null;
+  const mp=mps[0],cast=casts[0],offers=Array.isArray(b.spells)?b.spells.filter(s=>s?.id==='SP01'):[],offer=offers[0];
+  if(effects[0]!==mp||effects[1]!==cast||cast.id!=='SP01'||cast.kind!=='attack'||!nn(cast.cost)||cast.cost===0||!nn(before.hero.mp)||!nn(after.hero.mp)||after.hero.mp>after.hero.maxMp||mp.reason!=='spell'||mp.before!==before.hero.mp||mp.after!==after.hero.mp||mp.delta!==-cast.cost||mp.before+mp.delta!==mp.after||action.spellId!==cast.id||action.spellKind!==cast.kind||action.cost!==cast.cost||action.spellMpAfter!==mp.after||offers.length!==1||offer.enabled!==true||offer.cost!==cast.cost||offer.mpAfter!==mp.after)return null;
+ }else if(mps.length||casts.length)return null;
+ if(h.target!=='enemy'||h.blocked!==undefined||rec.dealt!==h.amount||ix(h)!==offset+0||ix(wins[0])!==offset+1||ix(gold)!==offset+2||ix(xp)!==offset+3||ix(reward)!==offset+4)return null;
  if(!nn(gold.delta)||!nn(gold.before)||!nn(gold.after)||gold.reason!=='battle'||gold.before!==before.hero.gold||gold.after!==after.hero.gold||gold.before+gold.delta!==gold.after||!nn(xp.amount)||!nn(xp.total)||xp.reason!=='battle'||!nn(before.hero.xp)||xp.total!==after.hero.xp||before.hero.xp+xp.amount!==xp.total)return null;
  const r=after.reward;if(!r||r.enemyId!=='DK01'||r.victory!==true||reward.gold!==gold.delta||reward.xp!==xp.amount||r.gold!==reward.gold||r.xp!==reward.xp||reward.gear?.hit!==false||reward.gear.id!==null||reward.gear.alreadyOwned!==false||r.gear?.hit!==false||r.gear.id!==null||r.gear.alreadyOwned!==false)return null;
  if(after.phase==='bagFull'){
-  if(bags.length!==1||ix(bags[0])!==5||reward.item?.hit!==true||typeof reward.item.id!=='string'||!reward.item.id||r.item?.hit!==true||r.item.id!==reward.item.id||r.item.state!=='prompt'||bags[0].itemId!==r.item.id||bags[0].source!=='reward'||after.prompt?.kind!=='bagFull'||after.prompt.itemId!==r.item.id||after.prompt.source!=='reward')return null;
+  if(bags.length!==1||ix(bags[0])!==offset+5||reward.item?.hit!==true||typeof reward.item.id!=='string'||!reward.item.id||r.item?.hit!==true||r.item.id!==reward.item.id||r.item.state!=='prompt'||bags[0].itemId!==r.item.id||bags[0].source!=='reward'||after.prompt?.kind!=='bagFull'||after.prompt.itemId!==r.item.id||after.prompt.source!=='reward')return null;
  }else if(bags.length||reward.item?.hit!==false||reward.item.id!==null||r.item?.hit!==false||r.item.id!==null||r.item.state!=='none')return null;
  const reduced=!!settings.reducedMotion,short=settings.animation==='short'&&!reduced,steps=[];let time=0;
  const add=(kind,payload,atMs=time)=>steps.push({key:`${after.runId}:${after.revision}:king-victory-turn:${steps.length}`,atMs,kind,payload:copy(payload)});
  const display=(stage,durationMs,payload)=>{add('display',{stage,durationMs,...payload});time+=durationMs};
  add('controls',{enabled:false,actionsVisible:true});
+ if(spell){
+  display('king.turn.spell.mp',0,{effect:mps[0],motion:'none'});
+  add('sound',{cue:'cast',role:'committed',effectIndex:1});
+  display('king.turn.spell.prepare',short?120:300,{effect:casts[0],motion:reduced?'fade':'none'});
+  add('sound',{cue:'cast.sp01',role:'committed',effectIndex:1});
+  display('king.turn.spell.cast',short?120:300,{effect:casts[0],motion:reduced?'fade':'sparkle'});
+ }else{
  display('king.turn.hero.prepare',reduced?0:short?100:250,{action,motion:reduced?'none':'advance'});
  display('king.turn.hero.slash',reduced?0:short?80:150,{motion:reduced?'none':'slash'});
  add('sound',{cue:'slash',role:'committed',effectIndex:0});
+ }
  display('king.turn.enemy.hit',reduced?150:short?80:200,{hit:h,telegraph:b.telegraph,motion:reduced?'fade':'impact',flashMs:reduced?0:80,recoilMs:reduced?0:short?80:200});
  const anchor=time;
- for(const s of segment.steps){const {key,atMs,cue,role,...payload}=s;add(cue?'sound':'display',cue?{cue,role,effectIndex:1}:payload,anchor+atMs)}
+ for(const s of segment.steps){const {key,atMs,cue,role,...payload}=s;add(cue?'sound':'display',cue?{cue,role,effectIndex:offset+1}:payload,anchor+atMs)}
  time=anchor+segment.durationMs;add('controls',{enabled:true,actionsVisible:true});steps.sort((x,y)=>x.atMs-y.atMs);
  return freeze({mode:'king-victory-turn',steps,durationMs:time,finalView:copy(after),resultEffects:copy(effects)});
 }
