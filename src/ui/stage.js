@@ -21,8 +21,17 @@ export function regionProps(band){
  }
  return a;
 }
+const regionBand=value=>Math.max(1,Math.min(5,Number(value?.id??value)||1));
+const skies=[['cfe8f2','e1eade','f3ebcb'],['bfe0f0','d5eaf0','eaf3ec'],['f2d9a6','f5e2ba','f7ebcf'],['b9b7c9','cbc9d5','dcdce0'],['9b7bb0','e9a07a','f6d9a4']];
+export function castleScale(band,pos=0){if(pos>=100)return 1;return regionBand(band)===5&&pos>=95&&pos<=99?1+(pos-95)*.0375:[.22,.36,.52,.70,.92][regionBand(band)-1]}
+export function regionFrame(fromBand,band,progress,reduced=false,pos=0){
+ const from=regionBand(fromBand),to=regionBand(band),t=Math.max(0,Math.min(1,progress));
+ const sky=skies[to-1].map((color,i)=>'rgb('+rgb(color).map((v,j)=>Math.round((rgb(skies[from-1][i])[j]*(1-t)+v*t)*255)).join(',')+')');
+ return {background:'linear-gradient(180deg,'+sky.join(',')+')',scale:reduced?castleScale(to,pos):castleScale(from)+(castleScale(to,pos)-castleScale(from))*(1-(1-t)**3)};
+}
 export function createStage(canvas,onUnavailable=()=>{}){
  let gl,program,buffer,raf=0,disposed=false,scene={band:1},generation=0;
+ let region=null,regionRaf=0,regionGeneration=0,visual=regionFrame(1,1,1);
  const vs='attribute vec3 p;attribute vec3 c;varying vec3 color;void main(){float x=p.x*.85-p.z*.53;float z=p.x*.53+p.z*.85;gl_Position=vec4(x/7.,(p.y*.85-z*.5-.5)/5.,-(z*.85+p.y*.5)/30.,1.);color=c;}';
  const fs='precision mediump float;varying vec3 color;void main(){gl_FragColor=vec4(color,1.);}';
  function init(){
@@ -40,7 +49,12 @@ export function createStage(canvas,onUnavailable=()=>{}){
    box(x,.04,z,.86,.19,.95,i===2?'f4b942':'eee1bb');
    if(i%2===0)box(x,.24,z,.55,.012,.07,'c1aa80');
   }
-  for(const prop of regionProps(scene.band))box(...prop);
+  const props=regionProps(scene.band);
+  for(const prop of (scene.band===5?props.slice(0,2):props))box(...prop);
+  // Keep the distant castle anchored at the horizon in every region.
+  for(const [x,y,z,w,h,d,c] of regionProps(5).slice(2)){
+   const k=visual.scale;box(3.1+(x-3.1)*k,y*k,-1.8+(z+1.8)*k,w*k,h*k,d*k,c);
+  }
   if(scene.die){
    const dice=cuboid(0,0,0,1,1,1,rgb('fffae9'));
    const c=Math.cos(angle),s=Math.sin(angle);
@@ -56,11 +70,33 @@ export function createStage(canvas,onUnavailable=()=>{}){
   gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const data=new Float32Array(geometry(angle));gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
   for(const [name,offset] of [['p',0],['c',12]]){const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,24,offset)}gl.drawArrays(gl.TRIANGLES,0,data.length/6);
  }
+ function paintRegion(progress=1){
+  visual=region?regionFrame(region.from,region.to,progress,region.reduced,scene.pos):regionFrame(scene.band,scene.band,1,false,scene.pos);
+  canvas.style.background=visual.background;
+ }
+ function cancelTransition(){
+  cancelAnimationFrame(regionRaf);regionGeneration++;
+  if(region){scene={...scene,band:region.to};paintRegion(1);region=null;}else paintRegion();
+  draw();
+ }
+ function transitionRegion({fromBand,band,durationMs=1200,reducedMotion=false}={}){
+  if(disposed)return {cancel(){}};
+  cancelTransition();const to=regionBand(band),from=regionBand(fromBand);
+  region={from,to,reduced:reducedMotion};scene={...scene,band:to};
+  const duration=reducedMotion?300:Math.max(0,Number(durationMs)||0),start=performance.now(),id=regionGeneration;
+  paintRegion(0);draw();
+  const tick=t=>{if(disposed||id!==regionGeneration)return;if(document.hidden){cancelTransition();return}
+   const f=duration?Math.min(1,Math.max(0,(t-start)/duration)):1;paintRegion(f);draw();
+   if(f<1)regionRaf=requestAnimationFrame(tick);else {region=null;regionRaf=0;}
+  };
+  if(document.hidden||!duration)cancelTransition();else regionRaf=requestAnimationFrame(tick);
+  return {cancel(){if(id===regionGeneration)cancelTransition()}};
+ }
  function stop(){cancelAnimationFrame(raf);generation++}
- function visibility(){stop();if(!document.hidden)draw()}
- function lost(e){e.preventDefault();stop();onUnavailable('lost')}
+ function visibility(){stop();cancelTransition();if(!document.hidden)draw()}
+ function lost(e){e.preventDefault();stop();cancelTransition();onUnavailable('lost')}
  function restored(){try{if(init()){onUnavailable('restored');draw()}else onUnavailable()}catch{onUnavailable()}}
  canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);document.addEventListener('visibilitychange',visibility);
  const observer=new ResizeObserver(()=>draw());observer.observe(canvas);try{init()}catch{onUnavailable()}
- return {update(next,animate=false){stop();scene=next;draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){stop();disposed=true;observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl){gl.deleteBuffer(buffer);gl.deleteProgram(program)}}};
+ return {transitionRegion,cancelTransition,update(next,animate=false){stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){stop();cancelTransition();disposed=true;observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl){gl.deleteBuffer(buffer);gl.deleteProgram(program)}}};
 }

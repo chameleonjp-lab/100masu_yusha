@@ -7593,5 +7593,10 @@
   "scripts.events.M3-08.puzzle.prompt": "El modelo muestra 4 medidas de aceite. Cada medida equivale a 1 marca; ajusta el nivel de la botella grande.",
   "scripts.events.M5-15.puzzle.prompt": "Compara el modelo con las ventanas actuales y elige una ventana cuya luz debas corregir.",
   "ui.receipt.gearTitle": "Recibirás {name}",
-  "ui.receipt.confirmGear": "Confirmar la recepción del equipo"
+  "ui.receipt.confirmGear": "Confirmar la recepción del equipo",
+  "ui.region.bands.1.name": "Partida por la pradera",
+  "ui.region.bands.2.name": "Villa de postas junto al agua",
+  "ui.region.bands.3.name": "Paso minero",
+  "ui.region.bands.4.name": "Bosque de niebla",
+  "ui.region.bands.5.name": "Villa del castillo y foso exterior"
 }

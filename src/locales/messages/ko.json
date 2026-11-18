@@ -7609,5 +7609,10 @@
   "scripts.events.H5-50.options.0.label": "마력 4로 띄우기",
   "scripts.events.H5-50.options.1.label": "추 받치기",
   "ui.receipt.gearTitle": "{name}을(를) 받습니다",
-  "ui.receipt.confirmGear": "장비 수령 확정"
+  "ui.receipt.confirmGear": "장비 수령 확정",
+  "ui.region.bands.1.name": "초원에서의 출발",
+  "ui.region.bands.2.name": "물가의 역참 마을",
+  "ui.region.bands.3.name": "광산 고개",
+  "ui.region.bands.4.name": "안개의 숲",
+  "ui.region.bands.5.name": "성 아래 마을과 외곽 해자"
 }

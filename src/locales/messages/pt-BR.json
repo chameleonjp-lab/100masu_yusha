@@ -7593,5 +7593,10 @@
   "scripts.events.H5-50.options.0.label": "Erguer por 4 MP",
   "scripts.events.H5-50.options.1.label": "Apoiar o peso",
   "ui.receipt.gearTitle": "Você receberá {name}",
-  "ui.receipt.confirmGear": "Confirmar o recebimento do equipamento"
+  "ui.receipt.confirmGear": "Confirmar o recebimento do equipamento",
+  "ui.region.bands.1.name": "Partida pela pradaria",
+  "ui.region.bands.2.name": "Vila de pouso à beira d’água",
+  "ui.region.bands.3.name": "Passagem das minas",
+  "ui.region.bands.4.name": "Floresta enevoada",
+  "ui.region.bands.5.name": "Vila do castelo e fosso externo"
 }

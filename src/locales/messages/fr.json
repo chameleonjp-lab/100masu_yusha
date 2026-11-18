@@ -7593,5 +7593,13 @@
   "scripts.events.H5-50.options.0.label": "Faire léviter pour 4 points de magie",
   "scripts.events.H5-50.options.1.label": "Soutenir les poids",
   "ui.receipt.gearTitle": "Vous allez recevoir {name}",
-  "ui.receipt.confirmGear": "Confirmer la réception de l’équipement"
+  "ui.receipt.confirmGear": "Confirmer la réception de l’équipement",
+  "ui.region.bands.1.name": "Départ dans la prairie",
+  "ui.region.bands.2.name": "Bourg-relais au bord de l’eau",
+  "ui.region.bands.3.name": "Col des mines",
+  "ui.region.bands.4.name": "Forêt brumeuse",
+  "ui.region.bands.5.name": "Bourg du château et douves extérieures",
+  "ui.king.crownBreak": "La couronne s’est brisée !",
+  "ui.king.crownNextTurn": "La seconde phase commence au prochain tour",
+  "ui.king.defeated": "Le roi démon est vaincu !"
 }

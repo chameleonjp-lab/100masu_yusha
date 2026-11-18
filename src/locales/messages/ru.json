@@ -7609,5 +7609,10 @@
   "scripts.events.H5-50.options.0.label": "Приподнять за 4 MP",
   "scripts.events.H5-50.options.1.label": "Поддержать груз",
   "ui.receipt.gearTitle": "Вы получите {name}",
-  "ui.receipt.confirmGear": "Подтвердить получение снаряжения"
+  "ui.receipt.confirmGear": "Подтвердить получение снаряжения",
+  "ui.region.bands.1.name": "Начало пути по лугам",
+  "ui.region.bands.2.name": "Почтовый городок у воды",
+  "ui.region.bands.3.name": "Горный перевал у рудника",
+  "ui.region.bands.4.name": "Туманный лес",
+  "ui.region.bands.5.name": "Город у замка и внешний ров"
 }

@@ -7593,5 +7593,10 @@
   "scripts.events.H5-50.options.0.label": "Solleva con 4 punti magia",
   "scripts.events.H5-50.options.1.label": "Sorreggi il peso",
   "ui.receipt.gearTitle": "Riceverai {name}",
-  "ui.receipt.confirmGear": "Conferma la ricezione dell’equipaggiamento"
+  "ui.receipt.confirmGear": "Conferma la ricezione dell’equipaggiamento",
+  "ui.region.bands.1.name": "Partenza nella prateria",
+  "ui.region.bands.2.name": "Borgo di posta sull’acqua",
+  "ui.region.bands.3.name": "Passo delle miniere",
+  "ui.region.bands.4.name": "Foresta nebbiosa",
+  "ui.region.bands.5.name": "Borgo del castello e fossato esterno"
 }

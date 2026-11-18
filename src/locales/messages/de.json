@@ -7593,5 +7593,10 @@
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
   "ui.receipt.gearTitle": "Du erhältst {name}",
-  "ui.receipt.confirmGear": "Erhalt der Ausrüstung bestätigen"
+  "ui.receipt.confirmGear": "Erhalt der Ausrüstung bestätigen",
+  "ui.region.bands.1.name": "Aufbruch im Grasland",
+  "ui.region.bands.2.name": "Poststation am Wasser",
+  "ui.region.bands.3.name": "Bergwerkspass",
+  "ui.region.bands.4.name": "Nebelwald",
+  "ui.region.bands.5.name": "Burgstadt und äußerer Burggraben"
 }

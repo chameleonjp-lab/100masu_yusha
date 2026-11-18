@@ -7462,6 +7462,9 @@
     "ui.copy",
     "ui.help",
     "ui.homeIntro",
+    "ui.king.crownBreak",
+    "ui.king.crownNextTurn",
+    "ui.king.defeated",
     "ui.language",
     "ui.literal.868310e193d1",
     "ui.presentation.actionLabel.6761a80589",
@@ -7605,6 +7608,11 @@
     "ui.receipt.confirmGear",
     "ui.receipt.gearTitle",
     "ui.records",
+    "ui.region.bands.1.name",
+    "ui.region.bands.2.name",
+    "ui.region.bands.3.name",
+    "ui.region.bands.4.name",
+    "ui.region.bands.5.name",
     "ui.route",
     "ui.saved",
     "ui.settings",
@@ -7613,5 +7621,5 @@
     "ui.translationPending",
     "ui.urlPending"
   ],
-  "coverage": "Structural IDs for extracted content display fields and keyed UI templates. PR #5 at 167f66b contains the 15 language JSON files and independent display modules; app/entry integration and rendered-language acceptance remain outstanding. Key presence is not linguistic quality, fetch-path validation or device acceptance."
+  "coverage": "Structural IDs for extracted content display fields and keyed UI templates. PR #5 at 167f66b contains the 15 language JSON files and independent display modules; app/entry integration and rendered-language acceptance remain outstanding. Key presence is not linguistic quality, fetch-path validation or device acceptance. Regional banner names ui.region.bands.1.name through ui.region.bands.5.name are keyed by stable band ID, with explicit strings in all 15 JSON catalogs. Structural coverage and automated fallback checks do not certify native-language quality or rendered/device acceptance."
 }

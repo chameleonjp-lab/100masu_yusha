@@ -7593,5 +7593,13 @@
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
   "ui.receipt.gearTitle": "You will receive {name}",
-  "ui.receipt.confirmGear": "Confirm equipment receipt"
+  "ui.receipt.confirmGear": "Confirm equipment receipt",
+  "ui.region.bands.1.name": "Grassland Departure",
+  "ui.region.bands.2.name": "Waterside Post Town",
+  "ui.region.bands.3.name": "Mining Pass",
+  "ui.region.bands.4.name": "Misty Forest",
+  "ui.region.bands.5.name": "Castle Town and Outer Moat",
+  "ui.king.crownBreak": "The crown has cracked!",
+  "ui.king.crownNextTurn": "Second phase from the next turn",
+  "ui.king.defeated": "The Demon King is defeated!"
 }

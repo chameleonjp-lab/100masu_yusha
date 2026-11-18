@@ -288,6 +288,7 @@ const PAGE_POLICY = {
   "assets/characters/en13-idle.svg": "e8c1555698c2030a1da30a6cbe46dad20a463cb321338a9d135c91f0e89d6981",
   "assets/characters/en13-open.svg": "54ebb9993dd6c902d517141dbde7cd194673445024c15a6ee090e138ba77d624",
   "assets/characters/hero-bard-attack.svg": "df8b4cbb43922439929e2bac45f95371e2f4bae47ae70e552f28f3974caf49fb",
+  "assets/characters/hero-bard-cast-prepare.svg": "270001d590646414d8394b851d70d90c0669eace9834d525973818c0f39dd8f5",
   "assets/characters/hero-bard-cast.svg": "63d79ede49b2716e59f735c49fb6bad783a8ebe9fd8de157b4409e87e203de44",
   "assets/characters/hero-bard-down.svg": "85c82310e99cbe94a161b2db0a882b67c555a3ffa46516f151c625c3bca5d0c5",
   "assets/characters/hero-bard-guard.svg": "6568e7619d2f8c5291bebe2bf5c1f7c7f784ca7caac21ff27fe5ddfb8890834e",
@@ -297,6 +298,7 @@ const PAGE_POLICY = {
   "assets/characters/hero-bard-walk1.svg": "765de6f5541a5ae2475156711530955860b5c0cad53c3709743f8a19c0bf0bfe",
   "assets/characters/hero-bard-walk2.svg": "38028d87125a2c669c59dd67f51c786b4e23ce308e5ff7831eb502cb045478a8",
   "assets/characters/hero-mage-attack.svg": "94956a5a14c5c532721b5133cf68682c2f7708d103deda2e51d0d9c68af47958",
+  "assets/characters/hero-mage-cast-prepare.svg": "9ebf8a8bae0110e776889099e38455e9e67ff317c4702d3023b78acbc3a1cbfd",
   "assets/characters/hero-mage-cast.svg": "3ab7e8babc2a279cdbff75d8a7c9a491359c14e10152e05c2c427abc3995ffd9",
   "assets/characters/hero-mage-down.svg": "f31d58b69596d007d77e554455c7d092acf0e1745716bb6e85521dfddd4b7cac",
   "assets/characters/hero-mage-guard.svg": "1a8e92f8be0ffe82b84943f553a11e86767957aa7fc0e12c26c8eab9a31e57ee",
@@ -306,6 +308,7 @@ const PAGE_POLICY = {
   "assets/characters/hero-mage-walk1.svg": "b2d7c1051963c5fce3d4cd526e93d0e061ebe20eaebd3183be6f5d418e2d9d8d",
   "assets/characters/hero-mage-walk2.svg": "d70bcc7dc8d4bee4314e098b99d66668fb3aefa91c95ee8b95ee5da22f358323",
   "assets/characters/hero-traveler-attack.svg": "4d6e7fa04a5c9e6c4bda16affd9ab4e8ff84e45c99a2ea9899fa0263eb20efdd",
+  "assets/characters/hero-traveler-cast-prepare.svg": "877cd46b58bc26303005f96643fda87bcae28b098a394522ff9b26f733406451",
   "assets/characters/hero-traveler-cast.svg": "7b1f15544c0937083f422268bfe18b1585892a17f2767b4cff3a3f2876441f96",
   "assets/characters/hero-traveler-down.svg": "48107c73c24e4245581561fa23e2a7ced23787e50749cd766e8c92f9b62b8993",
   "assets/characters/hero-traveler-guard.svg": "d8b8074f116f7c8a9041d457f66800ce3f8a21a4a7896b4f10406ed8b26bbb33",
@@ -315,6 +318,7 @@ const PAGE_POLICY = {
   "assets/characters/hero-traveler-walk1.svg": "790c69863d4c6026721ba7b3c8620cfc11ad2cdce47eed0c88fbe850adeb4299",
   "assets/characters/hero-traveler-walk2.svg": "3dbac973740e62cfd9565984adb22f5537b72657abcfabc938bc645115bc00e7",
   "assets/characters/hero-warrior-attack.svg": "51cd35259116671a2f46379cec3a010d86ea443ac82687ad6c90477f133b272d",
+  "assets/characters/hero-warrior-cast-prepare.svg": "1d965b4cf99c2a6e9bc0229abdf4e1480f26f7becb597b726ab0078685d8cd82",
   "assets/characters/hero-warrior-cast.svg": "46a65aeed7cb62d692a2568d0c5511b07cc328916f3d799b7c96cb7ffbe21382",
   "assets/characters/hero-warrior-down.svg": "703aa6dcda29b2c904878d28cc946486d8cc36101260898a267f846f2b91cc6f",
   "assets/characters/hero-warrior-guard.svg": "f0a9825f3e24bd2728c8b6f49fc6e816ebf71db05cf47003cfe46824c1327037",
@@ -341,7 +345,7 @@ const PAGE_POLICY = {
   "assets/characters/mb03-hit.svg": "1820f9c36f805347a949d1c2586d4459fe4f9d69ba7063ba02d88ec208a1ce48",
   "assets/characters/mb03-idle.svg": "5665543977a65cd51089990b13a6cfe2a9dd6263952ec967381c5502e82b5d33",
   "assets/characters/mb03-open.svg": "a7307029c89704dc2e0317440e9309c694fa92013547eafe5821e51cfc12ac0c",
-  "assets/characters/metrics.js": "f3434be97a2116cb2f15b603c8a270a8dd2e0c69a1e264b5919f9e0463b91f9b",
+  "assets/characters/metrics.js": "7f3edd9f73b67267a53405313e2ebc0915f442e353c51cb337c35c533b0f02f2",
   "data/adventure-content.json": "817740b5b7980c90efea435e116ab686d6e65a558fab43eca36fae8fa36adcd9",
   "data/balance-draft-2.json": "7d72ac7bd89f203c52f3006e57a5ca57cf87d7396baa320b036d964f5020e642",
   "data/patches/encounters-balance-draft-2.json": "dc22b58f09d3e16b6491b8baa6f460abffe71800059b81f06ab29378bbf13b26",
@@ -400,22 +404,22 @@ const PAGE_POLICY = {
   "src/engine/util.js": "ae6d5206642780d7499596a4a493c3df5bc2d9c44b00b45fb888708e205fb60b",
   "src/engine/view.js": "61ffb4fac50833930ed0a9007418770f87f2921d96c0e09923488ce0411810db",
   "src/locales/catalogs.js": "479a94a9508651a1015ac58b5731c56dbfba135ba246602ad3f44f6cd36994bb",
-  "src/locales/key-manifest.json": "4e4cc5641db177c4962b5ed97ef4e103aa7eeb2e56f4d72708a8c88e944400aa",
-  "src/locales/messages/de.json": "6ccce49032a3ff9a1c8f7419722b362fe80c9af90b77dda1707ba0966f20f38e",
-  "src/locales/messages/en.json": "809d2ffa6c1e8617ac3f874f96f22c8aeebc26f506e108c6ef45dce33c259924",
-  "src/locales/messages/es.json": "8da61ccd3ef5912f8b09cdfd067f1d3d7189e99bda250066f0eefacfbeb9792d",
-  "src/locales/messages/fr.json": "65caa496aa7168be62cc184fcc63e72b54aab3361e32a82e14c29127c3586df7",
-  "src/locales/messages/id.json": "d5b88864ea4baf6b76e308b52ed535be54976dff131c70c8394a4aaf80faa8ca",
-  "src/locales/messages/it.json": "a63ac95e399c4cca08597f8ff965ad65f8251bf434eee4000fff5f25ee75a72e",
-  "src/locales/messages/ja.json": "41196d0ec86f990bb0965c41c97c1abc48afde03a018c2aa1d95a27d8381bb77",
-  "src/locales/messages/ko.json": "08b5b61dcab7b3c7fb2514107db7dd8bd79f96863f31d9fc1bba6f44fded2ac3",
-  "src/locales/messages/pt-BR.json": "a637a16c73ac1d0c52076a1abc97f408f1bc30de72b56e1306be08271464daf4",
-  "src/locales/messages/ru.json": "f88521b57b6f085a7ab49baa7ca244e5a14a265e8a44a57ad5ed6bfbca4bbe69",
-  "src/locales/messages/th.json": "cdcfab5f798dde93c697b6f00fcb16d082a847aff170edd70bf52253a32898b5",
-  "src/locales/messages/tr.json": "a443c188d3ce1f533935bd04c4b626f6c60547b9899dc8565becc54ca01df604",
-  "src/locales/messages/vi.json": "3931b644c79314faf7013f5bc89980a244a0e9b55e57dc8fa41efe3c736de6ec",
-  "src/locales/messages/zh-Hans.json": "0770ea3b4043b85110792f61d580eed2220628dfe26ad0641ed65b103e1edf5d",
-  "src/locales/messages/zh-Hant.json": "4ffde1c8110be4a8b3ff9bc6a104fa967d93f6b0d8ca7da5d8eb9899d519b171",
+  "src/locales/key-manifest.json": "c84abd859afff95fb3e763ef26832dcf7c9a78c8cfaa13f9cf4757cde788306b",
+  "src/locales/messages/de.json": "2e476886c88ca8bdc68aab70cc048653149c48a32efb8f376311706a898f08d1",
+  "src/locales/messages/en.json": "f1b0ac38cec47c1fab2f90b76a40210115fb66a5e0cdefc3fe0676195994d5f0",
+  "src/locales/messages/es.json": "188d99d09e401a8aea70a52c6545b8299a85671326977d0531eb30830557f812",
+  "src/locales/messages/fr.json": "8895bd4ae8774a203e78111ca87ce4e533258672ac90390a9baeb89a52302c93",
+  "src/locales/messages/id.json": "986d5ec68706ec11c38b1326edae5144b8484782a2c0be4f69c8a5034b2fe93e",
+  "src/locales/messages/it.json": "cf614d69a5e26c19fa97dbe052b8269dc5b36ffe40be6fbca0e0703e6bd0a8c4",
+  "src/locales/messages/ja.json": "da9f4f0c23d2442122e983321923c1793253aefaf562dd562dbf5bdf40f34584",
+  "src/locales/messages/ko.json": "d1f4c20e9b1eb627bddc5ef2b20a443b91e6d8638ee9f3795923a28ffe9872df",
+  "src/locales/messages/pt-BR.json": "9eaa55a2b798bd1e253076c85238734926ca6bff79c66f20dc982296b573ddf9",
+  "src/locales/messages/ru.json": "f67fe0b797674c48d3082faaf7dca8abb3570f32c82f624a518198e16ec482a1",
+  "src/locales/messages/th.json": "f33eb87fb5061c6ede7040c799b89228de97a0dad9d15908e9c9c6787700e782",
+  "src/locales/messages/tr.json": "15c34b7802d3ff6608de07ab565016e5fece2d1073be63401fec33f7269a8e9f",
+  "src/locales/messages/vi.json": "ccf2a3eb307b85bfe3955fe34bfe44517780854c54811a61ea44ba35c1d6eb8e",
+  "src/locales/messages/zh-Hans.json": "db0d4c442a9ae786e5527edcbf12b9577963fe04f2a915baff2900bb11d248bc",
+  "src/locales/messages/zh-Hant.json": "87c1153612658d53becc2cab977b641e6af54e61d39a5d0bfdce58181cd9da72",
   "src/locales/ui-templates.js": "03b97c785b7615db1f40a6d6e278e3bfa298039b701cd8727bc5e971f9a298cc",
   "src/ranking/local.js": "1d83175c2003d92c9e761be2926a53744a5808961d00320f89827a0e5f26044a",
   "src/save/core.js": "323b6d2f99b63ef327f1cffb7b15fba0fc1976bd6b0ad378b44d18de6692a1d4",
@@ -423,121 +427,22 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "02d84759efb7649bae1234b965bf73bd595719b76b75395edb023496637e3f76",
-  "src/ui/app.js": "28c3c2c8b47316c1b7decca7263463f694c5e2a1b8ba2b111d6d016805ac207c",
+  "src/ui/app.js": "fe2ba585331cd6e82067ae160c423ba5118ccf7e080725ee0925f67a3ba4236c",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
-  "src/ui/audio.js": "a98044b0a9d833e556570e4564a5a5beb7cc4379a53c469f59da9deb911f3e19",
+  "src/ui/audio.js": "7f31956d208c482d7ec4589ea006b250fd531546041e42b8bf4236d474d1fbaf",
   "src/ui/i18n.js": "972e7753c74f3ee2dbb504766e0b7fe723107f6bfe3fe60c9ce86479085ef1bf",
-  "src/ui/presentation-timeline.js": "758e985590b1c9de93753e22b1bd4e6581883e5a8675380c0f9082cecde78f67",
+  "src/ui/king-crown-renderer.js": "69f0edd89ce4fb4ca03af1184d141245f21e015039b12054c79c1a2957e93021",
+  "src/ui/king-crown-segment.js": "48d6234580c05ccf954872a3162539a68e97efddfc9174eafe037113e2a3847b",
+  "src/ui/king-turn-plan.js": "39644a54bd9a6960420992b354065919f104ef183fa77f2a1db3ccdc5e460fab",
+  "src/ui/king-victory-renderer.js": "1655ccfe09a228eea5ac0de3dac82cf25a99a1826a871bd4fa08393b32f52afb",
+  "src/ui/king-victory-segment.js": "672204f67d4ed0af93e4ec5a624af0c810244ee0e982f996bcf779a1a5aea627",
+  "src/ui/presentation-timeline.js": "5d6dc3db9a9a0317ee61f920c10bb60b311fa86b5aef52f342a4df9112512d22",
   "src/ui/presentation.js": "02c7d7d9f2201eb5f38f6a5364e5ec925fd787da915ccceb68a8efebc882cd45",
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
-  "src/ui/stage.js": "070d128660a3689c1bccd26e3df01d99c6e7122fc1d76aef74d027a3972ee1cd"
+  "src/ui/stage.js": "53c4886f53d9c4037338c5682339e29bf8ae936da718a7460d0ab633a1afbbdd"
 };
 const PREVIEW_DB = 'yusha100-publication-preview-v1';
-// Only the explicitly tested prefix sequence is accepted. Independent old/new
-// combinations are NOT allowed: runtime integration must follow dependencies.
-const REVIEWED_TRANSITIONS = [
-  [
-    "src/locales/messages/de.json",
-    "6ccce49032a3ff9a1c8f7419722b362fe80c9af90b77dda1707ba0966f20f38e",
-    "2e476886c88ca8bdc68aab70cc048653149c48a32efb8f376311706a898f08d1"
-  ],
-  [
-    "src/locales/messages/en.json",
-    "809d2ffa6c1e8617ac3f874f96f22c8aeebc26f506e108c6ef45dce33c259924",
-    "949bd68bb31bd1d474f146ee5e781996d3322eaa930243e2b4f5b7cb1a00ac58"
-  ],
-  [
-    "src/locales/messages/es.json",
-    "8da61ccd3ef5912f8b09cdfd067f1d3d7189e99bda250066f0eefacfbeb9792d",
-    "188d99d09e401a8aea70a52c6545b8299a85671326977d0531eb30830557f812"
-  ],
-  [
-    "src/locales/messages/fr.json",
-    "65caa496aa7168be62cc184fcc63e72b54aab3361e32a82e14c29127c3586df7",
-    "3bd5e560e7a8a94b6b66585abaf7b5a708ea9ea427b33a7ec0a433fe03192e4c"
-  ],
-  [
-    "src/locales/messages/id.json",
-    "d5b88864ea4baf6b76e308b52ed535be54976dff131c70c8394a4aaf80faa8ca",
-    "986d5ec68706ec11c38b1326edae5144b8484782a2c0be4f69c8a5034b2fe93e"
-  ],
-  [
-    "src/locales/messages/it.json",
-    "a63ac95e399c4cca08597f8ff965ad65f8251bf434eee4000fff5f25ee75a72e",
-    "cf614d69a5e26c19fa97dbe052b8269dc5b36ffe40be6fbca0e0703e6bd0a8c4"
-  ],
-  [
-    "src/locales/messages/ko.json",
-    "08b5b61dcab7b3c7fb2514107db7dd8bd79f96863f31d9fc1bba6f44fded2ac3",
-    "d1f4c20e9b1eb627bddc5ef2b20a443b91e6d8638ee9f3795923a28ffe9872df"
-  ],
-  [
-    "src/locales/messages/pt-BR.json",
-    "a637a16c73ac1d0c52076a1abc97f408f1bc30de72b56e1306be08271464daf4",
-    "9eaa55a2b798bd1e253076c85238734926ca6bff79c66f20dc982296b573ddf9"
-  ],
-  [
-    "src/locales/messages/ru.json",
-    "f88521b57b6f085a7ab49baa7ca244e5a14a265e8a44a57ad5ed6bfbca4bbe69",
-    "f67fe0b797674c48d3082faaf7dca8abb3570f32c82f624a518198e16ec482a1"
-  ],
-  [
-    "src/locales/messages/th.json",
-    "cdcfab5f798dde93c697b6f00fcb16d082a847aff170edd70bf52253a32898b5",
-    "f33eb87fb5061c6ede7040c799b89228de97a0dad9d15908e9c9c6787700e782"
-  ],
-  [
-    "src/locales/messages/tr.json",
-    "a443c188d3ce1f533935bd04c4b626f6c60547b9899dc8565becc54ca01df604",
-    "15c34b7802d3ff6608de07ab565016e5fece2d1073be63401fec33f7269a8e9f"
-  ],
-  [
-    "src/locales/messages/vi.json",
-    "3931b644c79314faf7013f5bc89980a244a0e9b55e57dc8fa41efe3c736de6ec",
-    "ccf2a3eb307b85bfe3955fe34bfe44517780854c54811a61ea44ba35c1d6eb8e"
-  ],
-  [
-    "src/locales/messages/zh-Hans.json",
-    "0770ea3b4043b85110792f61d580eed2220628dfe26ad0641ed65b103e1edf5d",
-    "db0d4c442a9ae786e5527edcbf12b9577963fe04f2a915baff2900bb11d248bc"
-  ],
-  [
-    "src/locales/messages/zh-Hant.json",
-    "4ffde1c8110be4a8b3ff9bc6a104fa967d93f6b0d8ca7da5d8eb9899d519b171",
-    "87c1153612658d53becc2cab977b641e6af54e61d39a5d0bfdce58181cd9da72"
-  ],
-  [
-    "src/locales/messages/ja.json",
-    "41196d0ec86f990bb0965c41c97c1abc48afde03a018c2aa1d95a27d8381bb77",
-    "f9361653c09a3b7d876f6355a489184a0dfda5b630ccfac5f82f1ca6c32a7631"
-  ],
-  [
-    "src/locales/key-manifest.json",
-    "4e4cc5641db177c4962b5ed97ef4e103aa7eeb2e56f4d72708a8c88e944400aa",
-    "e92a2688ae556c397d7b0fa1e58ea526c9d9a2761bde6b8ebda4d86725993997"
-  ],
-  [
-    "src/ui/presentation-timeline.js",
-    "758e985590b1c9de93753e22b1bd4e6581883e5a8675380c0f9082cecde78f67",
-    "4710c229d920cf39fb362205f9750b23c81019d6a6cd0a93fa62faf78cfa2fcf"
-  ],
-  [
-    "src/ui/stage.js",
-    "070d128660a3689c1bccd26e3df01d99c6e7122fc1d76aef74d027a3972ee1cd",
-    "53c4886f53d9c4037338c5682339e29bf8ae936da718a7460d0ab633a1afbbdd"
-  ],
-  [
-    "src/ui/audio.js",
-    "a98044b0a9d833e556570e4564a5a5beb7cc4379a53c469f59da9deb911f3e19",
-    "90a6448be85fbf73228821be6b3d1f9ced110bafcab74956f047d64da6d84311"
-  ],
-  [
-    "src/ui/app.js",
-    "28c3c2c8b47316c1b7decca7263463f694c5e2a1b8ba2b111d6d016805ac207c",
-    "021a050c5196cd1be182af174676797211214a9665e8e033a0f1a646bf376fff"
-  ]
-];
 const hash256 = b => createHash('sha256').update(b).digest('hex');
 const TOOL_FILE_SHA256 = hash256(fs.readFileSync(fileURLToPath(import.meta.url)));
 const POLICY_VERSION = 'reviewed-preview-resource-envelope-1';
@@ -645,15 +550,7 @@ export function buildPages(options={}) {
     if(related(src,dest)||related(dest,src))failBuild('OUTPUT_SOURCE_OVERLAP');
     sourcePin=pinDirectory(src);
     const bytes=readExactSnapshot(sourcePin,expected,tree);
-    const transitionPaths=new Set(REVIEWED_TRANSITIONS.map(([p])=>p));
-    let pendingOld=false;
-    for(const [p,oldSha,newSha] of REVIEWED_TRANSITIONS){
-      if(!bytes.has(p))failBuild('RESOURCE_POLICY');
-      const actual=hash256(bytes.get(p));
-      if(actual===oldSha)pendingOld=true;
-      else if(actual!==newSha||pendingOld)failBuild('RESOURCE_POLICY');
-    }
-    for(const [p,sha] of Object.entries(PAGE_POLICY))if(!transitionPaths.has(p)&&(!bytes.has(p)||hash256(bytes.get(p))!==sha))failBuild('RESOURCE_POLICY');
+    for(const [p,sha] of Object.entries(PAGE_POLICY))if(!bytes.has(p)||hash256(bytes.get(p))!==sha)failBuild('RESOURCE_POLICY');
     // This fixed policy binds the exact reviewed app wiring, asset declarations,
     // and JSON inputs. New data/runtime revisions require an explicit policy review.
     const selected=new Map(Object.keys(PAGE_POLICY).sort().map(p=>[p,bytes.get(p)]));

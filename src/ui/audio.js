@@ -34,18 +34,18 @@ export function scoreStep(mode,index,band=1,phase=0){
 }
 export function createAudio(){
  let ctx,music,se,master,compressor,noise,settings={},timer=0,index=0,mode='road',band=1,phase=0,pendingPhase=0,nextTime=0,duckedUntil=0,menu=false;
- const seen=new Set(),nodes=new Set();
- function volume(){if(!ctx)return;master.gain.setTargetAtTime(settings.mute?0:(settings.masterVolume??.8),ctx.currentTime,.03);se.gain.setTargetAtTime(settings.seVolume??.8,ctx.currentTime,.02);music.gain.setTargetAtTime((settings.bgmVolume??.5)*(menu?.5:1),ctx.currentTime,.08)}
+ const seen=new Set(),nodes=new Set(),castleKeys=new Set();let castleState=null,castleTimer=0;let kingState=null;const kingKeys=new Set();let kingTurnState=null;const kingTurnKeys=new Set();let victoryState=null;const victoryKeys=new Set();let spellState=null;const spellKeys=new Set();
+ function volume(){if(!ctx)return;master.gain.setTargetAtTime(settings.mute?0:(settings.masterVolume??.8),ctx.currentTime,.03);se.gain.setTargetAtTime(settings.seVolume??.8,ctx.currentTime,.02);if(!kingState&&!kingTurnState?.paused&&(!castleState||castleState.arrived||castleState.cancelled))music.gain.setTargetAtTime(castleState?0:(settings.bgmVolume??.5)*(menu?.5:1),ctx.currentTime,.08)}
  function voice(v,when,bus=se){if(!ctx||!Number.isFinite(v.f)||!v.f)return;const t=Math.max(when,ctx.currentTime),a=(v.a??3)/1000,h=(v.h??0)/1000,d=(v.d??100)/1000,end=t+a+h+d;
   let source,filter=null;if(v.o==='noise'){source=ctx.createBufferSource();source.buffer=noise;source.loop=true;filter=ctx.createBiquadFilter();filter.type=v.ft||'lowpass';filter.frequency.setValueAtTime(v.f,t);filter.Q.value=v.q??1;if(v.f2)filter.frequency.exponentialRampToValueAtTime(v.f2,t+(v.g||100)/1000)}else{source=ctx.createOscillator();source.type=v.o||'sine';source.frequency.setValueAtTime(v.f,t);if(v.f2)source.frequency.exponentialRampToValueAtTime(v.f2,t+(v.g||100)/1000);source.detune.value=v.det||0;if(v.lp){filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=v.lp}}
-  const gain=ctx.createGain();gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(v.v??.1,t+a);gain.gain.setValueAtTime(v.v??.1,t+a+h);gain.gain.exponentialRampToValueAtTime(.0001,end);
+  const gain=ctx.createGain();gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(v.v??.1,t+a);gain.gain.setValueAtTime(v.v??.1,t+a+h);if(v.spark)for(let i=1;i<=7;i++)gain.gain.linearRampToValueAtTime(i%2?.03:.06,t+.005+i*.025);gain.gain.exponentialRampToValueAtTime(.0001,end);
   const panner=ctx.createStereoPanner?.();if(panner)panner.pan.value=v.pan||0;
   if(filter){source.connect(filter);filter.connect(gain)}else source.connect(gain);if(panner){gain.connect(panner);panner.connect(bus)}else gain.connect(bus);
   source.start(t);source.stop(end+.01);const record={source,bus};nodes.add(record);source.onended=()=>{nodes.delete(record);source.disconnect();filter?.disconnect();gain.disconnect();panner?.disconnect()};
  }
  function stop(which){clearTimeout(timer);timer=0;for(const record of nodes)if(!which||record.bus===which){try{record.source.stop()}catch{}nodes.delete(record)}}
  function schedule(){if(!ctx||ctx.state!=='running'||document.hidden||mode==='silence'){timer=0;return}while(nextTime<ctx.currentTime+.1){if(index%8===0)phase=pendingPhase;const s=scoreStep(mode,index,band,phase);if(nextTime>=duckedUntil)for(const v of s.voices)voice(v,nextTime,music);nextTime+=s.step;index++}timer=setTimeout(schedule,25)}
- function play(name,delay=0,options={}){if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;let recipe=SFX[name];const t=ctx.currentTime+.01+delay;
+ function play(name,delay=0,options={}){if(spellState&&name==='cast'&&(options.spellKey!==spellState.key||spellState.closed||spellState.played.has('cast')))return;if(victoryState&&name==='victory'&&(options.victoryKey!==victoryState.key||victoryState.cancelled||victoryState.played))return;if(castleState&&(castleState.arrived||castleState.cancelled)){if(['step','step.first','land'].includes(name))return;if(name==='bell'&&(options.castleKey!==castleState.key||castleState.quietEnded||castleState.cancelled))return;if(!castleState.quietEnded&&name!=='bell')return;}if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;let recipe=SFX[name];const t=ctx.currentTime+.01+delay;
   if(name==='coin.pay')recipe=SFX['coin.in'].map(v=>({...v,t:v.t===0?90:0}));
   if(name==='step.first')recipe=SFX.step.map(v=>({...v,v:typeof v.v==='number'?v.v*1.25:v.v,det:100}));
   if(name==='bell')recipe=[{...recipe.strike,t:0},...recipe.partials.map(p=>({t:0,o:recipe.o,f:recipe.f0*p.r,a:recipe.a,d:p.d,v:p.v}))];
@@ -58,14 +58,114 @@ export function createAudio(){
   for(const raw of recipe){const v={...raw,...(options.pan!==undefined?{pan:options.pan}:{}),...(options.det!==undefined?{det:options.det}:{})};for(const [k,value]of [['ft',ground[0]],['f',ground[1]],['q',ground[2]],['v',ground[3]]])if(typeof v[k]==='string'&&v[k].startsWith('BAND_'))v[k]=value;voice(v,t+(v.t||0)/1000)}
   if((name==='step'||name==='step.first')&&(band===3||band===5))voice({o:'noise',ft:'bandpass',f:2500,q:6,a:1,d:6,v:.1},t);if(name==='land'&&band===2)voice({o:'noise',ft:'highpass',f:3000,a:1,d:30,v:.08},t);
  }
- const api={async unlock(){try{if(!ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;ctx=new C();if(globalThis.navigator?.audioSession)navigator.audioSession.type='ambient';music=ctx.createGain();se=ctx.createGain();master=ctx.createGain();compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-10;compressor.ratio.value=4;compressor.attack.value=.003;compressor.release.value=.12;music.connect(master);se.connect(master);master.connect(compressor);compressor.connect(ctx.destination);noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const a=noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;volume()}await ctx.resume();if(!timer){nextTime=ctx.currentTime+.03;schedule()}}catch{/* sound failures never affect saving */}},configure(next){if(!settings.mute&&next?.mute){for(const record of nodes)if(record.bus===se){try{record.source.stop()}catch{}nodes.delete(record)}}settings=next||{};volume()},scene(v){const next=v?.phase==='gate'||v?.phase==='finished'?'silence':v?.battle?(v.battle.kind==='king'?'king':'battle'):'road';band=v?.board.band?.id||1;pendingPhase=v?.battle?.phase.index||0;menu=v?.phase==='inn';if(next!==mode){stop(music);mode=next;index=0;phase=pendingPhase;if(ctx){nextTime=ctx.currentTime+.03;schedule()}}volume()},menu(open){menu=open;volume()},play,
- effects(fx,key){if(!ctx||ctx.state!=='running'||document.hidden)return;const unique=fx.filter((f,i)=>!seen.has(`${key}:${i}`));const all=effectCues(fx,key,seen);void all;const terminalLoss=unique.some(f=>f.t==='runFinished'&&f.result?.defeated===false);const events=unique;
-  let delay=0;for(const f of events){if(terminalLoss&&f.t==='defeat')continue;let cue=({guard:'shield',castleReached:'bell',phaseChange:'crown.crack',victory:'win.battle',levelUp:'levelup',rested:'rest',jobChanged:'job.change',companionJoined:'join.call',companionSwapped:'join.call',itemGained:'bag',itemUsed:'item.use',bagFull:'bag.full',spellLearned:'learn',spellCast:'cast',fled:'flee',innArrived:'door.bell',chestOpened:'chest.open',trapAvoided:'charm',battleStart:'encounter',defeat:'defeat'}[f.t]);if(f.t==='runFinished')cue=f.result?.defeated?'victory':'defeat';if(f.t==='gold')cue=f.delta>0?'coin.in':f.delta<0?'coin.pay':null;if(f.t==='hit')cue=f.target==='hero'?'hit.party':'slash';if(f.t==='hp'&&f.delta>0)cue='heal';if(f.t==='enemyTell')cue=/大/.test(f.kind)?'tell.big':/守/.test(f.kind)?'tell.guard':/隙/.test(f.kind)?'tell.open':'tell.attack';if(f.t==='equipped')cue=f.slot==='armor'?'buckle':'sheath';
-   if(f.t==='dieRolled'){play('dice.rattle',delay);play('dice.lock',delay+(settings.animation==='short'?.2:.65));continue}if(f.t==='moved'){for(let n=0;n<Math.min(f.steps,6);n++)play(n?'step':'step.first',delay+n*.12,{pan:n%2?.15:-.15,det:n%2?40:-40});play('land',delay+Math.min(f.steps,6)*.12);continue}
+ function cancelCastle(){clearTimeout(castleTimer);castleTimer=0;if(castleState){castleState.cancelled=true;castleKeys.add(castleState.key)}}
+ function castle({type,key}={}){
+  if(typeof key!=='string'||!key)return;
+  if(type==='cancel'||type==='skip'){if(castleState?.key===key){cancelCastle();stop();mode='silence';volume()}return}
+  if(type==='fade'){
+   if(castleState?.key===key)return;
+   if(castleKeys.has(key)){if(!castleState){castleState={key,cancelled:true,arrived:true};stop();mode='silence';volume()}return;}
+   cancelCastle();castleState={key,cancelled:false,arrived:false};castleKeys.add(key);
+   clearTimeout(timer);timer=0;mode='silence';
+   if(ctx){music.gain.cancelScheduledValues(ctx.currentTime);music.gain.setValueAtTime(music.gain.value,ctx.currentTime);music.gain.linearRampToValueAtTime(0,ctx.currentTime+.6)}
+   return;
+  }
+  if(type!=='arrive'||castleState?.key!==key||castleState.cancelled||castleState.arrived)return;
+  castleState.arrived=true;stop();volume();
+  if(!ctx||ctx.state!=='running'||document.hidden||settings.mute){cancelCastle();return}
+  const current=castleState;
+  castleTimer=setTimeout(()=>{castleTimer=0;if(castleState!==current||current.cancelled||!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;play('bell',0,{castleKey:key});current.quietEnded=true},settings.animation==='short'?500:1000);
+ }
+ function cancelKing(){if(!kingState)return;kingState=null;if(ctx){music.gain.cancelScheduledValues(ctx.currentTime);music.gain.setValueAtTime(0,ctx.currentTime)}stop(music);mode='silence';}
+ function king({type,key,view}={}){
+  if(typeof key!=='string'||!key)return;
+  if(type==='cancel'){if(kingState?.key===key)cancelKing();return}
+  if(type==='finish'){if(kingState?.key===key){kingState=null;volume()}return}
+  if(type!=='start'||kingKeys.has(key)||view?.battle?.kind!=='king')return;
+  cancelKing();kingKeys.add(key);cancelCastle();castleState=null;stop();mode='silence';
+  if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;
+  kingState={key};mode='king';band=view.board?.band?.id||5;phase=view.battle.phase?.index||0;pendingPhase=phase;index=0;nextTime=ctx.currentTime+.03;
+  music.gain.cancelScheduledValues(ctx.currentTime);music.gain.setValueAtTime(0,ctx.currentTime);music.gain.linearRampToValueAtTime(settings.bgmVolume??.5,ctx.currentTime+.8);schedule();
+ }
+ // Turn ownership is transient; caller supplies only committed before/after views.
+ function cancelKingTurn(){if(!kingTurnState)return;kingTurnState=null;stop();mode='silence';if(ctx){music.gain.cancelScheduledValues(ctx.currentTime);music.gain.setValueAtTime(0,ctx.currentTime)}}
+ function kingTurn({type,key,view}={}){
+  if(typeof key!=='string'||!key)return;
+  if(type==='start'){
+   if(kingTurnKeys.has(key)||view?.battle?.kind!=='king'||![0,1].includes(view.battle.phase?.index))return;
+   cancelKingTurn();cancelKing();cancelCastle();castleState=null;kingTurnKeys.add(key);
+   if(!ctx||ctx.state!=='running'||document.hidden||settings.mute){stop();mode='silence';return;}
+   const continuing=mode==='king';kingTurnState={key,paused:false};mode='king';band=view.board?.band?.id||5;
+   // Start with the announced turn's phase, never the already committed next phase.
+   phase=view.battle.phase.index;pendingPhase=phase;
+   if(!continuing){stop(music);index=0;nextTime=ctx.currentTime+.03;}
+   volume();if(!timer)schedule();return;
+  }
+  if(kingTurnState?.key!==key)return;
+  if(type==='cancel'||type==='skip'){cancelKingTurn();return;}
+  if(type==='pause'){
+   if(kingTurnState.paused)return;kingTurnState.paused=true;stop(music);mode='silence';
+   music.gain.cancelScheduledValues(ctx.currentTime);music.gain.setValueAtTime(0,ctx.currentTime);return;
+  }
+  if(type==='resume'){
+   if(!kingTurnState.paused)return;kingTurnState.paused=false;mode='king';nextTime=ctx.currentTime+.03;volume();schedule();return;
+  }
+  if(type==='finish'){
+   if(view?.battle?.kind!=='king'||![0,1].includes(view.battle.phase?.index)){cancelKingTurn();return;}
+   const paused=kingTurnState.paused;kingTurnState=null;pendingPhase=view.battle.phase.index;
+   // schedule() adopts pendingPhase only at the existing eight-step bar boundary.
+   mode='king';volume();if(paused||!timer){nextTime=ctx.currentTime+.03;schedule();}
+  }
+ }
+ function cancelVictory(){if(!victoryState)return;victoryState.cancelled=true;cancelKingTurn();stop();mode='silence';}
+ function kingVictory({type,key,view}={}){
+  if(typeof key!=='string'||!key)return;
+  if(type==='start'){
+   if(victoryKeys.has(key)||view?.battle?.kind!=='king'||view.battle.stage!=='fight')return;
+   cancelVictory();victoryKeys.add(key);victoryState={key,stopped:false,played:false,cancelled:!ctx||ctx.state!=='running'||document.hidden||!!settings.mute};
+   kingTurn({type:'start',key,view});return;
+  }
+  if(victoryState?.key!==key)return;
+  if(type==='cancel'||type==='skip'){cancelVictory();return;}
+  if(victoryState.cancelled)return;
+  if(type==='stop'){
+   if(victoryState.stopped)return;victoryState.stopped=true;cancelKingTurn();stop(music);mode='silence';return;
+  }
+  if(type==='cue'){
+   if(!victoryState.stopped||victoryState.played)return;
+   // Consume even if audio availability changed; no deferred replay.
+   play('victory',0,{victoryKey:key});victoryState.played=true;return;
+  }
+  if(type==='finish'){
+   if(!victoryState.stopped||view?.battle?.kind!=='king'||view.battle.stage!=='won'){cancelVictory();return;}
+   stop(music);mode='silence';victoryState.finished=true;
+  }
+ }
+ function cancelSpell(){if(!spellState)return;spellState.closed=true;for(const record of spellState.nodes){try{record.source.stop()}catch{}nodes.delete(record)}spellState.nodes.clear();}
+ function spell({type,key,spellId,cue}={}){
+  if(typeof key!=='string'||!key)return;
+  if(type==='start'){
+   if(spellId!=='SP01'||spellKeys.has(key))return;
+   cancelSpell();spellKeys.add(key);spellState={key,played:new Set(),nodes:new Set(),closed:!ctx||ctx.state!=='running'||document.hidden||!!settings.mute};return;
+  }
+  if(spellState?.key!==key)return;
+  if(type==='cancel'||type==='skip'){cancelSpell();return;}
+  if(type==='finish'){spellState.closed=true;return;}
+  if(type!=='cue'||spellState.closed||!['cast','cast.sp01'].includes(cue)||spellState.played.has(cue)||cue==='cast.sp01'&&!spellState.played.has('cast'))return;
+  if(!ctx||ctx.state!=='running'||document.hidden||settings.mute){cancelSpell();return;}
+  const previous=new Set(nodes);
+  if(cue==='cast')play('cast',0,{spellKey:key});
+  else voice({o:'noise',ft:'highpass',f:4000,a:5,d:200,v:.06,spark:true},ctx.currentTime+.01);
+  spellState.played.add(cue);for(const record of nodes)if(!previous.has(record))spellState.nodes.add(record);
+ }
+ const api={castle,king,kingTurn,kingVictory,spell,async unlock(){try{if(!ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;ctx=new C();if(globalThis.navigator?.audioSession)navigator.audioSession.type='ambient';music=ctx.createGain();se=ctx.createGain();master=ctx.createGain();compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-10;compressor.ratio.value=4;compressor.attack.value=.003;compressor.release.value=.12;music.connect(master);se.connect(master);master.connect(compressor);compressor.connect(ctx.destination);noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const a=noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;volume()}await ctx.resume();if(!timer){nextTime=ctx.currentTime+.03;schedule()}}catch{/* sound failures never affect saving */}},configure(next){if(!settings.mute&&next?.mute){cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();for(const record of nodes)if(record.bus===se){try{record.source.stop()}catch{}nodes.delete(record)}}settings=next||{};volume()},scene(v){if(victoryState){if(v?.battle?.kind==='king'){if(victoryState.stopped||victoryState.cancelled){stop(music);mode='silence';}volume();return;}cancelVictory();victoryState=null;}if(kingTurnState){if(v?.battle?.kind==='king'){volume();return}cancelKingTurn()}if(kingState){if(v?.battle?.kind==='king'){volume();return}cancelKing()}if(castleState){if(!v||v.phase==='gate'){if(v?.phase==='gate'&&castleState.cancelled)castleState.quietEnded=true;volume();return}cancelCastle();castleState=null}const next=v?.phase==='gate'||v?.phase==='finished'||v?.battle?.kind==='king'&&v.battle.stage==='won'?'silence':v?.battle?(v.battle.kind==='king'?'king':'battle'):'road';band=v?.board.band?.id||1;pendingPhase=v?.battle?.phase.index||0;menu=v?.phase==='inn';if(next!==mode){stop(music);mode=next;index=0;phase=pendingPhase;if(ctx){nextTime=ctx.currentTime+.03;schedule()}}volume()},menu(open){menu=open;volume()},play,
+ effects(fx,key){if(spellState&&key!==spellState.key){cancelSpell();spellState=null;}if(!ctx||ctx.state!=='running'||document.hidden)return;const unique=fx.filter((f,i)=>!seen.has(`${key}:${i}`));const all=effectCues(fx,key,seen);void all;const terminalLoss=unique.some(f=>f.t==='runFinished'&&f.result?.defeated===false);const events=unique;
+  let delay=0;for(const f of events){if(terminalLoss&&f.t==='defeat')continue;if(f.t==='castleReached'){if(castleKeys.has(key))continue;castleKeys.add(key)}let cue=({guard:'shield',castleReached:'bell',phaseChange:'crown.crack',victory:'win.battle',levelUp:'levelup',rested:'rest',jobChanged:'job.change',companionJoined:'join.call',companionSwapped:'join.call',itemGained:'bag',itemUsed:'item.use',bagFull:'bag.full',spellLearned:'learn',spellCast:'cast',fled:'flee',innArrived:'door.bell',chestOpened:'chest.open',trapAvoided:'charm',battleStart:'encounter',defeat:'defeat'}[f.t]);if(f.t==='runFinished')cue=f.result?.defeated?'victory':'defeat';if(f.t==='gold')cue=f.delta>0?'coin.in':f.delta<0?'coin.pay':null;if(f.t==='hit')cue=f.target==='hero'?'hit.party':'slash';if(f.t==='hp'&&f.delta>0)cue='heal';if(f.t==='enemyTell')cue=/大/.test(f.kind)?'tell.big':/守/.test(f.kind)?'tell.guard':/隙/.test(f.kind)?'tell.open':'tell.attack';if(f.t==='equipped')cue=f.slot==='armor'?'buckle':'sheath';
+   if(f.t==='dieRolled'){play('dice.rattle',delay);play('dice.lock',delay+(settings.animation==='short'?.2:.65));continue}if(f.t==='moved'){for(let n=0;n<Math.min(f.steps,6);n++)play(n?'step':'step.first',delay+n*.12,{pan:n%2?.15:-.15,det:n%2?40:-40});if(f.stop!=='castle')play('land',delay+Math.min(f.steps,6)*.12);continue}
    if(f.t==='castleReached'){stop(music);duckedUntil=ctx.currentTime+4.6;delay=Math.max(delay,.45)}if(f.t==='phaseChange'||(f.t==='enemyTell'&&/大/.test(f.kind))){duckedUntil=ctx.currentTime+1;for(const n of nodes)if(n.bus===music){try{n.source.stop()}catch{}nodes.delete(n)}}if(f.t==='companion')play('support',delay,{role:f.role});
    if(cue){play(cue,delay);delay+=.06}if(f.t==='companionJoined'||f.t==='companionSwapped')play('join.answer',delay,{role:optionsRole(f.id||f.in)});
   }
- },stop};
+ },stop(){cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop()}};
  function optionsRole(id){return {CP01:'shield',CP02:'medic',CP03:'thrower',CP04:'lantern'}[id]||'shield'}
- document.addEventListener('visibilitychange',()=>{stop();if(document.hidden)ctx?.suspend()});return api;
+ document.addEventListener('visibilitychange',()=>{cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop();if(document.hidden)ctx?.suspend()});return api;
 }

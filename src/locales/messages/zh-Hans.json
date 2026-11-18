@@ -7593,5 +7593,10 @@
   "scripts.events.M5-50.options.0.label": "向蓝色标记注入力量（消耗魔力4）",
   "scripts.events.M5-50.options.1.label": "抓住柱子穿过强风（消耗体力6，最低保留1）",
   "ui.receipt.gearTitle": "你将获得{name}",
-  "ui.receipt.confirmGear": "确认领取装备"
+  "ui.receipt.confirmGear": "确认领取装备",
+  "ui.region.bands.1.name": "草原启程",
+  "ui.region.bands.2.name": "水畔驿镇",
+  "ui.region.bands.3.name": "矿山隘口",
+  "ui.region.bands.4.name": "迷雾森林",
+  "ui.region.bands.5.name": "城下町与外护城河"
 }

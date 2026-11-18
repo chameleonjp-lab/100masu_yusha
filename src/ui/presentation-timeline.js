@@ -1,3 +1,4 @@
+import {planKingTurn} from './king-turn-plan.js';
 // Board timeline plus a visual-only normal-attack slice; battle is not connected to app/stage/audio/CSS.
 // Contract: before/after are plain view snapshots around ONE successful session.act + readback.
 // Effects are that act's returned array. Reload/start/failed or superseded commits must not replay.
@@ -49,18 +50,31 @@ function normalAttackTurn(before,after,effects){
  return {round:b.round,action,enemyAct,enemyHit,heroHit,soften};
 }
 // Nonpersistent opt-in: existing app callers remain board-only until the battle renderer is wired.
-export function planPresentation({before,after,effects=[],settings={},battleVisual=false}){
- const finalView=copy(after),steps=[];let time=0,resultEffects=[];
+export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,victoryVisual=false,regionVisual=false,castleVisual=false}){
+ const finalView=copy(after),steps=[];let time=0,resultEffects=[],parallelEnd=0;
  const result=()=>freeze({steps,durationMs:time,finalView,resultEffects});
  // Not proof of persistence: the caller must supply only successfully committed pairs.
  if(!before||!after||before.runId!==after.runId||!Number.isSafeInteger(before.revision)||!Number.isSafeInteger(after.revision)||after.revision!==before.revision+1)return result();
  if(!Array.isArray(effects)||effects.some(e=>!e||typeof e!=='object'))return result();
+ const starts=effects.filter(e=>e.t==='battleStart'),tells=effects.filter(e=>e.t==='enemyTell'),a=after.battle;
+ const kingStart=kingVisual===true&&effects.every(e=>['discover','battleStart','enemyTell'].includes(e.t))&&tells.length===1&&tells[0].round===1&&tells[0].name===a?.telegraph?.name&&tells[0].kind===a?.telegraph?.kind&&before.phase==='gate'&&!before.battle&&before.pos===100&&after.pos===100&&after.phase==='battle'&&a?.kind==='king'&&a.stage==='fight'&&a.round===1&&a.phase?.index===0&&a.phase.changed===false&&a.enemy?.id==='DK01'&&a.enemy.hp===a.enemy.maxHp&&Number.isSafeInteger(a.enemy.hp)&&a.enemy.hp>0&&starts.length===1&&starts[0].kind==='king'&&starts[0].enemyId===a.enemy.id&&starts[0].maxHp===a.enemy.maxHp;
+ if(kingStart){
+  resultEffects=copy(effects);time=800;
+  steps.push({key:`${after.runId}:${after.revision}:presentation:0`,atMs:0,kind:'controls',payload:{enabled:false,actionsVisible:true}},
+   {key:`${after.runId}:${after.revision}:presentation:1`,atMs:0,kind:'display',payload:{stage:'king.start',durationMs:800,motion:settings.reducedMotion?'fade':'none',enemy:copy(a.enemy),telegraph:copy(a.telegraph),music:{mode:'king',fadeMs:800}}},
+   {key:`${after.runId}:${after.revision}:presentation:2`,atMs:800,kind:'controls',payload:{enabled:true,actionsVisible:true}});
+  return result();
+ }
+ const spellTurn=spellVisual===true&&Array.isArray(after.battle?.history)&&after.battle.history.some(r=>r?.round===before.battle?.round&&r.action?.type==='spell');
+ if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual});if(turn)return turn;}
  const moved=effects.find(e=>e.t==='moved'),rolled=effects.find(e=>e.t==='dieRolled');
  const battle=battleVisual===true&&!moved&&!rolled?normalAttackTurn(before,after,effects):null;
  if(!moved&&!rolled&&!battle)return result();
  // Fail closed for invalid/stale motion; never fabricate departure from the castle.
  if(moved&&(!Number.isInteger(moved.from)||!Number.isInteger(moved.to)||!Number.isInteger(moved.steps)||moved.from<1||moved.from>=100||moved.to>100||moved.to<=moved.from||moved.steps!==moved.to-moved.from||before.pos!==moved.from||after.pos!==moved.to))return result();
  if(rolled&&(!after.rolled||before.phase!=='board'||after.phase!=='rolled'||rolled.die!==after.rolled.die||before.pos!==after.pos||moved))return result();
+ const castle=castleVisual===true&&moved?.stop==='castle'&&before.phase==='rolled'&&after.phase==='gate'&&moved.to===100&&effects.filter(e=>e.t==='castleReached').length===1;
+ if(castleVisual&&moved?.stop==='castle'&&!castle)return result();
  const short=settings.animation==='short',reduced=!!settings.reducedMotion;
  const add=(kind,payload,atMs=time)=>{const step={key:`${after.runId}:${after.revision}:presentation:${steps.length}`,atMs,kind,payload};steps.push(step);return step};
  const display=(stage,durationMs,motion='none',payload={})=>{add('display',{stage,durationMs,motion,...copy(payload)});time+=durationMs};
@@ -87,25 +101,34 @@ export function planPresentation({before,after,effects=[],settings={},battleVisu
  }else{
   // The actual moved payload is authoritative, including inn truncation/discarded die steps.
   const movement={from:moved.from,to:moved.to,steps:moved.steps,discarded:moved.discarded,die:moved.die,stop:moved.stop};
+  const region=regionVisual===true&&moved.stop!=='castle'&&
+   before.board?.band?.id===Math.ceil(moved.from/20)&&after.board?.band?.id===Math.ceil(moved.to/20)&&
+   after.board.band.id===before.board.band.id+1?{pos:before.board.band.id*20+1,fromBand:before.board.band.id,band:copy(after.board.band)}:null;
+  const enterRegion=(pos,atMs)=>{if(!region||pos!==region.pos)return;
+   const durationMs=reduced?300:short?400:1200,bannerMs=short?600:1600;
+   add('display',{stage:'region.transition',...region,durationMs,bannerMs,motion:reduced?'fade':'crossfade'},atMs);
+   sound('card.flip','decorative',atMs);parallelEnd=Math.max(parallelEnd,atMs+Math.max(durationMs,bannerMs));
+  };
   display('departure',reduced?0:short?80:150,reduced?'none':'bend',{from:moved.from});
   sound('step.first');
   if(reduced){
    const start=time;display('move.fade',150,'fade',movement);
-   for(let i=0;i<moved.steps;i++)add('display',{stage:'trail',durationMs:0,motion:'none',pos:moved.from+i+1},start+i*50);
-   if(moved.steps>1)sound('step','decorative',start+(moved.steps-1)*50);time=Math.max(time,start+moved.steps*50);
+   for(let i=0;i<moved.steps;i++){if(castle&&i===moved.steps-1)add('display',{stage:'castle.fade',durationMs:600,motion:'none'},start+i*50);enterRegion(moved.from+i+1,start+i*50);add('display',{stage:'trail',durationMs:0,motion:'none',pos:moved.from+i+1},start+i*50);}
+   if(moved.steps>1)sound('step','decorative',start+(moved.steps-1)*50);time=Math.max(time,start+moved.steps*50);if(castle)time=start+(moved.steps-1)*50+600;
   }else{
-   for(let i=0;i<moved.steps;i++){if(i)sound('step');display('walk',short?120:320,'arc8px',{...movement,from:moved.from+i,to:moved.from+i+1,index:i})}
+   for(let i=0;i<moved.steps;i++){if(castle&&i===moved.steps-1)add('display',{stage:'castle.fade',durationMs:600,motion:'none'});enterRegion(moved.from+i+1,time+(short?120:320));if(i)sound('step');display('walk',castle&&i===moved.steps-1?600:short?120:320,'arc8px',{...movement,from:moved.from+i,to:moved.from+i+1,index:i})}
   }
   if(moved.stop==='castle'){
-   display('arrival',0,'none',movement);display('quiet',short?500:1000,'none',{music:false,effects:false});
+   display('arrival',0,'none',movement);if(castle)display('castle.arrive',0,'none');display('quiet',short?500:1000,'none',{music:false,effects:false});
    // Only the quiet board boundary; full castle staging is a later connection scope.
-   sound('bell','committed');
+   if(!castle)sound('bell','committed');
   }else{sound('land');display('arrival',reduced?0:short?120:300,reduced?'none':'squash',movement)}
-  if(before.board?.band?.id!==after.board?.band?.id)display('region.hold',3400,'none',{band:copy(after.board?.band)});
+  if(!regionVisual&&before.board?.band?.id!==after.board?.band?.id)display('region.hold',3400,'none',{band:copy(after.board?.band)});
   if(moved.stop==='inn'){sound('door.bell','committed');display('inn.stop',short?500:1200,'none',movement)}
   // A real move may grant a level. No battle/event choreography is added here.
   if(effects.some(e=>e.t==='levelUp'))sound('levelup','committed');
  }
+ time=Math.max(time,parallelEnd);
  add('controls',{enabled:true,actionsVisible:true});
  steps.sort((a,b)=>a.atMs-b.atMs);return result();
 }

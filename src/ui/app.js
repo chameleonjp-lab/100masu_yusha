@@ -1,3 +1,5 @@
+import {createKingVictoryRenderer} from './king-victory-renderer.js';
+import {createKingCrownRenderer} from './king-crown-renderer.js';
 import {planPresentation,createPresentationPlayer} from './presentation-timeline.js';
 import {createLocalBoard,namePreview} from './ranking.js';
 import {msg,setMessageLocale} from './i18n.js';
@@ -23,11 +25,13 @@ function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&
 // BEGIN committed presentation bridge
 // Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
 // Battle audio retains the existing committed-effects path, not visual-stage synchronization.
-let presentationContext=null,skipSoundGeneration=0;
+let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
+ context.spellMp?.remove();context.spellCast?.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
  for(const [control,disabled] of context.controls)control.disabled=disabled;
  for(const animation of context.animations)animation.cancel();
+ for(const timer of context.regionTimers||[])clearTimeout(timer);context.regionHandle?.cancel();context.regionBanner?.remove();
  context.skip?.remove();context.path?.remove();context.status?.remove();delete root.dataset.presentation;
 }
 function presentationCurrent(context){return context&&screen==='game'&&!document.hidden&&session?.run?.runId===context.after.runId&&session?.run?.revision===context.after.revision}
@@ -35,9 +39,77 @@ function presentationSound(cue){if(presentationCurrent(presentationContext)&&pre
 const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
  onStep(step){
   const context=presentationContext;if(!presentationCurrent(context)){cancelPresentation();return}
-  if(step.kind==='sound'){presentationSound(step.payload.cue);return}
+  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.sp01'].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:'SP01',cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
+  if(p.stage.startsWith('king.victory.')){
+   if(p.stage==='king.victory.music'){if(context.audio)try{sound.kingVictory({type:'stop',key:context.castleKey})}catch{}return}
+   if(!context.victoryRenderer)context.victoryRenderer=createKingVictoryRenderer({root,enemy:root.querySelector('.enemy'),document,label:context.victoryLabel});
+   if(p.stage==='king.victory.disappear')context.victoryRenderer.disappear(p);
+   if(p.stage==='king.victory.label')context.victoryRenderer.label();
+   return;
+  }
+  if(p.stage.startsWith('king.crown.')){
+   if(p.stage==='king.crown.pause'){
+    for(const a of context.animations)a.pause?.();if(context.audio)try{sound.kingTurn({type:'pause',key:context.castleKey,view:context.before})}catch{}
+   }
+   if(p.stage==='king.crown.crack'||p.stage==='king.crown.banner'){
+    if(!context.crownRenderer)context.crownRenderer=createKingCrownRenderer({root,enemy:root.querySelector('.enemy'),document,labels:context.crownLabels});
+    if(p.stage==='king.crown.crack')context.crownRenderer.crack(p);else context.crownRenderer.banner(p);
+   }
+   if(p.stage==='king.crown.resume'){
+    context.crownRenderer?.dispose();context.crownRenderer=null;context.kingPhase=2;
+    const enemy=root.querySelector('.enemy');if(!enemy)throw Error('Missing king actor');setArt(enemy,'dk01-p2-idle');
+    const heading=root.querySelector('.telegraph h2');if(!heading)throw Error('Missing king heading');const badge=el('span','king-phase-badge',displayText(locale(),context.after.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';heading.append(badge);context.crownBadge=badge;
+    for(const a of context.animations)a.play?.();if(context.audio)try{sound.kingTurn({type:'resume',key:context.castleKey,view:context.before})}catch{}
+   }
+   return;
+  }
+  if(p.stage.startsWith('king.turn.')){
+   const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
+   if(!hero||!enemy)throw Error('Missing king turn actors');
+   const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.before.hero.job.id]||'traveler';
+   const phase=context.kingPhase||(context.before.battle.phase.index>0?2:1);
+   const animate=(actor,frames,ms)=>{if(actor.animate&&ms)context.animations.push(actor.animate(frames,{duration:ms,easing:'ease-in-out'}))};
+   if(p.stage==='king.turn.spell.mp'){
+    const value=root.querySelector('.stat.mp strong'),meter=root.querySelector('.stat.mp meter');if(!value||!meter)throw Error('Missing hero MP');value.textContent=`${p.effect.after}/${context.before.hero.maxMp}`;meter.value=p.effect.after;
+    context.spellMp?.remove();context.spellMp=el('p','presentation-spell-mp',`${p.effect.before} → ${p.effect.after} · ${effectText(p.effect,localizedContent(content,locale()))}`);context.spellMp.setAttribute('role','status');root.append(context.spellMp);
+   }
+   if(p.stage==='king.turn.spell.prepare'){setArt(hero,`hero-${outfit}-cast-prepare`);if(p.motion==='fade')animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);}
+   if(p.stage==='king.turn.spell.cast'){
+    setArt(hero,`hero-${outfit}-cast`);context.spellCast?.remove();context.spellCast=el('p','presentation-spell-cast',effectText(p.effect,localizedContent(content,locale())));root.append(context.spellCast);
+    animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
+   }
+   if(p.stage==='king.turn.hero.prepare')setArt(hero,`hero-${outfit}-idle`);
+   if(p.stage==='king.turn.hero.slash')setArt(hero,`hero-${outfit}-attack`);
+   if(p.stage==='king.turn.enemy.hit'){
+    setArt(enemy,`dk01-p${phase}-idle`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()));
+    const hp=root.querySelector('.telegraph h2');if(!hp)throw Error('Missing king HP');const phaseBadge=hp.querySelector?.('.king-phase-badge');hp.textContent=`${displayText(locale(),context.before.battle.enemy.name)} · ${p.hit.hp}/${p.hit.maxHp}`;if(phaseBadge)hp.append(phaseBadge);
+    animate(enemy,p.motion==='fade'?[{opacity:.65},{opacity:1}]:[{filter:'brightness(1.6)'},{filter:'brightness(1)'}],p.durationMs);
+   }
+   if(p.stage==='king.turn.enemy.prepare'){
+    context.status.textContent=displayText(locale(),p.enemyAct.name);const kind=p.enemyAct.kind,pose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';setArt(enemy,`dk01-p${phase}-${pose}`);
+   }
+   if(p.stage==='king.turn.hero.block'&&p.blocked>0){setArt(hero,`hero-${outfit}-guard`);context.status.textContent=p.sources.map(f=>effectText(f,localizedContent(content,locale()))).filter(Boolean).join(' · ')}
+   if(p.stage==='king.turn.hero.hit'){
+    setArt(hero,`hero-${outfit}-${p.hit.amount>0?'hit':'guard'}`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()));
+    const value=root.querySelector('.stat.hp strong'),meter=root.querySelector('.stat.hp meter');if(!value||!meter)throw Error('Missing hero HP');value.textContent=`${p.hit.hp}/${p.hit.maxHp}`;meter.value=p.hit.hp;
+   }
+   if(p.stage==='king.turn.nextTell'){
+    const name=root.querySelector('.telegraph p:not(.muted)'),hint=root.querySelector('.telegraph p.muted');if(!name||!hint)throw Error('Missing king telegraph');name.textContent=telegraphText({...p.telegraph,name:displayText(locale(),p.telegraph.name)});hint.textContent=displayText(locale(),p.telegraph.tell||'');
+   }
+   return;
+  }
+  if(p.stage==='king.start'){context.status.textContent=displayText(locale(),p.telegraph.name);return;}
+  if(p.stage==='castle.fade'||p.stage==='castle.arrive'){if(context.audio)sound.castle({type:p.stage==='castle.fade'?'fade':'arrive',key:context.castleKey});return;}
+  if(p.stage==='region.transition'){
+   context.regionHandle?.cancel();
+   context.regionHandle=stage.transitionRegion({fromBand:p.fromBand,band:p.band.id,durationMs:p.durationMs,reducedMotion:p.motion==='fade'});
+   context.regionBanner?.remove();const banner=el('p','presentation-region',tr(`ui.region.bands.${p.band.id}.name`));banner.setAttribute('role','status');root.append(banner);context.regionBanner=banner;
+   const timer=setTimeout(()=>{if(presentationCurrent(context)&&context.regionBanner===banner)banner.remove()},p.bannerMs);context.regionTimers.push(timer);
+   if(context.audio)sound.scene({phase:'board',board:{band:p.band}});
+   return;
+  }
   if(p.stage.startsWith('battle.')){
    const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
    const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.after.hero.job.id]||'traveler';
@@ -71,13 +143,14 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   }
   const position=p.stage==='walk'?p.to:p.stage==='trail'?p.pos:['arrival','inn.stop','move.fade'].includes(p.stage)?p.to:null;
   if(Number.isInteger(position)){
+   const stagePos=p.stage==='walk'?p.from:position;stage?.update({band:Math.ceil(stagePos/20),pos:stagePos,die:context.beforeDie},false);
    for(const marker of context.path?.children||[]){const current=Number(marker.dataset.pos)===position;marker.removeAttribute('aria-current');if(current)marker.setAttribute('aria-current','step');marker.style.background=current?'#f4b942':Number(marker.dataset.pos)<position?'#d5e4ba':'transparent'}
    context.status.textContent=`${position} / 100`;
   }
   if(p.stage==='preview')context.status.textContent=`${context.after.pos} → ${p.preview.to??context.after.pos}`;
   if(p.stage==='inn.stop')context.status.textContent=`${p.to} / 100 · ${context.after.board?.currentName||''}`;
 
-  if(p.stage==='dice.roll'||p.stage==='dice.lock')stage?.update({band:context.after.board?.band?.id||1,die:p.die},p.stage==='dice.roll'&&p.motion!=='fade');
+  if(p.stage==='dice.roll'||p.stage==='dice.lock')stage?.update({band:context.after.board?.band?.id||1,pos:context.after.pos,die:p.die},p.stage==='dice.roll'&&p.motion!=='fade');
   if(p.stage==='quiet')sound.scene(null);
   const hero=root.querySelector('.hero');
   if(hero?.animate&&p.durationMs&&p.motion!=='none'){
@@ -90,27 +163,43 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   const context=presentationContext;if(!context)return;
   // Cancellation is navigation/lifecycle cleanup, not a second committed action.
   
-  const current=presentationCurrent(context);presentationContext=null;releasePresentation(context);
+  const current=presentationCurrent(context);if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:'SP01'})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
   if(reason==='cancel'||!current)return;
   // A visual-only battle already handed its effects to the existing audio path.
   // Final render invalidates pending unlock work: renew only an unplayed batch,
   // never an already delivered/failed batch. Navigation cancellation returns above.
-  const renewBattleSound=context.audio&&context.battleVisual&&pendingCommittedSound!==null;
+  const renewBattleSound=context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
   lastAction='';notice=context.notice;render();
   if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
-  if(reason==='skip'&&context.audio){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
-  if(context.audio&&!context.battleVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
+  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
+  if(context.audio&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
 function cancelPresentation(){skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
 function playCommittedPresentation(before,after,effects,audio){
  if(screen!=='game'||document.hidden||session?.run?.runId!==after.runId||session?.run?.revision!==after.revision)return false;
- // Castle audio fade and regional transition are not supported by this app-only slice.
- if(effects.some(f=>f.t==='moved'&&f.stop==='castle')||before.board?.band?.id!==after.board?.band?.id)return false;
- const plan=planPresentation({before,after,effects,battleVisual:true,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ // Castle remains static until its audio/visual bridge is connected; region requires the stage API.
+ const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
+ if(castleVisual&&typeof sound.castle!=='function')return false;
+ if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
+ const plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,spellVisual:true,victoryVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(!plan.steps.length)return false;
- const resultNotice=notice;lastAction='';notice='';render(before);
- const context={after,effects,audio,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[]};
+ const kingVisual=plan.steps.some(s=>s.kind==='display'&&s.payload.stage==='king.start');if(kingVisual&&typeof sound.king!=='function')return false;
+ const kingVictoryVisual=plan.mode==='king-victory-turn',victoryText=kingVictoryVisual?translate(locale(),'ui.king.defeated'):null;
+ if(kingVictoryVisual&&(typeof sound.kingVictory!=='function'||!victoryText.sourceLocale||!victoryText.text))return false;
+ const kingTurnVisual=plan.mode==='king-turn',crownVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.crown.'));
+ if(kingTurnVisual&&typeof sound.kingTurn!=='function')return false;
+ const spellVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.turn.spell.'));
+ const spellOutfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id];
+ if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]))return false;
+ if(spellVisual&&(typeof sound.spell!=='function'||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!=='SP01')))return false;
+ const crownLabels=crownVisual?{break:translate(locale(),'ui.king.crownBreak'),next:translate(locale(),'ui.king.crownNextTurn')}:null;
+ if(crownLabels&&Object.values(crownLabels).some(x=>!x.sourceLocale||!x.text))return false;
+ if((kingTurnVisual||kingVictoryVisual)&&lastKingTurnKey===`${after.runId}:${after.revision}`)return true;
+ if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
+ const resultNotice=kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
+ if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId:'SP01'})}catch{}
+ const context={before,after,effects,audio,spellVisual,kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -119,7 +208,7 @@ function playCommittedPresentation(before,after,effects,audio){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- presentationContext=context;stage?.update({band:before.board?.band?.id||1,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
+ presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
@@ -141,9 +230,9 @@ function scene(v,home=false){
  for(const [i,c] of (v?.hero.companions||[]).entries()){const comp=art('comp-'+c.role,'idle','companion');const cp=project(-3.25-i*.85,.2,1.0+i*.5);comp.style.left=cp.x+'%';comp.style.top=cp.y+'%';comp.title=c.name;wrap.append(comp)}
  if(v?.battle){const b=v.battle,kind=b.telegraph.kind;const pose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';const id=b.enemy.id.toLowerCase();const en=art(id,id==='dk01'?`p${b.phase.index>0?2:1}-${pose}`:pose,'enemy');const p=project(2,.1,.3);en.style.left=p.x+'%';en.style.top=p.y+'%';wrap.append(en);}
  if(v?.rolled)wrap.append(el('strong','die-value',msg("ui.app.scene.f51ade3b85",{p0:(v.rolled.die)})));
- const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):v?.board.band?.name);wrap.append(ribbon);
+ const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):tr(`ui.region.bands.${v?.board.band?.id||1}.name`));wrap.append(ribbon);
  const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))});
- stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,die:v?.rolled?.die},lastAction==='roll'&&animated())});return wrap;
+ stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die},lastAction==='roll'&&animated())});return wrap;
 }
 function render(presentationView=null){
  cancelPresentation();
@@ -159,7 +248,7 @@ function render(presentationView=null){
  const title=el('div','chapter');add(title,el('span','eyebrow',`${v.route.id} / ${v.route.name}`),el('h1','',`${v.pos} / 100`),el('span','roll-count',msg("ui.app.render.bdfdbc6d58",{p0:(v.rolls)})));root.append(title);
  const stats=el('section','stats');stats.setAttribute('aria-label',msg("ui.app.render.literal.998f75677a"));add(stats,stat(msg("ui.app.render.term.d6d2aa99fd"),v.hero.hp,v.hero.maxHp,'hp'),stat(msg("ui.app.render.term.522148a1fd"),v.hero.mp,v.hero.maxMp,'mp'),el('strong','gold',`${v.hero.gold} G`),el('span','level',`Lv.${v.hero.level} ${v.hero.job.name}`));root.append(stats);root.append(add(el('div','map-strip'),paragraph(msg("ui.app.render.7dcec7dac2",{p0:(v.board.nextStop===100?msg("ui.app.render.term.a4c5f93082"):msg("ui.app.render.term.6038669e41")),p1:(v.board.distanceToNextStop)})),button(msg("ui.app.render.literal.b6e1addfac"),()=>worldMap(v),'quiet')));
  root.append(paragraph(msg("ui.app.render.f65841c006",{p0:(v.pos),p1:(v.board.currentName)}),'muted'));root.append(scene(v));
- if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));root.append(t)}
+ if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
  if(v.battle?.temporaryStatuses?.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.78ea180ba1")));for(const st of v.battle.temporaryStatuses)box.append(paragraph(msg("ui.app.render.f1030d5885",{p0:(st.label),p1:(st.kinds.map(k=>({attackDown:msg("ui.app.render.term.bb59eb7119"),defenseDown:msg("ui.app.render.term.862a6a31e3"),turnEndHpLoss:msg("ui.app.render.term.082937427d")}[k]||k)).join(msg("ui.app.render.term.2a21905f43"))),p2:(st.amount),p3:(st.remainingTurns)})));root.append(box)}
  if(v.battle?.forecast?.unguarded.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.34675f17d7")),paragraph(msg("ui.app.render.literal.87577bfcf3")));for(const [k,name]of [['unguarded',msg("ui.app.render.term.2e483eb82e")],['guarded',msg("ui.app.render.term.1177af8a7d")]])for(const f of v.battle.forecast[k])box.append(paragraph(msg("ui.app.render.75ca5568df",{p0:(f.round),p1:(f.name),p2:(name),p3:(f.damage)})));root.append(box)}
  if(v.battle?.history.length){const history=el('details','battle-history');history.append(el('summary','',msg("ui.app.render.literal.518564feda")));for(const r of v.battle.history)history.append(paragraph(msg("ui.app.render.bc7ba68654",{p0:(r.round),p1:(r.dealt),p2:(r.hpLost),p3:(r.enemy)})));root.append(history)}

@@ -14,7 +14,7 @@ export function planKingCrownSegment({before,after,effects=[],settings={}}={}){
  b.enemy?.id!=='DK01'||a.enemy?.id!=='DK01'||!positive(b.enemy.hp)||!positive(a.enemy.hp)||
  !positive(b.enemy.maxHp)||a.enemy.maxHp!==b.enemy.maxHp||b.enemy.hp>b.enemy.maxHp||a.enemy.hp>b.enemy.hp||
  !positive(before.hero?.hp)||!positive(after.hero?.hp)||!b.telegraph||
- !Array.isArray(effects)||effects.some(e=>!e||!['hit','phaseChange','enemyAct','dieSoften','enemyTell'].includes(e.t)))return null;
+ !Array.isArray(effects)||effects.some(e=>!e||!['hit','phaseChange','enemyAct','dieSoften','enemyTell','mp','spellCast'].includes(e.t)))return null;
  const phases=effects.filter(e=>e.t==='phaseChange'),hits=effects.filter(e=>e.t==='hit'&&e.target==='enemy'),acts=effects.filter(e=>e.t==='enemyAct');
  if(phases.length!==1||hits.length!==1||acts.length!==1)return null;
  const heroHits=effects.filter(e=>e.t==='hit'&&e.target==='hero'),tells=effects.filter(e=>e.t==='enemyTell');
@@ -28,6 +28,23 @@ export function planKingCrownSegment({before,after,effects=[],settings={}}={}){
  if(index<1||effects[index-1]!==hit||actIndex<=index||!positive(hit.amount)||hit.hp!==phase.hp||
  hit.hp!==a.enemy.hp||hit.maxHp!==a.enemy.maxHp||b.enemy.hp-hit.amount!==hit.hp||
  act.round!==b.round||act.name!==b.telegraph.name||act.kind!==b.telegraph.kind)return null;
+ // Only a prepared SP01 single-hit attack spell prefix is supported here.
+ // Companion, healing, item and multi-hit effects remain unimplemented, not ignored.
+ const casts=effects.filter(e=>e.t==='spellCast'),mps=effects.filter(e=>e.t==='mp');
+ const recordedSpell=Array.isArray(a.history)&&a.history.some(r=>r?.round===b.round&&r.action?.type==='spell');
+ if(casts.length||mps.length||recordedSpell){
+  if(casts.length!==1||mps.length!==1)return null;
+  const cast=casts[0],mp=mps[0],nonnegative=n=>Number.isSafeInteger(n)&&n>=0;
+  const records=Array.isArray(a.history)?a.history.filter(r=>r?.round===b.round):[];
+  const offers=Array.isArray(b.spells)?b.spells.filter(s=>s?.id===cast.id):[];
+  const rec=records[0],action=rec?.action,offer=offers[0];
+  if(effects[0]!==mp||effects[1]!==cast||effects[2]!==hit||cast.id!=='SP01'||cast.kind!=='attack'||!positive(cast.cost)||
+   !nonnegative(before.hero.mp)||!nonnegative(after.hero.mp)||mp.reason!=='spell'||
+   mp.before!==before.hero.mp||mp.after!==after.hero.mp||mp.delta!==-cast.cost||mp.before+mp.delta!==mp.after||
+   records.length!==1||action?.type!=='spell'||action.spellId!==cast.id||action.spellKind!==cast.kind||
+   action.cost!==cast.cost||action.spellMpAfter!==mp.after||action.target!=null||rec.dealt!==hit.amount||rec.hpLost!==heroHit.amount||
+   offers.length!==1||offer.enabled!==true||offer.cost!==cast.cost||offer.mpAfter!==mp.after)return null;
+ }
  // Threshold comes from the authoritative phaseChange, not a duplicated balance constant.
  const reduced=!!settings.reducedMotion,short=settings.animation==='short'&&!reduced;
  const end=short?1000:2400,crack=short?200:600,banner=short?600:1200;

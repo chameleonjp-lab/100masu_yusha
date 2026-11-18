@@ -7593,5 +7593,10 @@
   "scripts.items.BD49.uses.0.effects.1.then.0.label": "BD49",
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
   "ui.receipt.gearTitle": "{name} alacaksınız",
-  "ui.receipt.confirmGear": "Ekipman teslim alımını onayla"
+  "ui.receipt.confirmGear": "Ekipman teslim alımını onayla",
+  "ui.region.bands.1.name": "Çayırlardan Yola Çıkış",
+  "ui.region.bands.2.name": "Su Kenarındaki Konaklama Kasabası",
+  "ui.region.bands.3.name": "Maden Geçidi",
+  "ui.region.bands.4.name": "Sisli Orman",
+  "ui.region.bands.5.name": "Kale Kasabası ve Dış Hendek"
 }

@@ -1,0 +1,27 @@
+// Real session commit/readback and real bridge/player, with DOM/clock/audio boundaries only.
+import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFileSync} from 'node:fs';
+import {getContent,exampleRun,place} from '../fixtures/helpers.mjs';
+import {createSession} from '../../src/ui/session.js';import {createMemoryStore} from '../../src/save/index.js';import {createMeta} from '../../src/engine/index.js';
+import {planPresentation,createPresentationPlayer} from '../../src/ui/presentation-timeline.js';import {effectText} from '../../src/ui/presentation.js';
+import {displayText,loadMessages} from '../../src/ui/i18n.js';
+const content=await getContent(),source=readFileSync(new URL('../../src/ui/app.js',import.meta.url),'utf8');
+async function fixture(){const store=createMemoryStore();await store.startNew({run:place(exampleRun(content,'M'),100,{phase:'gate'}),meta:createMeta()});const session=createSession(content,store);await session.load();const before=structuredClone(session.view),effects=await session.act({type:'challengeKing'}),after=structuredClone(session.view);return {session,store,before,after,effects};}
+function setup(f,settings={}){
+ let now=0,id=0;const timers=new Map(),calls=[],controls=[{disabled:false},{disabled:true}];
+ const node=()=>({dataset:{},style:{},children:[],textContent:'',append(...a){this.children.push(...a)},setAttribute(){},removeAttribute(){},addEventListener(){},remove(){this.removed=true},animate(frames,options){calls.push(['animate',this,frames,options]);return {cancel(){}}}});
+ const hero=node(),enemy=node(),root=node();root.querySelectorAll=()=>controls;root.querySelector=s=>s==='.hero'?hero:s==='.enemy'?enemy:null;
+ const session={run:f.after,meta:{settings},view:f.after};
+ const c=vm.createContext({planPresentation,createPresentationPlayer,structuredClone,Set,document:{hidden:false},session,screen:'game',reduced:{matches:false},root,stage:{update(){}},lastAction:'',notice:'confirmed result',content,
+ render:v=>calls.push(['render',v]),sound:{king:p=>calls.push(['king',p]),play:cue=>calls.push(['sound',cue]),scene(){}},el:(tag,cls,text)=>Object.assign(node(),{className:cls,textContent:text||''}),actionLabel:()=>'',
+ effectText,localizedContent:x=>x,displayText,locale:()=> settings.language||'ja',pendingCommittedSound:null,setArt:(actor,key)=>{actor.pose=key;calls.push(['pose',actor,key])},getComputedStyle:()=>({transform:'matrix(1,0,0,1,-40,-70)'}),
+ scheduleCommittedSound:(...args)=>calls.push(['effects',...args]),setTimeout:(fn,ms)=>{timers.set(++id,{fn,at:now+ms});return id},clearTimeout:id=>timers.delete(id)});
+ const block=source.match(/\/\/ BEGIN committed presentation bridge\n([\s\S]*?)\/\/ END committed presentation bridge/)[1];vm.runInContext(block+'\nglobalThis.api={playCommittedPresentation,cancelPresentation,presentation};',c);
+ const tick=t=>{for(;;){const entry=[...timers].filter(([,v])=>v.at<=t).sort((a,b)=>a[1].at-b[1].at||a[0]-b[0])[0];if(!entry)break;timers.delete(entry[0]);now=entry[1].at;entry[1].fn()}now=t};
+ return {c,root,hero,enemy,calls,controls,tick,api:c.api};
+}
+
+test('king entry renders committed battle immediately and fades once then finishes',async()=>{const f=await fixture(),saved=await f.store.load(),s=setup(f);assert.equal(s.api.playCommittedPresentation(f.before,f.after,f.effects,true),true);assert.deepEqual(s.calls.find(c=>c[0]==='render')[1],f.after);assert.equal(s.controls[0].disabled,true);s.tick(0);assert.equal(s.calls.filter(c=>c[0]==='king'&&c[1].type==='start').length,1);assert.equal(s.root.children.find(n=>n.className==='presentation-status').textContent,f.after.battle.telegraph.name);s.tick(800);assert.equal(s.controls[0].disabled,false);assert.equal(s.calls.filter(c=>c[0]==='king'&&c[1].type==='finish').length,1);assert.equal(s.calls.filter(c=>c[0]==='effects').length,0);assert.deepEqual(await f.store.load(),saved);});
+for(const mode of ['skip','cancel','hide','settings'])test(`king ${mode} cancels entry audio and releases controls`,async()=>{const f=await fixture(),s=setup(f);s.api.playCommittedPresentation(f.before,f.after,f.effects,true);s.tick(0);if(mode==='hide')s.c.document.hidden=true;if(mode==='skip')s.api.presentation.skip();else s.api.cancelPresentation();s.tick(2000);assert.equal(s.calls.filter(c=>c[0]==='king'&&c[1].type==='cancel').length,1);assert.equal(s.controls[0].disabled,false);assert.equal(s.calls.filter(c=>c[0]==='effects').length,0);});
+test('king reload never replays entry',async()=>{const f=await fixture(),s=setup(f);assert.equal(s.api.playCommittedPresentation(f.after,f.after,[],true),false);assert.equal(s.calls.length,0);});
+test('king first telegraph is translated from committed view',async()=>{await loadMessages('en',async url=>({ok:true,json:async()=>JSON.parse(readFileSync(url,'utf8'))}));const f=await fixture(),s=setup(f,{language:'en'});s.api.playCommittedPresentation(f.before,f.after,f.effects,true);s.tick(0);assert.equal(s.root.children.find(n=>n.className==='presentation-status').textContent,'King’s Sword');s.api.cancelPresentation();});
+test('new run makes old king completion cancel without effect replay',async()=>{const f=await fixture(),s=setup(f);s.api.playCommittedPresentation(f.before,f.after,f.effects,true);s.c.session.run={...f.after,runId:'new-run'};s.tick(800);assert.equal(s.calls.filter(c=>c[0]==='king'&&c[1].type==='cancel').length,1);assert.equal(s.controls[0].disabled,false);assert.equal(s.calls.filter(c=>c[0]==='effects').length,0);});
