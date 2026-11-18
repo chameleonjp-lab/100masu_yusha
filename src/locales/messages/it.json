@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "Borgo di posta sull’acqua",
   "ui.region.bands.3.name": "Passo delle miniere",
   "ui.region.bands.4.name": "Foresta nebbiosa",
-  "ui.region.bands.5.name": "Borgo del castello e fossato esterno"
+  "ui.region.bands.5.name": "Borgo del castello e fossato esterno",
+  "ui.king.crownBreak": "La corona si è incrinata!",
+  "ui.king.crownNextTurn": "La seconda fase inizia al prossimo turno",
+  "ui.king.defeated": "Hai sconfitto il Re dei demoni!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "Esperienza: {amount}",
+  "ui.reward.gear": "Equipaggiamento: {outcome}",
+  "ui.reward.item": "Oggetto: {outcome}",
+  "ui.reward.none": "Niente",
+  "ui.reward.owned": "Ce l’hai già",
+  "ui.reward.won": "Ottenuto",
+  "ui.reward.itemPending": " (devi fare spazio nella borsa)",
+  "ui.reward.itemAdded": " (aggiunto alla borsa)"
 }

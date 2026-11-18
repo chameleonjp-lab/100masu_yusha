@@ -13,9 +13,9 @@ function setup(f,settings={},api=true,audio){
 
 
  let now=0,id=0;const timers=new Map(),calls=[],controls=[{disabled:false},{disabled:true}];
- const node=()=>({dataset:{},style:{setProperty(k,v){this[k]=v}},children:[],textContent:'',append(...a){this.children.push(...a)},setAttribute(){},removeAttribute(){},addEventListener(){},remove(){this.removed=true},animate(frames,options){calls.push(['animate',this,frames,options]);return {cancel(){}}}});
+ const node=()=>({dataset:{},style:{setProperty(k,v){this[k]=v}},children:[],textContent:'',append(...a){this.children.push(...a)},setAttribute(k,v){(this.attributes??={})[k]=String(v);if(k==='class')this.className=v},removeAttribute(){},addEventListener(){},remove(){this.removed=true},animate(frames,options){calls.push(['animate',this,frames,options]);return {cancel(){}}}});
  const mp=node(),mpMeter=node(),hero=node(),enemy=node(),root=node(),enemyHp=node(),tell=node(),tellHint=node();const companions=(f.before.hero.companions||[]).map(c=>Object.assign(node(),{dataset:{companionId:c.id,companionRole:c.role}}));root.querySelectorAll=q=>q==='.companion'?companions:controls;root.querySelector=s=>s==='.stat.mp strong'?mp:s==='.stat.mp meter'?mpMeter:s==='.hero'?hero:s==='.enemy'?enemy:s==='.telegraph h2'?enemyHp:s==='.telegraph p:not(.muted)'?tell:s==='.telegraph p.muted'?tellHint:s==='.stat.hp strong'?hero:s==='.stat.hp meter'?hero:s==='.hero-stats'?hero:s==='.status'?hero:s==='.hud-stats'?hero:null;
- enemy.parentElement=root;
+ enemy.parentElement=root;for(const actor of companions)actor.parentElement=root;
  const session={run:f.after,meta:{settings},view:f.after};
  const planner=planPresentation;
  const c=vm.createContext({msg,spriteMetrics,createKingCrownRenderer:opts=>createKingCrownRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),translate:()=>({sourceLocale:'ja',text:'魔王を たおした！'}),createKingVictoryRenderer:opts=>createKingVictoryRenderer({...opts,getComputedStyle:()=>({width:'132px',transform:'none'})}),planPresentation:planner,createPresentationPlayer,localizedView,structuredClone,Set,document:{hidden:false,createElement:()=>node(),createElementNS:()=>node()},session,screen:'game',reduced:{matches:false},root,stage:{update(){}},lastAction:'',notice:'confirmed result',content,

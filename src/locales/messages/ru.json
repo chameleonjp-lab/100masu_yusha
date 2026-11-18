@@ -7614,5 +7614,17 @@
   "ui.region.bands.2.name": "Почтовый городок у воды",
   "ui.region.bands.3.name": "Горный перевал у рудника",
   "ui.region.bands.4.name": "Туманный лес",
-  "ui.region.bands.5.name": "Город у замка и внешний ров"
+  "ui.region.bands.5.name": "Город у замка и внешний ров",
+  "ui.king.crownBreak": "Корона треснула!",
+  "ui.king.crownNextTurn": "Вторая фаза начнётся со следующего хода",
+  "ui.king.defeated": "Король демонов повержен!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "Опыт: {amount}",
+  "ui.reward.gear": "Снаряжение: {outcome}",
+  "ui.reward.item": "Предмет: {outcome}",
+  "ui.reward.none": "Нет",
+  "ui.reward.owned": "Уже есть",
+  "ui.reward.won": "Выигрыш",
+  "ui.reward.itemPending": " (нужно освободить место в сумке)",
+  "ui.reward.itemAdded": " (добавлено в сумку)"
 }

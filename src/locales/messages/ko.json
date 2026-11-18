@@ -7614,5 +7614,17 @@
   "ui.region.bands.2.name": "물가의 역참 마을",
   "ui.region.bands.3.name": "광산 고개",
   "ui.region.bands.4.name": "안개의 숲",
-  "ui.region.bands.5.name": "성 아래 마을과 외곽 해자"
+  "ui.region.bands.5.name": "성 아래 마을과 외곽 해자",
+  "ui.king.crownBreak": "왕관이 갈라졌어!",
+  "ui.king.crownNextTurn": "다음 턴부터 두 번째 단계야",
+  "ui.king.defeated": "마왕을 물리쳤어!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "경험치 {amount}",
+  "ui.reward.gear": "장비: {outcome}",
+  "ui.reward.item": "도구: {outcome}",
+  "ui.reward.none": "없음",
+  "ui.reward.owned": "이미 가지고 있음",
+  "ui.reward.won": "당첨",
+  "ui.reward.itemPending": " (가방 정리 대기 중)",
+  "ui.reward.itemAdded": " (가방에 추가됨)"
 }

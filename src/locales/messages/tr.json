@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "Su Kenarındaki Konaklama Kasabası",
   "ui.region.bands.3.name": "Maden Geçidi",
   "ui.region.bands.4.name": "Sisli Orman",
-  "ui.region.bands.5.name": "Kale Kasabası ve Dış Hendek"
+  "ui.region.bands.5.name": "Kale Kasabası ve Dış Hendek",
+  "ui.king.crownBreak": "Taç çatladı!",
+  "ui.king.crownNextTurn": "İkinci aşama bir sonraki turda başlıyor",
+  "ui.king.defeated": "İblis Kral’ı yendin!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "{amount} deneyim",
+  "ui.reward.gear": "Donanım: {outcome}",
+  "ui.reward.item": "Eşya: {outcome}",
+  "ui.reward.none": "Yok",
+  "ui.reward.owned": "Zaten sende var",
+  "ui.reward.won": "Kazanıldı",
+  "ui.reward.itemPending": " (çantada yer açmalısın)",
+  "ui.reward.itemAdded": " (çantaya eklendi)"
 }

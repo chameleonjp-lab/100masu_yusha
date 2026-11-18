@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "水畔驿镇",
   "ui.region.bands.3.name": "矿山隘口",
   "ui.region.bands.4.name": "迷雾森林",
-  "ui.region.bands.5.name": "城下町与外护城河"
+  "ui.region.bands.5.name": "城下町与外护城河",
+  "ui.king.crownBreak": "王冠裂开了！",
+  "ui.king.crownNextTurn": "下一回合进入第二阶段",
+  "ui.king.defeated": "魔王被打败了！",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "经验值 {amount}",
+  "ui.reward.gear": "装备：{outcome}",
+  "ui.reward.item": "道具：{outcome}",
+  "ui.reward.none": "无",
+  "ui.reward.owned": "已拥有",
+  "ui.reward.won": "抽中",
+  "ui.reward.itemPending": "（等待整理道具袋）",
+  "ui.reward.itemAdded": "（已放入道具袋）"
 }

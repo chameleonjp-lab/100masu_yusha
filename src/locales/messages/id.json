@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "Kota Persinggahan di Tepi Air",
   "ui.region.bands.3.name": "Celah Pegunungan Tambang",
   "ui.region.bands.4.name": "Hutan Berkabut",
-  "ui.region.bands.5.name": "Kota Kastel dan Parit Luar"
+  "ui.region.bands.5.name": "Kota Kastel dan Parit Luar",
+  "ui.king.crownBreak": "Mahkotanya retak!",
+  "ui.king.crownNextTurn": "Fase kedua mulai pada giliran berikutnya",
+  "ui.king.defeated": "Raja Iblis berhasil dikalahkan!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "Pengalaman: {amount}",
+  "ui.reward.gear": "Perlengkapan: {outcome}",
+  "ui.reward.item": "Alat: {outcome}",
+  "ui.reward.none": "Tidak ada",
+  "ui.reward.owned": "Sudah punya",
+  "ui.reward.won": "Didapat",
+  "ui.reward.itemPending": " (menunggu ruang di tas)",
+  "ui.reward.itemAdded": " (dimasukkan ke tas)"
 }
