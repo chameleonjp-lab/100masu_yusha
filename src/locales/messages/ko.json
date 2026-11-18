@@ -7631,5 +7631,8 @@
   "ui.castle.noFlee": "도망칠 수 없는 전투",
   "ui.castle.herbs": "약초 사용",
   "ui.castle.herbsEmpty": "회복용 도구가 없습니다",
-  "ui.battle.fledNoReward": "도망쳤어 (보상 없음)"
+  "ui.battle.fledNoReward": "도망쳤어 (보상 없음)",
+  "ui.result.newBest": "개인 최고 기록 갱신!",
+  "ui.result.newEntries": "저장이 확인된 첫 발견: 적 {p0} · 동료 {p1} · 장비 {p2}",
+  "ui.result.newEntriesScope": "이 화면에서 저장을 확인한 발견만 집계합니다. 이어하기 전의 첫 발견은 포함하지 않습니다."
 }

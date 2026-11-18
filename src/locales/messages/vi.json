@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Trận chiến không thể bỏ chạy",
   "ui.castle.herbs": "Dùng thảo dược",
   "ui.castle.herbsEmpty": "Bạn không có vật phẩm hồi phục",
-  "ui.battle.fledNoReward": "Đã chạy thoát (không có phần thưởng)"
+  "ui.battle.fledNoReward": "Đã chạy thoát (không có phần thưởng)",
+  "ui.result.newBest": "Kỷ lục cá nhân mới!",
+  "ui.result.newEntries": "Khám phá lần đầu đã xác minh lưu thành công: kẻ địch {p0} · đồng đội {p1} · trang bị {p2}",
+  "ui.result.newEntriesScope": "Chỉ tính các khám phá được xác minh đã lưu trên màn hình này. Không bao gồm các khám phá lần đầu trước khi tiếp tục chơi."
 }

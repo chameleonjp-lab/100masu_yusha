@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Kaçılamayan bir savaş",
   "ui.castle.herbs": "Şifalı ot kullan",
   "ui.castle.herbsEmpty": "İyileştirme eşyan yok",
-  "ui.battle.fledNoReward": "Kaçtın (ödül yok)"
+  "ui.battle.fledNoReward": "Kaçtın (ödül yok)",
+  "ui.result.newBest": "Yeni kişisel rekor!",
+  "ui.result.newEntries": "Kaydı doğrulanan ilk keşifler: düşman {p0} · yoldaş {p1} · ekipman {p2}",
+  "ui.result.newEntriesScope": "Yalnızca bu ekranda kaydedildiği doğrulanan keşifler sayılır. Oyuna devam etmeden önceki ilk keşifler dahil değildir."
 }

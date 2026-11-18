@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "無法逃離的戰鬥",
   "ui.castle.herbs": "使用藥草",
   "ui.castle.herbsEmpty": "你沒有恢復用道具",
-  "ui.battle.fledNoReward": "已逃跑（沒有獎勵）"
+  "ui.battle.fledNoReward": "已逃跑（沒有獎勵）",
+  "ui.result.newBest": "刷新個人最佳紀錄！",
+  "ui.result.newEntries": "已確認儲存的首次發現：敵人 {p0}・夥伴 {p1}・裝備 {p2}",
+  "ui.result.newEntriesScope": "僅統計在此畫面中確認已儲存的發現。不包含繼續遊戲之前的首次發現。"
 }
