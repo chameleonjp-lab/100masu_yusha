@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "Thị trấn trạm nghỉ ven nước",
   "ui.region.bands.3.name": "Đèo vùng mỏ",
   "ui.region.bands.4.name": "Rừng sương mù",
-  "ui.region.bands.5.name": "Thị trấn chân thành và hào ngoài"
+  "ui.region.bands.5.name": "Thị trấn chân thành và hào ngoài",
+  "ui.king.crownBreak": "Vương miện nứt rồi!",
+  "ui.king.crownNextTurn": "Giai đoạn hai bắt đầu từ lượt sau",
+  "ui.king.defeated": "Đã đánh bại Ma Vương!",
+  "ui.reward.gold": "{amount} G",
+  "ui.reward.xp": "Kinh nghiệm: {amount}",
+  "ui.reward.gear": "Trang bị: {outcome}",
+  "ui.reward.item": "Vật phẩm: {outcome}",
+  "ui.reward.none": "Không có",
+  "ui.reward.owned": "Đã sở hữu",
+  "ui.reward.won": "Trúng thưởng",
+  "ui.reward.itemPending": " (chờ dọn chỗ trong túi)",
+  "ui.reward.itemAdded": " (đã thêm vào túi)"
 }

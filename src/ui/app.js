@@ -95,9 +95,20 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
     if(p.stage==='king.turn.spell.support'){
      const actor=[...root.querySelectorAll('.companion')].find(n=>n.dataset.companionId===p.effect.id&&n.dataset.companionRole===p.effect.role);if(!actor)throw Error('Missing support actor');
      const idle='comp-'+p.effect.role+'-idle';setArt(actor,'comp-'+p.effect.role+'-support');
-     const previous=context.supportOwners.get(actor);previous?.animation?.cancel();const owner={};context.supportOwners.set(actor,owner);let active=true;const restore=()=>{if(!active)return;active=false;if(context.supportOwners.get(actor)!==owner)return;context.supportOwners.delete(actor);setArt(actor,idle)};context.supportRestorers.push(restore);
-     const reducedSupport=reduced.matches||session.meta.settings?.reducedMotion,ms=reducedSupport?150:p.durationMs;
-     if(actor.animate&&ms){const rawTransform=getComputedStyle(actor).transform,transform=rawTransform&&rawTransform!=='none'?rawTransform:'translate(0px,0px)';const frames=reducedSupport?[{opacity:.65},{opacity:1}]:[{transform},{transform:transform+' translateX(12px)'},{transform}];const a=actor.animate(frames,{duration:ms,easing:'ease-in-out'});owner.animation=a;a.onfinish=restore;context.animations.push(a)}else restore();
+     const previous=context.supportOwners.get(actor);previous?.animation?.cancel();for(const a of previous?.leafAnimations||[])a.cancel();previous?.leaves?.remove();const owner={};context.supportOwners.set(actor,owner);let active=true;const restore=()=>{if(!active)return;active=false;owner.leaves?.remove();if(context.supportOwners.get(actor)!==owner)return;context.supportOwners.delete(actor);setArt(actor,idle)};context.supportRestorers.push(restore);
+     const reducedSupport=reduced.matches||session.meta.settings?.reducedMotion,ms=reducedSupport?150:p.effect.role==='medic'?(session.meta.settings?.animation==='short'?100:250):p.durationMs;
+     if(actor.animate&&ms){const rawTransform=getComputedStyle(actor).transform,transform=rawTransform&&rawTransform!=='none'?rawTransform:'translate(0px,0px)';const frames=reducedSupport?[{opacity:.65},{opacity:1}]:[{transform},{transform:transform+' translateX(12px)'},{transform}];const a=actor.animate(frames,{duration:ms,easing:'ease-in-out'});owner.animation=a;a.onfinish=p.effect.role==='medic'?null:restore;context.animations.push(a);
+      if(p.effect.role==='medic'){
+       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','actor companion presentation-medic-leaves');svg.setAttribute('viewBox','0 0 103 146');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');svg.style.left=actor.style.left;svg.style.top=actor.style.top;svg.style.pointerEvents='none';
+       const m=spriteMetrics['comp-medic-support'];svg.style.setProperty('--sprite-ratio',m.width/m.baseWidth);svg.style.setProperty('--anchor-x',-m.anchorX+'%');svg.style.setProperty('--anchor-y',-m.anchorY+'%');
+       const group=document.createElementNS('http://www.w3.org/2000/svg','g');group.setAttribute('transform','translate(0 -18)');svg.append(group);
+       // Exact leaf geometry/colors from comp-medic-support.svg; no new asset or whole-body glow.
+       for(const [cx,cy,rx,ry,angle,fill] of [[78,80,6,3.5,-40,'#8DC070'],[72,82,5,3,30,'#A9D48E']]){const leaf=document.createElementNS('http://www.w3.org/2000/svg','ellipse');for(const [key,value] of Object.entries({cx,cy,rx,ry,transform:'rotate('+angle+' '+cx+' '+cy+')',fill,stroke:'#2A1E16','stroke-width':2,'stroke-linejoin':'round','stroke-linecap':'round'}))leaf.setAttribute(key,value);group.append(leaf)}
+       actor.parentElement.append(svg);owner.leaves=svg;const duration=reducedSupport?150:session.meta.settings?.animation==='short'?150:400;
+       const glow=svg.animate(reducedSupport?[{opacity:0},{opacity:1},{opacity:0}]:[{opacity:0,filter:'brightness(1)'},{opacity:1,filter:'brightness(1.8)'},{opacity:0,filter:'brightness(1)'}],{duration,easing:'ease-in-out'});glow.onfinish=restore;owner.leafAnimations=[glow];context.animations.push(glow);
+       if(!reducedSupport){const travel=svg.animate(frames,{duration:ms,easing:'ease-in-out'});owner.leafAnimations.push(travel);context.animations.push(travel)}
+      }
+     }else restore();
     }
     if(p.stage!=='king.turn.spell.support'&&(p.motion==='fade'||p.motion==='heal'))animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
    }
@@ -224,7 +235,7 @@ function playCommittedPresentation(before,after,effects,audio){
    if(p.stage==='king.turn.spell.support'){
     const e=p.effect,comp=before.hero.companions.find(c=>c.id===e?.id&&c.role===e?.role);if(!comp||!['shield','medic','thrower','lantern'].includes(e.role))return false;
     required.push('comp-'+e.role+'-support','comp-'+e.role+'-idle');
-    if(![...root.querySelectorAll('.companion')].some(n=>n.dataset.companionId===e.id&&n.dataset.companionRole===e.role))return false;
+    const actor=[...root.querySelectorAll('.companion')].find(n=>n.dataset.companionId===e.id&&n.dataset.companionRole===e.role);if(!actor||(e.role==='medic'&&(!actor.parentElement||typeof actor.animate!=='function'||typeof document.createElementNS!=='function'||typeof document.createElementNS('http://www.w3.org/2000/svg','svg').animate!=='function')))return false;
    }
    if(p.stage==='king.crown.resume')phase=2;
    if(p.stage==='king.turn.enemy.hit'||p.stage==='king.crown.resume')required.push(`dk01-p${phase}-idle`);

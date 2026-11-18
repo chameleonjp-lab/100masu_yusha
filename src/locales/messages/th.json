@@ -7614,5 +7614,17 @@
   "ui.region.bands.2.name": "เมืองพักแรมริมน้ำ",
   "ui.region.bands.3.name": "ช่องเขาเหมืองแร่",
   "ui.region.bands.4.name": "ป่าหมอก",
-  "ui.region.bands.5.name": "เมืองใต้ปราสาทและคูน้ำชั้นนอก"
+  "ui.region.bands.5.name": "เมืองใต้ปราสาทและคูน้ำชั้นนอก",
+  "ui.king.crownBreak": "มงกุฎร้าวแล้ว!",
+  "ui.king.crownNextTurn": "ช่วงที่สองจะเริ่มในรอบถัดไป",
+  "ui.king.defeated": "ปราบจอมมารได้แล้ว!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "ประสบการณ์ {amount}",
+  "ui.reward.gear": "อุปกรณ์: {outcome}",
+  "ui.reward.item": "ของ: {outcome}",
+  "ui.reward.none": "ไม่มี",
+  "ui.reward.owned": "มีอยู่แล้ว",
+  "ui.reward.won": "ได้รับรางวัล",
+  "ui.reward.itemPending": " (รอจัดถุงของ)",
+  "ui.reward.itemAdded": " (ใส่ในถุงของแล้ว)"
 }

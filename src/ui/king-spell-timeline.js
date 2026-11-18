@@ -51,7 +51,7 @@ export function planKingSpellTimeline(input){
    case 'enemyAct':display('king.turn.enemy.prepare',index,reduced?150:short?200:500,{enemyAct:e,telegraph,motion:reduced?'fade':'prepare'});break;
    case 'companion':
     if(e.role==='medic')sound('heal',index);else sound('support',index,{role:e.role});
-    display('king.turn.spell.support',index,reduced?150:short?100:250,{effect:e,motion:reduced?'fade':'support'});break;
+    display('king.turn.spell.support',index,reduced?150:e.role==='medic'?(short?150:400):short?100:250,{effect:e,motion:reduced?'fade':'support'});break;
    case 'rule':
    case 'dieSoften':
     display('king.turn.spell.blockSource',index,0,{effect:e,motion:'none'});break;

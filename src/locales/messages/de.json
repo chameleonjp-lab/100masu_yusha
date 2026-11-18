@@ -7598,5 +7598,17 @@
   "ui.region.bands.2.name": "Poststation am Wasser",
   "ui.region.bands.3.name": "Bergwerkspass",
   "ui.region.bands.4.name": "Nebelwald",
-  "ui.region.bands.5.name": "Burgstadt und äußerer Burggraben"
+  "ui.region.bands.5.name": "Burgstadt und äußerer Burggraben",
+  "ui.king.crownBreak": "Die Krone ist gesprungen!",
+  "ui.king.crownNextTurn": "Die zweite Phase beginnt im nächsten Zug",
+  "ui.king.defeated": "Du hast den Dämonenkönig besiegt!",
+  "ui.reward.gold": "{amount} G",
+  "ui.reward.xp": "Erfahrung: {amount}",
+  "ui.reward.gear": "Ausrüstung: {outcome}",
+  "ui.reward.item": "Gegenstand: {outcome}",
+  "ui.reward.none": "Nichts",
+  "ui.reward.owned": "Hast du schon",
+  "ui.reward.won": "Gewonnen",
+  "ui.reward.itemPending": " (im Beutel muss erst Platz sein)",
+  "ui.reward.itemAdded": " (jetzt im Beutel)"
 }

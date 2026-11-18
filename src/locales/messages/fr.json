@@ -7601,5 +7601,14 @@
   "ui.region.bands.5.name": "Bourg du château et douves extérieures",
   "ui.king.crownBreak": "La couronne s’est brisée !",
   "ui.king.crownNextTurn": "La seconde phase commence au prochain tour",
-  "ui.king.defeated": "Le roi démon est vaincu !"
+  "ui.king.defeated": "Le roi démon est vaincu !",
+  "ui.reward.gold": "{amount} G",
+  "ui.reward.xp": "Expérience : {amount}",
+  "ui.reward.gear": "Équipement : {outcome}",
+  "ui.reward.item": "Objet : {outcome}",
+  "ui.reward.none": "Rien",
+  "ui.reward.owned": "Déjà en votre possession",
+  "ui.reward.won": "Obtenu",
+  "ui.reward.itemPending": " (en attente de place dans le sac)",
+  "ui.reward.itemAdded": " (ajouté au sac)"
 }
