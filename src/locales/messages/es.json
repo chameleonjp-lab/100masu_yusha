@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Una batalla de la que no puedes huir",
   "ui.castle.herbs": "Usar hierbas medicinales",
   "ui.castle.herbsEmpty": "No tienes objetos curativos",
-  "ui.battle.fledNoReward": "Escapaste (sin recompensas)"
+  "ui.battle.fledNoReward": "Escapaste (sin recompensas)",
+  "ui.result.newBest": "¡Nuevo récord personal!",
+  "ui.result.newEntries": "Primeros descubrimientos guardados y verificados: enemigos {p0} · compañeros {p1} · equipo {p2}",
+  "ui.result.newEntriesScope": "Solo se cuentan los descubrimientos cuyo guardado se verificó en esta pantalla. No se incluyen los primeros descubrimientos anteriores a la reanudación."
 }

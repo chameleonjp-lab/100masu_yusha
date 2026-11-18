@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "A battle you cannot flee",
   "ui.castle.herbs": "Use healing herbs",
   "ui.castle.herbsEmpty": "You have no healing items",
-  "ui.battle.fledNoReward": "Escaped (no rewards)"
+  "ui.battle.fledNoReward": "Escaped (no rewards)",
+  "ui.result.newBest": "New personal best!",
+  "ui.result.newEntries": "Saved first discoveries verified: enemies {p0} · companions {p1} · gear {p2}",
+  "ui.result.newEntriesScope": "Only discoveries whose saves were verified on this screen are counted. First discoveries from before resuming are not included."
 }

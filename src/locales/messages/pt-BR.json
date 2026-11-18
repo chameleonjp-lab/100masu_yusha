@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Uma batalha da qual não se pode fugir",
   "ui.castle.herbs": "Usar ervas medicinais",
   "ui.castle.herbsEmpty": "Você não tem itens de cura",
-  "ui.battle.fledNoReward": "Você fugiu (sem recompensas)"
+  "ui.battle.fledNoReward": "Você fugiu (sem recompensas)",
+  "ui.result.newBest": "Novo recorde pessoal!",
+  "ui.result.newEntries": "Primeiras descobertas salvas e verificadas: inimigos {p0} · companheiros {p1} · equipamentos {p2}",
+  "ui.result.newEntriesScope": "São contadas apenas as descobertas cujo salvamento foi verificado nesta tela. As primeiras descobertas anteriores à retomada não estão incluídas."
 }

@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Pertarungan tanpa jalan kabur",
   "ui.castle.herbs": "Gunakan herba penyembuh",
   "ui.castle.herbsEmpty": "Kamu tidak memiliki item pemulih",
-  "ui.battle.fledNoReward": "Berhasil kabur (tidak ada hadiah)"
+  "ui.battle.fledNoReward": "Berhasil kabur (tidak ada hadiah)",
+  "ui.result.newBest": "Rekor pribadi baru!",
+  "ui.result.newEntries": "Penemuan pertama yang tersimpan dan terverifikasi: musuh {p0} · rekan {p1} · perlengkapan {p2}",
+  "ui.result.newEntriesScope": "Hanya penemuan yang penyimpanannya terverifikasi di layar ini yang dihitung. Penemuan pertama sebelum melanjutkan permainan tidak termasuk."
 }

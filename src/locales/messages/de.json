@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Ein Kampf ohne Fluchtmöglichkeit",
   "ui.castle.herbs": "Heilkräuter verwenden",
   "ui.castle.herbsEmpty": "Du hast keine Heilgegenstände",
-  "ui.battle.fledNoReward": "Du bist entkommen (keine Belohnung)"
+  "ui.battle.fledNoReward": "Du bist entkommen (keine Belohnung)",
+  "ui.result.newBest": "Neuer persönlicher Rekord!",
+  "ui.result.newEntries": "Bestätigte gespeicherte Erstentdeckungen: Gegner {p0} · Gefährten {p1} · Ausrüstung {p2}",
+  "ui.result.newEntriesScope": "Gezählt werden nur Entdeckungen, deren Speicherung auf diesem Bildschirm bestätigt wurde. Erstentdeckungen vor dem Fortsetzen sind nicht enthalten."
 }

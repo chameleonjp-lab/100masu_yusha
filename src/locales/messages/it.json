@@ -7615,5 +7615,8 @@
   "ui.castle.noFlee": "Una battaglia da cui non puoi fuggire",
   "ui.castle.herbs": "Usa erbe medicinali",
   "ui.castle.herbsEmpty": "Non hai oggetti curativi",
-  "ui.battle.fledNoReward": "Sei fuggito (nessuna ricompensa)"
+  "ui.battle.fledNoReward": "Sei fuggito (nessuna ricompensa)",
+  "ui.result.newBest": "Nuovo record personale!",
+  "ui.result.newEntries": "Prime scoperte salvate e verificate: nemici {p0} · compagni {p1} · equipaggiamento {p2}",
+  "ui.result.newEntriesScope": "Sono conteggiate solo le scoperte il cui salvataggio è stato verificato in questa schermata. Le prime scoperte precedenti alla ripresa non sono incluse."
 }

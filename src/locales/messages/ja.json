@@ -7631,5 +7631,8 @@
   "ui.castle.noFlee": "にげられない戦い",
   "ui.castle.herbs": "薬草を使う",
   "ui.castle.herbsEmpty": "回復用の道具を持っていません",
-  "ui.battle.fledNoReward": "逃げた（報酬なし）"
+  "ui.battle.fledNoReward": "逃げた（報酬なし）",
+  "ui.result.newBest": "自己ベスト更新！",
+  "ui.result.newEntries": "保存を確認した初発見　敵 {p0}・仲間 {p1}・装備 {p2}",
+  "ui.result.newEntriesScope": "この画面で保存を確認できた分のみ。再開前の初発見は含みません。"
 }
