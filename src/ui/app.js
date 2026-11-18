@@ -21,7 +21,8 @@ function invalidateCommittedSound(){committedSoundGeneration++;pendingCommittedS
 function prepareCommittedSound(){if(committedSoundPreparation)return;const preparation={};committedSoundPreparation=preparation;try{Promise.resolve(sound.unlock()).then(()=>{if(committedSoundPreparation!==preparation)return;committedSoundPreparation=null;const play=pendingCommittedSound;pendingCommittedSound=null;play?.();},()=>{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}});}catch{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}}}
 function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&!cue)||document.hidden||screen!=='game'||session?.meta?.settings?.mute)return;const generation=committedSoundGeneration;const play=()=>{if(generation!==committedSoundGeneration||document.hidden||screen!=='game'||session?.meta?.settings?.mute||session?.run?.runId!==runId||session?.run?.revision!==revision)return;try{if(cue)sound.play(cue);else sound.effects(fx,key)}catch{/* audio failure must not relabel a committed save */}};if(committedSoundPreparation)pendingCommittedSound=play;else play();}
 // BEGIN committed presentation bridge
-// Local integration slice: board only. No dispatch, persistence, ranking or battle opt-in here.
+// Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
+// Battle audio retains the existing committed-effects path, not visual-stage synchronization.
 let presentationContext=null,skipSoundGeneration=0;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
@@ -37,6 +38,37 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   if(step.kind==='sound'){presentationSound(step.payload.cue);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
+  if(p.stage.startsWith('battle.')){
+   const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
+   const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.after.hero.job.id]||'traveler';
+   const pose=(actor,key)=>{if(actor)setArt(actor,key)};
+   const animate=(actor,frames,duration)=>{if(actor?.animate&&duration)context.animations.push(actor.animate(frames,{duration,easing:'ease-in-out'}))};
+   const anchor=actor=>{const value=actor&&globalThis.getComputedStyle?.(actor).transform;return value&&value!=='none'?value:''};
+   if(p.stage==='battle.hero.prepare'){
+    pose(hero,`hero-${outfit}-idle`);
+    if(p.motion==='advance')animate(hero,[{transform:anchor(hero)},{transform:`${anchor(hero)} translateX(8px)`}],p.durationMs);
+   }
+   if(p.stage==='battle.hero.slash')pose(hero,`hero-${outfit}-attack`);
+   if(p.stage==='battle.enemy.hit'){
+    pose(enemy,`${context.after.battle.enemy.id.toLowerCase()}-hit`);
+    context.status.textContent=effectText(p.hit,localizedContent(content,locale()));
+    if(p.motion==='fade')animate(enemy,[{opacity:.65},{opacity:1}],p.durationMs);
+    else if(p.motion==='impact'){
+     animate(enemy,[{transform:anchor(enemy)},{transform:`${anchor(enemy)} translateX(8px)`},{transform:anchor(enemy)}],p.recoilMs);
+     animate(enemy,[{filter:'brightness(1.6)'},{filter:'brightness(1)'}],p.flashMs);
+    }
+   }
+   if(p.stage==='battle.enemy.prepare'){
+    context.status.textContent=displayText(locale(),p.enemyAct.name);
+    const kind=p.enemyAct.kind,enemyPose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';
+    pose(enemy,`${context.after.battle.enemy.id.toLowerCase()}-${enemyPose}`);
+    if(p.motion==='fade')animate(enemy,[{opacity:.65},{opacity:1}],p.durationMs);
+   }
+   if(p.stage==='battle.hero.block'&&p.blocked>0){pose(hero,`hero-${outfit}-guard`);context.status.textContent=p.sources.map(f=>effectText(f,localizedContent(content,locale()))).filter(Boolean).join(' · ')}
+   if(p.stage==='battle.hero.hit'){pose(hero,`hero-${outfit}-${p.hit.amount>0?'hit':'guard'}`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()))}
+   if(p.stage==='battle.result')context.status.textContent=context.notice;
+   return;
+  }
   const position=p.stage==='walk'?p.to:p.stage==='trail'?p.pos:['arrival','inn.stop','move.fade'].includes(p.stage)?p.to:null;
   if(Number.isInteger(position)){
    for(const marker of context.path?.children||[]){const current=Number(marker.dataset.pos)===position;marker.removeAttribute('aria-current');if(current)marker.setAttribute('aria-current','step');marker.style.background=current?'#f4b942':Number(marker.dataset.pos)<position?'#d5e4ba':'transparent'}
@@ -60,9 +92,14 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   
   const current=presentationCurrent(context);presentationContext=null;releasePresentation(context);
   if(reason==='cancel'||!current)return;
+  // A visual-only battle already handed its effects to the existing audio path.
+  // Final render invalidates pending unlock work: renew only an unplayed batch,
+  // never an already delivered/failed batch. Navigation cancellation returns above.
+  const renewBattleSound=context.audio&&context.battleVisual&&pendingCommittedSound!==null;
   lastAction='';notice=context.notice;render();
+  if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
   if(reason==='skip'&&context.audio){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
-  if(context.audio&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
+  if(context.audio&&!context.battleVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
 function cancelPresentation(){skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
@@ -70,10 +107,10 @@ function playCommittedPresentation(before,after,effects,audio){
  if(screen!=='game'||document.hidden||session?.run?.runId!==after.runId||session?.run?.revision!==after.revision)return false;
  // Castle audio fade and regional transition are not supported by this app-only slice.
  if(effects.some(f=>f.t==='moved'&&f.stop==='castle')||before.board?.band?.id!==after.board?.band?.id)return false;
- const plan=planPresentation({before,after,effects,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ const plan=planPresentation({before,after,effects,battleVisual:true,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(!plan.steps.length)return false;
  const resultNotice=notice;lastAction='';notice='';render(before);
- const context={after,effects,audio,notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[]};
+ const context={after,effects,audio,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -82,7 +119,7 @@ function playCommittedPresentation(before,after,effects,audio){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- presentationContext=context;stage?.update({band:before.board?.band?.id||1,die:before.rolled?.die},false);presentation.play(plan);return true;
+ presentationContext=context;stage?.update({band:before.board?.band?.id||1,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
