@@ -434,6 +434,110 @@ const PAGE_POLICY = {
   "src/ui/stage.js": "070d128660a3689c1bccd26e3df01d99c6e7122fc1d76aef74d027a3972ee1cd"
 };
 const PREVIEW_DB = 'yusha100-publication-preview-v1';
+// Only the explicitly tested prefix sequence is accepted. Independent old/new
+// combinations are NOT allowed: runtime integration must follow dependencies.
+const REVIEWED_TRANSITIONS = [
+  [
+    "src/locales/messages/de.json",
+    "6ccce49032a3ff9a1c8f7419722b362fe80c9af90b77dda1707ba0966f20f38e",
+    "2e476886c88ca8bdc68aab70cc048653149c48a32efb8f376311706a898f08d1"
+  ],
+  [
+    "src/locales/messages/en.json",
+    "809d2ffa6c1e8617ac3f874f96f22c8aeebc26f506e108c6ef45dce33c259924",
+    "949bd68bb31bd1d474f146ee5e781996d3322eaa930243e2b4f5b7cb1a00ac58"
+  ],
+  [
+    "src/locales/messages/es.json",
+    "8da61ccd3ef5912f8b09cdfd067f1d3d7189e99bda250066f0eefacfbeb9792d",
+    "188d99d09e401a8aea70a52c6545b8299a85671326977d0531eb30830557f812"
+  ],
+  [
+    "src/locales/messages/fr.json",
+    "65caa496aa7168be62cc184fcc63e72b54aab3361e32a82e14c29127c3586df7",
+    "3bd5e560e7a8a94b6b66585abaf7b5a708ea9ea427b33a7ec0a433fe03192e4c"
+  ],
+  [
+    "src/locales/messages/id.json",
+    "d5b88864ea4baf6b76e308b52ed535be54976dff131c70c8394a4aaf80faa8ca",
+    "986d5ec68706ec11c38b1326edae5144b8484782a2c0be4f69c8a5034b2fe93e"
+  ],
+  [
+    "src/locales/messages/it.json",
+    "a63ac95e399c4cca08597f8ff965ad65f8251bf434eee4000fff5f25ee75a72e",
+    "cf614d69a5e26c19fa97dbe052b8269dc5b36ffe40be6fbca0e0703e6bd0a8c4"
+  ],
+  [
+    "src/locales/messages/ko.json",
+    "08b5b61dcab7b3c7fb2514107db7dd8bd79f96863f31d9fc1bba6f44fded2ac3",
+    "d1f4c20e9b1eb627bddc5ef2b20a443b91e6d8638ee9f3795923a28ffe9872df"
+  ],
+  [
+    "src/locales/messages/pt-BR.json",
+    "a637a16c73ac1d0c52076a1abc97f408f1bc30de72b56e1306be08271464daf4",
+    "9eaa55a2b798bd1e253076c85238734926ca6bff79c66f20dc982296b573ddf9"
+  ],
+  [
+    "src/locales/messages/ru.json",
+    "f88521b57b6f085a7ab49baa7ca244e5a14a265e8a44a57ad5ed6bfbca4bbe69",
+    "f67fe0b797674c48d3082faaf7dca8abb3570f32c82f624a518198e16ec482a1"
+  ],
+  [
+    "src/locales/messages/th.json",
+    "cdcfab5f798dde93c697b6f00fcb16d082a847aff170edd70bf52253a32898b5",
+    "f33eb87fb5061c6ede7040c799b89228de97a0dad9d15908e9c9c6787700e782"
+  ],
+  [
+    "src/locales/messages/tr.json",
+    "a443c188d3ce1f533935bd04c4b626f6c60547b9899dc8565becc54ca01df604",
+    "15c34b7802d3ff6608de07ab565016e5fece2d1073be63401fec33f7269a8e9f"
+  ],
+  [
+    "src/locales/messages/vi.json",
+    "3931b644c79314faf7013f5bc89980a244a0e9b55e57dc8fa41efe3c736de6ec",
+    "ccf2a3eb307b85bfe3955fe34bfe44517780854c54811a61ea44ba35c1d6eb8e"
+  ],
+  [
+    "src/locales/messages/zh-Hans.json",
+    "0770ea3b4043b85110792f61d580eed2220628dfe26ad0641ed65b103e1edf5d",
+    "db0d4c442a9ae786e5527edcbf12b9577963fe04f2a915baff2900bb11d248bc"
+  ],
+  [
+    "src/locales/messages/zh-Hant.json",
+    "4ffde1c8110be4a8b3ff9bc6a104fa967d93f6b0d8ca7da5d8eb9899d519b171",
+    "87c1153612658d53becc2cab977b641e6af54e61d39a5d0bfdce58181cd9da72"
+  ],
+  [
+    "src/locales/messages/ja.json",
+    "41196d0ec86f990bb0965c41c97c1abc48afde03a018c2aa1d95a27d8381bb77",
+    "f9361653c09a3b7d876f6355a489184a0dfda5b630ccfac5f82f1ca6c32a7631"
+  ],
+  [
+    "src/locales/key-manifest.json",
+    "4e4cc5641db177c4962b5ed97ef4e103aa7eeb2e56f4d72708a8c88e944400aa",
+    "e92a2688ae556c397d7b0fa1e58ea526c9d9a2761bde6b8ebda4d86725993997"
+  ],
+  [
+    "src/ui/presentation-timeline.js",
+    "758e985590b1c9de93753e22b1bd4e6581883e5a8675380c0f9082cecde78f67",
+    "4710c229d920cf39fb362205f9750b23c81019d6a6cd0a93fa62faf78cfa2fcf"
+  ],
+  [
+    "src/ui/stage.js",
+    "070d128660a3689c1bccd26e3df01d99c6e7122fc1d76aef74d027a3972ee1cd",
+    "53c4886f53d9c4037338c5682339e29bf8ae936da718a7460d0ab633a1afbbdd"
+  ],
+  [
+    "src/ui/audio.js",
+    "a98044b0a9d833e556570e4564a5a5beb7cc4379a53c469f59da9deb911f3e19",
+    "90a6448be85fbf73228821be6b3d1f9ced110bafcab74956f047d64da6d84311"
+  ],
+  [
+    "src/ui/app.js",
+    "28c3c2c8b47316c1b7decca7263463f694c5e2a1b8ba2b111d6d016805ac207c",
+    "021a050c5196cd1be182af174676797211214a9665e8e033a0f1a646bf376fff"
+  ]
+];
 const hash256 = b => createHash('sha256').update(b).digest('hex');
 const TOOL_FILE_SHA256 = hash256(fs.readFileSync(fileURLToPath(import.meta.url)));
 const POLICY_VERSION = 'reviewed-preview-resource-envelope-1';
@@ -541,7 +645,15 @@ export function buildPages(options={}) {
     if(related(src,dest)||related(dest,src))failBuild('OUTPUT_SOURCE_OVERLAP');
     sourcePin=pinDirectory(src);
     const bytes=readExactSnapshot(sourcePin,expected,tree);
-    for(const [p,sha] of Object.entries(PAGE_POLICY))if(!bytes.has(p)||hash256(bytes.get(p))!==sha)failBuild('RESOURCE_POLICY');
+    const transitionPaths=new Set(REVIEWED_TRANSITIONS.map(([p])=>p));
+    let pendingOld=false;
+    for(const [p,oldSha,newSha] of REVIEWED_TRANSITIONS){
+      if(!bytes.has(p))failBuild('RESOURCE_POLICY');
+      const actual=hash256(bytes.get(p));
+      if(actual===oldSha)pendingOld=true;
+      else if(actual!==newSha||pendingOld)failBuild('RESOURCE_POLICY');
+    }
+    for(const [p,sha] of Object.entries(PAGE_POLICY))if(!transitionPaths.has(p)&&(!bytes.has(p)||hash256(bytes.get(p))!==sha))failBuild('RESOURCE_POLICY');
     // This fixed policy binds the exact reviewed app wiring, asset declarations,
     // and JSON inputs. New data/runtime revisions require an explicit policy review.
     const selected=new Map(Object.keys(PAGE_POLICY).sort().map(p=>[p,bytes.get(p)]));
