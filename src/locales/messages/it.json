@@ -7610,5 +7610,10 @@
   "ui.reward.owned": "Ce l’hai già",
   "ui.reward.won": "Ottenuto",
   "ui.reward.itemPending": " (devi fare spazio nella borsa)",
-  "ui.reward.itemAdded": " (aggiunto alla borsa)"
+  "ui.reward.itemAdded": " (aggiunto alla borsa)",
+  "ui.castle.title": "Castello del Re dei demoni · Sala della Corona",
+  "ui.castle.noFlee": "Una battaglia da cui non puoi fuggire",
+  "ui.castle.herbs": "Usa erbe medicinali",
+  "ui.castle.herbsEmpty": "Non hai oggetti curativi",
+  "ui.battle.fledNoReward": "Sei fuggito (nessuna ricompensa)"
 }

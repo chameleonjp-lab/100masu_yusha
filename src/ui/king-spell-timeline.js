@@ -9,9 +9,9 @@ const tellCue=k=>/大/.test(k)?'tell.big':/守/.test(k)?'tell.guard':/隙/.test(
 // sprite and dedicated audio hook. This function does not start playback.
 export function planKingSpellTimeline(input){
  if(!input||typeof input!=='object'||Array.isArray(input))return null;
- const {before,after,effects,settings={},spellVisual=false,victoryVisual=false}=input;
+ const {before,after,effects,settings={},spellVisual=false,victoryVisual=false,expandedRewards=false}=input;
  if(spellVisual!==true||before?.battle?.kind!=='king'||!settings||typeof settings!=='object'||Array.isArray(settings))return null;
- const packet=consumeSpellTurn({before,after,effects});if(!packet)return null;
+ const packet=consumeSpellTurn({before,after,effects,expandedRewards});if(!packet)return null;
  const {crown,victory}=packet.boundaries,terminal=victory!==null;
  if(terminal&&victoryVisual!==true)return null;
  const segment=terminal?planKingVictorySegment({before,after,effects,settings}):crown!==null?planKingCrownSegment({before,after,effects,settings}):null;
@@ -61,6 +61,8 @@ export function planKingSpellTimeline(input){
    case 'victory':appendSegment(index,time,false);break;
    // Reward events are retained, but the final view owns their presentation.
    case 'gold':case 'xp':case 'rewards':case 'bagFull':break;
+   case 'levelUp':case 'gearGained':case 'discover':case 'itemGained':
+    if(!terminal||expandedRewards!==true||index<=victory)return null;break;
    default:return null;
   }
  }

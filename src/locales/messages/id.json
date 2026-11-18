@@ -7610,5 +7610,10 @@
   "ui.reward.owned": "Sudah punya",
   "ui.reward.won": "Didapat",
   "ui.reward.itemPending": " (menunggu ruang di tas)",
-  "ui.reward.itemAdded": " (dimasukkan ke tas)"
+  "ui.reward.itemAdded": " (dimasukkan ke tas)",
+  "ui.castle.title": "Kastel Raja Iblis · Ruang Mahkota",
+  "ui.castle.noFlee": "Pertarungan tanpa jalan kabur",
+  "ui.castle.herbs": "Gunakan herba penyembuh",
+  "ui.castle.herbsEmpty": "Kamu tidak memiliki item pemulih",
+  "ui.battle.fledNoReward": "Berhasil kabur (tidak ada hadiah)"
 }

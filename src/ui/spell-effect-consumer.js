@@ -1,3 +1,4 @@
+import {readKingRewardPacket} from './king-reward-packet.js';
 // A pure, ordered consumer of a successfully committed spell turn, not a save proof.
 const kinds={SP01:'attack',SP02:'heal',SP03:'guard',SP04:'finisher'};
 const nn=n=>Number.isSafeInteger(n)&&n>=0;
@@ -9,14 +10,14 @@ const wall=m=>m?.id==='SP03-wall'&&m.owner==='spell:SP03'&&m.hook==='enemyDamage
 const plainGear=g=>g?.hit===false&&g.id===null&&g.alreadyOwned===false;
 export function consumeSpellTurn(input){
  if(!input||typeof input!=='object'||Array.isArray(input))return null;
- const {before,after,effects}=input;
+ const {before,after,effects,expandedRewards=false}=input;
  const b=before?.battle,a=after?.battle,h=before?.hero,next=after?.hero;
  if(!b||!a||!h||!next||typeof before.runId!=='string'||!before.runId||before.runId!==after.runId||
   !nn(before.revision)||!nn(after.revision)||after.revision!==before.revision+1||before.phase!=='battle'||before.pos!==after.pos||before.rolls!==after.rolls||
   b.stage!=='fight'||!nn(b.id)||b.id!==a.id||!pos(b.round)||b.kind!==a.kind||!['king','normal','optional'].includes(b.kind)||!b.enemy?.id||b.enemy.id!==a.enemy?.id||
   !pos(b.enemy.hp)||!pos(b.enemy.maxHp)||b.enemy.hp>b.enemy.maxHp||b.enemy.maxHp!==a.enemy.maxHp||
   !pos(h.hp)||!pos(h.maxHp)||h.hp>h.maxHp||!nn(h.mp)||!nn(h.maxMp)||h.mp>h.maxMp||
-  h.maxHp!==next.maxHp||h.maxMp!==next.maxMp||h.level!==next.level||
+  (expandedRewards!==true||!['battleReward','bagFull'].includes(after.phase))&&(h.maxHp!==next.maxHp||h.maxMp!==next.maxMp||h.level!==next.level)||
   !Array.isArray(effects)||Array.from(effects).some(e=>!e||typeof e!=='object'||Array.isArray(e))||
   !Array.isArray(a.history)||Array.from(a.history).some(r=>!r||typeof r!=='object'||Array.isArray(r))||!Array.isArray(b.marks)||!Array.isArray(a.marks))return null;
  const recs=a.history.filter(r=>r.round===b.round),rec=recs[0],action=rec?.action,sp=action?.spellId;
@@ -87,6 +88,9 @@ export function consumeSpellTurn(input){
   const tell=cur();
   if(after.phase!=='battle'||a.stage!=='fight'||a.round!==b.round+1||tell?.t!=='enemyTell'||tell.round!==a.round||!sameTell(tell,a.telegraph))return null;
   nextTell=i++;
+ }else if(expandedRewards===true){
+  if(b.kind!=='king'||a.stage!=='won'||a.round!==b.round||!sameTell(a.telegraph,b.telegraph)||!readKingRewardPacket({before,after,effects,victoryIndex:i}))return null;
+  victory=i;i=effects.length;
  }else{
   const [win,gold,xp,reward,bag]=effects.slice(i);
   if(!['battleReward','bagFull'].includes(after.phase)||a.stage!=='won'||a.round!==b.round||!sameTell(a.telegraph,b.telegraph)||after.result!=null||

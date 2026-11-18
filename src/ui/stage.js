@@ -6,7 +6,9 @@ export function cuboid(x,y,z,w,h,d,color){
 }
 export function project(x,y,z){return {x:50+(x*.85-z*.53)/14*100,y:50-(y*.85-(x*.53+z*.85)*.5-.5)/10*100}}
 const rgb=h=>h.match(/\w\w/g).map(v=>parseInt(v,16)/255);
-export function regionProps(band){
+export function regionProps(band,{windowLight=0}={}){
+ const light=Math.max(0,Math.min(1,Number(windowLight)||0));
+ const windowColor=[0x45,0x43,0x57].map((x,i)=>Math.round(x+([0xff,0xd5,0x79][i]-x)*light).toString(16).padStart(2,'0')).join('');
  const a=[],box=(...args)=>a.push(args);
  const tree=(x,z,h,c='67844e')=>{box(x,0,z,.19,.9,.19,'775239');box(x,.65,z,.8,h*.55,.8,c);box(x,1.1,z,.55,h*.35,.55,'88a65e')};
  if(band===1){for(const[x,z,h]of[[-4,-2.5,1.3],[-2.8,-2.8,1.9],[.5,-2.7,1.5],[4,2.5,1.1]])tree(x,z,h);for(const x of[-3,0,3]){box(x,0,-.9,.12,.5,.12,'ac7950');box(x,.3,-.9,.8,.1,.12,'d2ad77')}}
@@ -15,7 +17,7 @@ export function regionProps(band){
  if(band===4){for(const[x,z,h]of[[-4,-2.5,2],[-2.8,-2.8,2.3],[.5,-2.7,2.5],[4,2.5,1.8]])tree(x,z,h,'505565');for(const[x,z]of[[-3,-1.8],[1,-2.4],[3,2.7]])box(x,.25,z,2,.06,.35,'c5c3cf')}
  if(band===5){box(2.7,.045,-.6,4,.025,.8,'607f98');box(3.1,.08,-.4,.6,.12,1.3,'a7967e');
   box(3.1,0,-1.8,2,1.25,1.1,'afb5b7');
-  for(const x of [2.1,4.1]){box(x,0,-1.8,.62,2.1,.8,'c8c8ba');for(const dx of [-.23,.23])box(x+dx,2.1,-1.8,.17,.27,.8,'eee6d1');box(x,1.3,-1.38,.15,.35,.035,'454357')}
+  for(const x of [2.1,4.1]){box(x,0,-1.8,.62,2.1,.8,'c8c8ba');for(const dx of [-.23,.23])box(x+dx,2.1,-1.8,.17,.27,.8,'eee6d1');box(x,1.3,-1.38,.15,.35,.035,windowColor)}
   box(3.1,1.25,-1.95,1,1,.8,'c0c5bd');box(3.1,.02,-1.22,.5,.8,.04,'4b3c42');box(3.1,2.25,-1.95,.07,.8,.07,'604936');box(3.35,2.65,-1.95,.45,.3,.045,'ad4836');
 
  }
@@ -29,11 +31,35 @@ export function regionFrame(fromBand,band,progress,reduced=false,pos=0){
  const sky=skies[to-1].map((color,i)=>'rgb('+rgb(color).map((v,j)=>Math.round((rgb(skies[from-1][i])[j]*(1-t)+v*t)*255)).join(',')+')');
  return {castleMix:reduced?{fromScale:castleScale(from),toScale:castleScale(to,pos),progress:t}:null,background:'linear-gradient(180deg,'+sky.join(',')+')',scale:reduced?castleScale(to,pos):castleScale(from)+(castleScale(to,pos)-castleScale(from))*(1-(1-t)**3)};
 }
+// Pure animation owner. No sound, persistence, asset loading or game state.
+export function createCastleArrival({now,request,cancel,onFrame}){
+ let key=null,generation=0,disposed=false,reduced=false,state={cameraY:0,windowLight:0};const seen=new Set(),jobs=new Map(),done=new Set();
+ const emit=()=>onFrame({...state});
+ const clear=()=>{generation++;for(const id of jobs.values())cancel(id);jobs.clear()};
+ const settle=()=>{clear();state={cameraY:reduced?0:.55,windowLight:1};done.add('look');done.add('light');emit()};
+ const api={command({type,key:next,short=false,reducedMotion=false}={}){
+  if(disposed||typeof next!=='string'||!next)return {cancel(){}};
+  if(type==='look'){
+   if(seen.has(next))return {cancel(){}};clear();key=next;seen.add(next);done.clear();reduced=!!reducedMotion;state={cameraY:0,windowLight:0};emit();
+  }else if(type==='finish'&&key===null){key=next;seen.add(next);reduced=!!reducedMotion;}else if(key!==next)return {cancel(){}};
+  const id=generation;
+  if(type==='finish'||type==='cancel'){settle();return {cancel(){}}}
+  if(!['look','light'].includes(type)||done.has(type)||jobs.has(type))return {cancel(){}};
+  const duration=type==='look'?(reduced?0:short?400:800):400,start=now();
+  const tick=t=>{if(disposed||id!==generation)return;const f=duration?Math.max(0,Math.min(1,(t-start)/duration)):1;
+   if(type==='look')state.cameraY=reduced?0:.55*(1-(1-f)**3);else state.windowLight=f;emit();
+   if(f<1)jobs.set(type,request(tick));else{jobs.delete(type);done.add(type)}
+  };if(duration)jobs.set(type,request(tick));else tick(start);
+  return {cancel(){if(!disposed&&id===generation&&key===next&&!done.has(type)&&jobs.has(type))settle()}};
+ },setFinal(reducedMotion=false){if(disposed)return;clear();key=null;reduced=!!reducedMotion;state={cameraY:reduced?0:.55,windowLight:1};emit()},finish(){if(!disposed&&key)settle()},reset(){if(disposed)return;clear();key=null;done.clear();state={cameraY:0,windowLight:0};emit()},dispose(){if(disposed)return;clear();disposed=true}};return api;
+}
 export function createStage(canvas,onUnavailable=()=>{}){
  let gl,program,buffer,raf=0,disposed=false,scene={band:1},generation=0;
  let targets=null,mixProgram=null,mixBuffer=null,fadeUnavailable=false;
+ let arrivalFrame={cameraY:0,windowLight:0};
+ const arrival=createCastleArrival({now:()=>performance.now(),request:f=>requestAnimationFrame(f),cancel:id=>cancelAnimationFrame(id),onFrame:frame=>{arrivalFrame=frame;draw()}});
  let region=null,regionRaf=0,regionGeneration=0,visual=regionFrame(1,1,1);
- const vs='attribute vec3 p;attribute vec3 c;varying vec3 color;void main(){float x=p.x*.85-p.z*.53;float z=p.x*.53+p.z*.85;gl_Position=vec4(x/7.,(p.y*.85-z*.5-.5)/5.,-(z*.85+p.y*.5)/30.,1.);color=c;}';
+ const vs='uniform float cameraY;attribute vec3 p;attribute vec3 c;varying vec3 color;void main(){float x=p.x*.85-p.z*.53;float z=p.x*.53+p.z*.85;gl_Position=vec4(x/7.,(p.y*.85-z*.5-.5-cameraY)/5.,-(z*.85+p.y*.5)/30.,1.);color=c;}';
  const fs='precision mediump float;varying vec3 color;void main(){gl_FragColor=vec4(color,1.);}';
  function releaseBase(){if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);buffer=null;program=null;}
  function init(){
@@ -57,7 +83,7 @@ export function createStage(canvas,onUnavailable=()=>{}){
   const props=regionProps(scene.band);
   for(const prop of (scene.band===5?props.slice(0,2):props))box(...prop);
   // Keep the distant castle anchored at the horizon in every region.
-  for(const [x,y,z,w,h,d,c] of regionProps(5).slice(2)){
+  for(const [x,y,z,w,h,d,c] of regionProps(5,{windowLight:arrivalFrame.windowLight}).slice(2)){
    const k=castleSize;box(3.1+(x-3.1)*k,y*k,-1.8+(z+1.8)*k,w*k,h*k,d*k,c);
   }
   if(scene.die){
@@ -96,7 +122,7 @@ export function createStage(canvas,onUnavailable=()=>{}){
   }}catch(error){releaseTargets();throw error;}finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);}
  }
  function scenePass(angle,scale,w,h,framebuffer=null){
-  gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,w,h);gl.colorMask(true,true,true,true);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const data=new Float32Array(geometry(angle,scale));gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,w,h);gl.colorMask(true,true,true,true);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(program);gl.uniform1f(gl.getUniformLocation(program,'cameraY'),arrivalFrame.cameraY);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const data=new Float32Array(geometry(angle,scale));gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
   for(const [name,offset] of [['p',0],['c',12]]){const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,24,offset);}gl.drawArrays(gl.TRIANGLES,0,data.length/6);
  }
  function draw(angle=0){if(disposed||!gl||!program||!buffer||gl.isContextLost()||document.hidden)return;
@@ -142,10 +168,10 @@ export function createStage(canvas,onUnavailable=()=>{}){
   return {cancel(){if(region&&id===regionGeneration)cancelTransition()}};
  }
  function stop(){cancelAnimationFrame(raf);generation++}
- function visibility(){stop();cancelTransition();if(!document.hidden)draw()}
- function lost(e){e.preventDefault();stop();cancelTransition();releaseMix();releaseBase();onUnavailable('lost')}
+ function visibility(){arrival.finish();stop();cancelTransition();if(!document.hidden)draw()}
+ function lost(e){e.preventDefault();arrival.finish();stop();cancelTransition();releaseMix();releaseBase();onUnavailable('lost')}
  function restored(){if(disposed)return;fadeUnavailable=false;try{if(init()){onUnavailable('restored');draw()}else onUnavailable()}catch{onUnavailable()}}
  canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);document.addEventListener('visibilitychange',visibility);
  const observer=new ResizeObserver(()=>draw());observer.observe(canvas);try{init()}catch{onUnavailable()}
- return {transitionRegion,cancelTransition,update(next,animate=false){if(disposed)return;stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){if(disposed)return;stop();cancelAnimationFrame(regionRaf);regionGeneration++;region=null;disposed=true;releaseMix();observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl)releaseBase()}};
+ return {arrivalVisual:options=>{if(document.hidden){arrival.command(options);arrival.finish();return {cancel(){}}}return arrival.command(options)},transitionRegion,cancelTransition,update(next,animate=false){if(disposed)return;if(next.phase==='gate'&&next.pos===100)arrival.setFinal(next.reducedMotion);else arrival.reset();stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){if(disposed)return;arrival.dispose();stop();cancelAnimationFrame(regionRaf);regionGeneration++;region=null;disposed=true;releaseMix();observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl)releaseBase()}};
 }

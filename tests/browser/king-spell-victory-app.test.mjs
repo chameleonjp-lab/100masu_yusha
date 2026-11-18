@@ -8,7 +8,7 @@ import {createSession} from '../../src/ui/session.js';import {createMemoryStore}
 import {planPresentation,createPresentationPlayer} from '../../src/ui/presentation-timeline.js';import {effectText,telegraphText} from '../../src/ui/presentation.js';
 import {displayText,loadMessages,localizedView,msg} from '../../src/ui/i18n.js';
 const content=await getContent(),source=readFileSync(new URL('../../src/ui/app.js',import.meta.url),'utf8');
-async function fixture(seed=1,full=false,hp=1){const store=createMemoryStore(),gate=walk(content,place(exampleRun(content,'M',seed),99,{level:20,xp:912,hp:78,mp:48,spells:{learned:['SP01'],prepared:['SP01']}}),1).state,run=dispatch(content,gate,{type:'challengeKing'}).state;run.battle.enemy.hp=hp;if(full)run.bag=Array(12).fill('HE01');await store.startNew({run,meta:createMeta()});const session=createSession(content,store);await session.load();const before=structuredClone(session.view),effects=await session.act({type:'spell',spellId:'SP01'}),after=structuredClone(session.view);return {session,store,before,after,effects};}
+async function fixture(seed=1,full=false,hp=1){const store=createMemoryStore(),gate=walk(content,place(exampleRun(content,'M',seed),99,{level:20,xp:912,hp:78,mp:48,spells:{learned:['SP01'],prepared:['SP01']}}),1).state,run=dispatch(content,gate,{type:'challengeKing'}).state;run.battle.enemy.hp=hp;if(full)run.bag=Array(6).fill('HE01');await store.startNew({run,meta:createMeta()});const session=createSession(content,store);await session.load();const before=structuredClone(session.view),effects=await session.act({type:'spell',spellId:'SP01'}),after=structuredClone(session.view);return {session,store,before,after,effects};}
 function setup(f,settings={},api=true,audio){
 
 

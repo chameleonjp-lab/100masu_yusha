@@ -7610,5 +7610,10 @@
   "ui.reward.owned": "Already owned",
   "ui.reward.won": "Won",
   "ui.reward.itemPending": " (bag choice pending)",
-  "ui.reward.itemAdded": " (added to bag)"
+  "ui.reward.itemAdded": " (added to bag)",
+  "ui.castle.title": "Demon King’s Castle · Crown Chamber",
+  "ui.castle.noFlee": "A battle you cannot flee",
+  "ui.castle.herbs": "Use healing herbs",
+  "ui.castle.herbsEmpty": "You have no healing items",
+  "ui.battle.fledNoReward": "Escaped (no rewards)"
 }

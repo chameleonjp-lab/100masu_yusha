@@ -1,3 +1,4 @@
+import {appendCastleArrivalUi} from './castle-arrival-ui.js';
 import {createKingVictoryRenderer} from './king-victory-renderer.js';
 import {createKingCrownRenderer} from './king-crown-renderer.js';
 import {planPresentation,createPresentationPlayer} from './presentation-timeline.js';
@@ -20,16 +21,33 @@ const add=(p,...xs)=>{xs.filter(Boolean).forEach(x=>p.append(x));return p};
 function button(text,fn,cls=''){const b=el('button',cls,text);b.type='button';b.addEventListener('click',()=>{sound.unlock().then(()=>sound.play('ui.tap'));fn()});return b}
 let committedSoundGeneration=0,committedSoundPreparation=null,pendingCommittedSound=null;
 function invalidateCommittedSound(){committedSoundGeneration++;pendingCommittedSound=null;}
-function prepareCommittedSound(){if(committedSoundPreparation)return;const preparation={};committedSoundPreparation=preparation;try{Promise.resolve(sound.unlock()).then(()=>{if(committedSoundPreparation!==preparation)return;committedSoundPreparation=null;const play=pendingCommittedSound;pendingCommittedSound=null;play?.();},()=>{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}});}catch{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}}}
+function prepareCommittedSound(){if(pendingFleeSound)pendingFleeSound.cancelled=true;if(committedSoundPreparation)return;const preparation={};committedSoundPreparation=preparation;try{Promise.resolve(sound.unlock()).then(()=>{if(committedSoundPreparation!==preparation)return;committedSoundPreparation=null;const play=pendingCommittedSound;pendingCommittedSound=null;play?.();},()=>{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}});}catch{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}}}
 function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&!cue)||document.hidden||screen!=='game'||session?.meta?.settings?.mute)return;const generation=committedSoundGeneration;const play=()=>{if(generation!==committedSoundGeneration||document.hidden||screen!=='game'||session?.meta?.settings?.mute||session?.run?.runId!==runId||session?.run?.revision!==revision)return;try{if(cue)sound.play(cue);else sound.effects(fx,key)}catch{/* audio failure must not relabel a committed save */}};if(committedSoundPreparation)pendingCommittedSound=play;else play();}
 // BEGIN committed presentation bridge
+// BEGIN saved growth display
+function levelUpRows(e,h){
+ const change=(key)=>String(h[key]-e.gains[key])+' → '+h[key]+' (+'+e.gains[key]+')';
+ return [effectText(e,localizedContent(content,locale()))+' '+e.from+' → '+e.to,
+  msg('ui.app.render.term.d6d2aa99fd')+' '+h.hp+'/'+(h.maxHp-e.gains.maxHp)+' → '+h.hp+'/'+h.maxHp+' (+'+e.gains.maxHp+')',
+  msg('ui.app.render.term.522148a1fd')+' '+h.mp+'/'+(h.maxMp-e.gains.maxMp)+' → '+h.mp+'/'+h.maxMp+' (+'+e.gains.maxMp+')',
+  msg('ui.presentation.comparisonText.term.fa133cb7c1')+change('attack'),
+  msg('ui.presentation.comparisonText.term.48cf4313fd')+change('defense')];
+}
+function appendSavedKingGrowth(root,v){
+ const r=session?.meta?.uiLastResult,h=v?.hero;
+ if(!r||!h||r.runId!==session.run?.runId||r.revision!==session.run?.revision||r.runId!==v?.runId||r.revision!==v?.revision||!['battleReward','bagFull'].includes(v.phase)||v.reward?.enemyId!=='DK01'||v.reward.victory!==true||!Array.isArray(r.effects))return;
+ const levels=r.effects.filter(e=>e?.t==='levelUp');if(levels.length!==1)return;const e=levels[0],from=content.levelTable?.[e.from-1],to=content.levelTable?.[e.to-1],keys=['maxHp','maxMp','attack','defense'],nn=x=>Number.isSafeInteger(x)&&x>=0;
+ if(!Number.isSafeInteger(e.from)||!Number.isSafeInteger(e.to)||e.from<1||e.to<=e.from||e.to!==h.level||!from||!to||keys.some(k=>!nn(e.gains?.[k])||e.gains[k]!==to[k]-from[k]||e.stats?.[k]!==to[k]||h.levelRow?.[k]!==to[k]||!nn(h[k])||h[k]<e.gains[k])||h.maxHp!==to.maxHp||h.maxMp!==to.maxMp)return;
+ const panel=el('section','story saved-level-up');panel.setAttribute('role','status');for(const text of levelUpRows(e,h))panel.append(el('p','',text));root.append(panel);
+}
+// END saved growth display
 function rewardRowTexts(r){const none=msg('ui.reward.none'),gear=r.gear.hit?(r.gear.alreadyOwned?msg('ui.reward.owned'):(r.gear.name||msg('ui.reward.won'))):none,item=r.item.hit?(r.item.name||msg('ui.reward.won'))+(r.item.state==='prompt'?msg('ui.reward.itemPending'):r.item.state==='added'?msg('ui.reward.itemAdded'):''):none;return [msg('ui.reward.gold',{amount:r.gold}),msg('ui.reward.xp',{amount:r.xp}),msg('ui.reward.gear',{outcome:gear}),msg('ui.reward.item',{outcome:item})]}
 // Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
 // Battle audio retains the existing committed-effects path, not visual-stage synchronization.
-let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null;
+let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null,lastGuardKey=null,lastFleeKey=null,pendingFleeSound=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
- for(const restore of context.supportRestorers||[])restore();context.rewardPanel?.remove();context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
+ for(const restore of context.supportRestorers||[])restore();context.levelUpPanel?.remove();context.rewardPanel?.remove();context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
  for(const [control,disabled] of context.controls)control.disabled=disabled;
  for(const animation of context.animations)animation.cancel();
  for(const timer of context.regionTimers||[])clearTimeout(timer);context.regionHandle?.cancel();context.regionBanner?.remove();
@@ -37,12 +55,27 @@ function releasePresentation(context){
 }
 function presentationCurrent(context){return context&&screen==='game'&&!document.hidden&&session?.run?.runId===context.after.runId&&session?.run?.revision===context.after.revision}
 function presentationSound(cue,options){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue,0,options)}catch{/* audio cannot strand a confirmed result */}}
+function savedFleeResult(v){const r=session?.meta?.uiLastResult,e=r?.effects?.[0];if(v?.phase!=='board'||v.battle!=null||v.reward!=null||v.prompt!=null||v.event!=null||v.result!=null||v.victory!=null||!r||r.runId!==v.runId||r.revision!==v.revision||r.runId!==session.run?.runId||r.revision!==session.run?.revision||!Array.isArray(r.effects)||r.effects.length!==1||!e||Object.keys(e).length!==2||e.t!=='fled'||e.enemyId==='DK01'||!content.enemies||!Object.hasOwn(content.enemies,e.enemyId))return '';const t=translate(locale(),'ui.battle.fledNoReward');return t.sourceLocale?t.text:'';}
+function normalTellParagraph(battle){const p=el('p','',telegraphText(battle.telegraph));if(battle.kind==='normal'&&battle.telegraph.kind==='大技')p.dataset.danger=session.meta.settings?.animation==='short'||session.meta.settings?.reducedMotion||reduced.matches?'still':'pulse';return p;}
+function fleeSound(context){
+ if(context.fleeSound||!presentationCurrent(context)||!context.audio||session.meta.settings?.mute)return;
+ const token={cancelled:false,finalizing:false};context.fleeSound=token;pendingFleeSound=token;
+ try{Promise.resolve(sound.unlock()).then(()=>{if(token.cancelled||pendingFleeSound!==token||!presentationCurrent(context)||session.meta.settings?.mute)return;token.cancelled=true;try{sound.play('flee')}catch{}},()=>{token.cancelled=true})}catch{token.cancelled=true}
+}
+function guardSound(context,step){
+ if(!presentationCurrent(context)||!context.audio||session.meta.settings?.mute)return;
+ try{if(step.payload.cue.startsWith('tell.')){const e=context.effects[step.payload.effectIndex];if(e?.t==='enemyTell')sound.effects([e],step.key)}else sound.play(step.payload.cue,0,step.payload.options)}catch{/* confirmed state remains final */}
+}
 const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
  onStep(step){
   const context=presentationContext;if(!presentationCurrent(context)){cancelPresentation();return}
-  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
+  if(step.kind==='sound'){if(context.fleeVisual){if(step.payload.cue==='flee')fleeSound(context);return}if(context.guardVisual){guardSound(context,step);return}if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
+  if(p.stage==='king.reward.levelUp'){
+   context.levelUpPanel?.remove();const panel=el('section','presentation-level-up'),rows=levelUpRows(p.effect,context.after.hero);panel.setAttribute('role','status');panel.append(el('p','',rows[0]));context.levelUpPanel=panel;root.append(panel);
+   rows.slice(1).forEach((text,i)=>{const show=()=>{if(presentationContext===context&&presentationCurrent(context)&&context.levelUpPanel===panel)panel.append(el('p','',text))};const delay=i*p.durationMs/4;if(!delay)show();else context.regionTimers.push(setTimeout(show,delay))});return;
+  }
   if(p.stage.startsWith('king.reward.')){
    if(!context.rewardPanel){context.rewardPanel=el('section','presentation-rewards');root.append(context.rewardPanel)}
    const rows=rewardRowTexts(localizedView(context.after,content,locale()).reward);
@@ -133,7 +166,18 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
    return;
   }
   if(p.stage==='king.start'){context.status.textContent=displayText(locale(),p.telegraph.name);return;}
-  if(p.stage==='castle.fade'||p.stage==='castle.arrive'){if(context.audio)sound.castle({type:p.stage==='castle.fade'?'fade':'arrive',key:context.castleKey});return;}
+  if(p.stage==='castle.fade'||p.stage==='castle.arrive'){if(context.audio)sound.castle({type:p.stage==='castle.fade'?'fade':'arrive',key:context.castleKey});if(p.stage==='castle.arrive'){
+    render(context.after,{castleContext:context});
+    context.controls=[...root.querySelectorAll('.actions input,.actions select,.actions button,.castle-preparation button')].map(control=>[control,control.disabled]);for(const [control] of context.controls)control.disabled=true;
+    for(const n of [context.path,context.status,context.skip])if(n)root.append(n);context.status.textContent='100 / 100';
+    for(const selector of ['.castle-ribbon','.castle-preparation','.actions','.tabs','.map-strip']){const n=root.querySelector(selector);if(n)n.hidden=true}
+    stage?.update({band:context.after.board?.band?.id||5,pos:100,phase:'gate'},false);stage.arrivalVisual({type:'look',key:context.castleKey,short:session.meta.settings?.animation==='short',reducedMotion:reduced.matches||session.meta.settings?.reducedMotion});
+   }return;}
+  if(p.stage==='castle.light'){stage.arrivalVisual({type:'light',key:context.castleKey});return;}
+  if(p.stage==='castle.ribbon'||p.stage==='castle.prepare'){
+   const selectors=p.stage==='castle.ribbon'?['.castle-ribbon']:['.castle-preparation','.actions'];
+   for(const selector of selectors){const n=root.querySelector(selector);if(n){n.hidden=false;if(n.animate)context.animations.push(n.animate([{opacity:0},{opacity:1}],{duration:p.durationMs,easing:'ease-out'}))}}return;
+  }
   if(p.stage==='region.transition'){
    context.regionHandle?.cancel();
    context.regionHandle=stage.transitionRegion({fromBand:p.fromBand,band:p.band.id,durationMs:p.durationMs,reducedMotion:p.motion==='fade'});
@@ -142,12 +186,23 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
    if(context.audio)sound.scene({phase:'board',board:{band:p.band}});
    return;
   }
+  if(context.fleeVisual&&p.stage==='battle.flee.departure'){
+   for(const actor of [root.querySelector('.hero'),...root.querySelectorAll('.companion')]){const base=globalThis.getComputedStyle?.(actor).transform,anchor=base&&base!=='none'?base:'';const frames=p.motion==='fade'?[{opacity:1},{opacity:0}]:[{transform:anchor,opacity:1},{transform:`${anchor} translateX(-48px)`,opacity:0}];context.animations.push(actor.animate(frames,{duration:p.durationMs,easing:'ease-in',fill:'forwards'}));}return;
+  }
+  if(context.fleeVisual&&p.stage==='battle.flee.result'){context.status.textContent=context.fleeText;return;}
   if(p.stage.startsWith('battle.')){
    const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
    const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.after.hero.job.id]||'traveler';
    const pose=(actor,key)=>{if(actor)setArt(actor,key)};
    const animate=(actor,frames,duration)=>{if(actor?.animate&&duration)context.animations.push(actor.animate(frames,{duration,easing:'ease-in-out'}))};
    const anchor=actor=>{const value=actor&&globalThis.getComputedStyle?.(actor).transform;return value&&value!=='none'?value:''};
+   if(context.guardVisual&&p.stage==='battle.hero.guard'){pose(hero,`hero-${outfit}-guard`);if(p.motion==='shield')animate(hero,[{filter:'brightness(1)'},{filter:'brightness(1.35)'},{filter:'brightness(1)'}],p.durationMs);}
+   if(context.guardVisual&&p.stage==='battle.nextTell'){
+    const name=root.querySelector('.telegraph p:not(.muted)'),hint=root.querySelector('.telegraph p.muted');name.textContent=telegraphText({...p.telegraph,name:displayText(locale(),p.telegraph.name)});hint.textContent=displayText(locale(),p.telegraph.tell||'');
+    if(p.motion==='fade')animate(name,[{opacity:.65},{opacity:1}],p.durationMs);
+    if(p.motion==='sway')animate(name,[{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'translateX(0)'}],p.durationMs);
+    name.dataset.danger=p.dangerMotion||'';
+   }
    if(p.stage==='battle.hero.prepare'){
     pose(hero,`hero-${outfit}-idle`);
     if(p.motion==='advance')animate(hero,[{transform:anchor(hero)},{transform:`${anchor(hero)} translateX(8px)`}],p.durationMs);
@@ -169,6 +224,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
     if(p.motion==='fade')animate(enemy,[{opacity:.65},{opacity:1}],p.durationMs);
    }
    if(p.stage==='battle.hero.block'&&p.blocked>0){pose(hero,`hero-${outfit}-guard`);context.status.textContent=p.sources.map(f=>effectText(f,localizedContent(content,locale()))).filter(Boolean).join(' · ')}
+   if(context.guardVisual&&p.stage==='battle.hero.hit'){root.querySelector('.stat.hp strong').textContent=`${p.hit.hp} / ${p.hit.maxHp}`;root.querySelector('.stat.hp meter').value=p.hit.hp;}
    if(p.stage==='battle.hero.hit'){pose(hero,`hero-${outfit}-${p.hit.amount>0?'hit':'guard'}`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()))}
    if(p.stage==='battle.result')context.status.textContent=context.notice;
    return;
@@ -195,27 +251,38 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   const context=presentationContext;if(!context)return;
   // Cancellation is navigation/lifecycle cleanup, not a second committed action.
   
-  const current=presentationCurrent(context);if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:context.spellId})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
+  const current=presentationCurrent(context);if(context.castleVisual)stage?.arrivalVisual?.({type:reason==='finish'||reason==='skip'?'finish':'cancel',key:context.castleKey});if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:context.spellId})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
   if(reason==='cancel'||!current)return;
   // A visual-only battle already handed its effects to the existing audio path.
   // Final render invalidates pending unlock work: renew only an unplayed batch,
   // never an already delivered/failed batch. Navigation cancellation returns above.
-  const renewBattleSound=context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
-  lastAction='';notice=context.notice;render();
+  const renewBattleSound=context.audio&&context.battleVisual&&!context.guardVisual&&!context.fleeVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
+  if(context.fleeSound)context.fleeSound.finalizing=true;lastAction='';notice=context.notice;render();if(context.fleeSound)context.fleeSound.finalizing=false;
   if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
-  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
+  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{if(context.fleeVisual)fleeSound(context);else if(context.guardVisual)guardSound(context,step);else sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
   if(context.audio&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
-function cancelPresentation(){skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
+function cancelPresentation(){if(pendingFleeSound&&!pendingFleeSound.finalizing)pendingFleeSound.cancelled=true;skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
 function playCommittedPresentation(before,after,effects,audio){
  if(screen!=='game'||document.hidden||session?.run?.runId!==after.runId||session?.run?.revision!==after.revision)return false;
  // Castle remains static until its audio/visual bridge is connected; region requires the stage API.
  const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
- if(castleVisual&&typeof sound.castle!=='function')return false;
+ if(castleVisual&&(typeof sound.castle!=='function'||typeof stage?.arrivalVisual!=='function'))return false;
  if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
- const plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ let plan=planPresentation({before,after,effects,battleVisual:true,battleGuardVisual:true,battleFleeVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,kingExpandedRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ if(castleVisual){plan=appendCastleArrivalUi(plan,{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion});if(!plan)return false;}
  if(!plan.steps.length)return false;
+ const fleeVisual=plan.mode==='battle-flee',fleeTranslation=fleeVisual?translate(locale(),'ui.battle.fledNoReward'):null;
+ if(fleeVisual){const hero=root.querySelector('.hero'),actors=[...root.querySelectorAll('.companion')];if(!fleeTranslation?.sourceLocale||!fleeTranslation.text||typeof sound.play!=='function'||typeof sound.unlock!=='function'||!hero||typeof hero.animate!=='function'||actors.length!==before.hero.companions.length||before.hero.companions.some(c=>!actors.some(a=>a.dataset.companionId===c.id&&typeof a.animate==='function'))||plan.steps.some(x=>x.kind==='display'&&!['battle.flee.departure','battle.flee.result'].includes(x.payload.stage)))return false;if(lastFleeKey===`${after.runId}:${after.revision}`)return true;lastFleeKey=`${after.runId}:${after.revision}`;}
+ const guardVisual=plan.mode==='battle-guard';
+ if(guardVisual){
+  if(typeof sound.effects!=='function'||typeof sound.play!=='function'||['.hero','.enemy','.stat.hp strong','.stat.hp meter','.telegraph p:not(.muted)','.telegraph p.muted'].some(q=>!root.querySelector(q)))return false;
+  const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id],enemy=after.battle?.enemy?.id?.toLowerCase(),kind=before.battle.telegraph.kind,pose=/大/.test(kind)?'big':/守/.test(kind)?'guard':/隙/.test(kind)?'open':'attack';
+  if(!outfit||[`hero-${outfit}-guard`,`hero-${outfit}-hit`,`${enemy}-${pose}`].some(k=>!spriteMetrics[k])||plan.steps.some(x=>x.kind==='display'&&!['battle.hero.guard','battle.enemy.prepare','battle.hero.block','battle.hero.hit','battle.nextTell','battle.result'].includes(x.payload.stage)))return false;
+  if(lastGuardKey===`${after.runId}:${after.revision}`)return true;lastGuardKey=`${after.runId}:${after.revision}`;
+ }
+
  const kingVisual=plan.steps.some(s=>s.kind==='display'&&s.payload.stage==='king.start');if(kingVisual&&typeof sound.king!=='function')return false;
  const kingVictoryVisual=plan.mode==='king-victory-turn',victoryText=kingVictoryVisual?translate(locale(),'ui.king.defeated'):null;
  if(kingVictoryVisual&&(typeof sound.kingVictory!=='function'||!victoryText.sourceLocale||!victoryText.text))return false;
@@ -226,7 +293,7 @@ function playCommittedPresentation(before,after,effects,audio){
  const spellOutfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id];
  if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]||!spriteMetrics[`hero-${spellOutfit}-cast`]))return false;
  if(spellVisual&&(typeof sound.spell!=='function'||!['SP01','SP02','SP03','SP04'].includes(spellId)||(spellId!=='SP01'&&!sound.spell.supportedIds?.includes(spellId))||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!==spellId)))return false;
- if(spellVisual){const supported=new Set(['king.turn.spell.mp','king.turn.spell.prepare','king.turn.spell.cast','king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource','king.turn.enemy.hit','king.turn.enemy.prepare','king.turn.hero.hit','king.turn.hero.block','king.turn.nextTell','king.crown.pause','king.crown.crack','king.crown.banner','king.crown.resume','king.victory.music','king.victory.disappear','king.victory.label','king.reward.money','king.reward.gear','king.reward.item']);if(plan.steps.some(s=>s.kind==='display'&&!supported.has(s.payload.stage)))return false;}
+ if(spellVisual){const supported=new Set(['king.turn.spell.mp','king.turn.spell.prepare','king.turn.spell.cast','king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource','king.turn.enemy.hit','king.turn.enemy.prepare','king.turn.hero.hit','king.turn.hero.block','king.turn.nextTell','king.crown.pause','king.crown.crack','king.crown.banner','king.crown.resume','king.victory.music','king.victory.disappear','king.victory.label','king.reward.money','king.reward.gear','king.reward.item','king.reward.levelUp']);if(plan.steps.some(s=>s.kind==='display'&&!supported.has(s.payload.stage)))return false;}
  if(spellVisual&&plan.spellId){
   if(kingVictoryVisual&&plan.steps.some(s=>s.kind==='display'&&(s.payload.stage.startsWith('king.crown.')||['king.turn.enemy.prepare','king.turn.nextTell'].includes(s.payload.stage))))return false;
   if(['.hero','.enemy','.stat.mp strong','.stat.mp meter','.stat.hp strong','.stat.hp meter','.telegraph h2','.telegraph p:not(.muted)','.telegraph p.muted'].some(selector=>!root.querySelector(selector)))return false;
@@ -248,9 +315,9 @@ function playCommittedPresentation(before,after,effects,audio){
  if(crownLabels&&Object.values(crownLabels).some(x=>!x.sourceLocale||!x.text))return false;
  if((kingTurnVisual||kingVictoryVisual)&&lastKingTurnKey===`${after.runId}:${after.revision}`)return true;
  if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
- const resultNotice=kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
+ const resultNotice=fleeVisual?fleeTranslation.text:kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
  if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
- const context={before,after,effects,audio,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
+ const context={before,after,effects,audio,fleeVisual,fleeText:fleeTranslation?.text,guardVisual,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -259,7 +326,7 @@ function playCommittedPresentation(before,after,effects,audio){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
+ presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.guardVisual&&!context.fleeVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
@@ -283,44 +350,64 @@ function scene(v,home=false){
  if(v?.rolled)wrap.append(el('strong','die-value',msg("ui.app.scene.f51ade3b85",{p0:(v.rolled.die)})));
  const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):tr(`ui.region.bands.${v?.board.band?.id||1}.name`));wrap.append(ribbon);
  const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))});
- stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die},lastAction==='roll'&&animated())});return wrap;
+ stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die,phase:v?.phase,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion},lastAction==='roll'&&animated())});return wrap;
 }
-function render(presentationView=null){
- cancelPresentation();
+// BEGIN castle preparation
+function renderCastleHealing(body,v){
+ if(v.phase!=='gate'||v.prompt)return;
+ body.append(heading(msg('ui.castle.herbs')));
+ const seen=new Set(),items=v.hero.bag.items.filter(it=>{if(content.items[it.id]?.category!=='回復用'||seen.has(it.id))return false;seen.add(it.id);return true});
+ if(!items.length){body.append(paragraph(msg('ui.castle.herbsEmpty'),'muted'));return}
+ for(const it of items){
+  body.append(paragraph(msg('ui.app.render.c938ee4c06',{p0:it.name,p1:it.category,p2:it.timing,p3:it.limit||msg('ui.app.render.term.23480562a4'),p4:it.effect}),'comparison-copy'));
+  for(const a of v.actions.filter(a=>a.type==='useItem'&&a.itemId===it.id))body.append(actionForm(a,v));
+ }
+}
+// END castle preparation
+function render(presentationView=null,options={}){
+ const castleContext=options.castleContext,keepCastle=!!castleContext&&castleContext===presentationContext&&castleContext.castleVisual&&presentationView===castleContext.after&&presentationView.phase==='gate';
+ if(!keepCastle)cancelPresentation();
  invalidateCommittedSound();
  setMessageLocale(locale());document.documentElement.lang=locale();
  const hadFocus=root.contains(document.activeElement);if(hadFocus)requestAnimationFrame(()=>{const focus=root.querySelector('.notice')||root.querySelector('h1')||root.querySelector('button');if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true})}});stage?.dispose();clearTimeout(timer);root.replaceChildren();root.dataset.motion=animated()?'full':'reduced';
  const header=el('header','masthead');add(header,button(msg("ui.app.render.literal.624fe166e6"),()=>{screen='home';lastAction='';render()},'brand'),button(tr('ui.settings'),settings,'quiet'));root.append(header);if(locale()!=='ja')root.append(paragraph(tr('ui.translationPending'),'translation-notice'));
  if(error){const box=el('section','error');box.setAttribute('role','alert');add(box,heading(msg("ui.app.render.literal.c1fa727cb7")),paragraph(error),button(msg("ui.app.render.literal.bb1f5b26d4"),async()=>{try{await session.load();error='';lastAction='';render()}catch(e){showError(e)}}));root.append(box)}
- sound.configure(session?.meta?.settings);sound.scene(screen==='home'||document.hidden?null:presentationView||session?.view);
+ if(!keepCastle){sound.configure(session?.meta?.settings);sound.scene(screen==='home'||document.hidden?null:presentationView||session?.view);}
  if(!session){root.append(paragraph(msg("ui.app.render.literal.f1c2c7d3df")));return}
  if(screen==='home'){home();return}
  const v=localizedView(presentationView||session.view,content,locale());if(!v){screen='home';home();return}
+ if(tab==='herbs'&&(v.phase!=='gate'||v.prompt))tab='main';
  const title=el('div','chapter');add(title,el('span','eyebrow',`${v.route.id} / ${v.route.name}`),el('h1','',`${v.pos} / 100`),el('span','roll-count',msg("ui.app.render.bdfdbc6d58",{p0:(v.rolls)})));root.append(title);
  const mapLauncher=button(msg("ui.app.render.literal.b6e1addfac"),()=>worldMap(v,mapLauncher),'quiet');
  const stats=el('section','stats');stats.setAttribute('aria-label',msg("ui.app.render.literal.998f75677a"));add(stats,stat(msg("ui.app.render.term.d6d2aa99fd"),v.hero.hp,v.hero.maxHp,'hp'),stat(msg("ui.app.render.term.522148a1fd"),v.hero.mp,v.hero.maxMp,'mp'),el('strong','gold',`${v.hero.gold} G`),el('span','level',`Lv.${v.hero.level} ${v.hero.job.name}`));root.append(stats);root.append(add(el('div','map-strip'),paragraph(msg("ui.app.render.7dcec7dac2",{p0:(v.board.nextStop===100?msg("ui.app.render.term.a4c5f93082"):msg("ui.app.render.term.6038669e41")),p1:(v.board.distanceToNextStop)})),mapLauncher));
  root.append(paragraph(msg("ui.app.render.f65841c006",{p0:(v.pos),p1:(v.board.currentName)}),'muted'));root.append(scene(v));
- if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
+ if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),normalTellParagraph(v.battle),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
  if(v.battle?.temporaryStatuses?.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.78ea180ba1")));for(const st of v.battle.temporaryStatuses)box.append(paragraph(msg("ui.app.render.f1030d5885",{p0:(st.label),p1:(st.kinds.map(k=>({attackDown:msg("ui.app.render.term.bb59eb7119"),defenseDown:msg("ui.app.render.term.862a6a31e3"),turnEndHpLoss:msg("ui.app.render.term.082937427d")}[k]||k)).join(msg("ui.app.render.term.2a21905f43"))),p2:(st.amount),p3:(st.remainingTurns)})));root.append(box)}
  if(v.battle?.forecast?.unguarded.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.34675f17d7")),paragraph(msg("ui.app.render.literal.87577bfcf3")));for(const [k,name]of [['unguarded',msg("ui.app.render.term.2e483eb82e")],['guarded',msg("ui.app.render.term.1177af8a7d")]])for(const f of v.battle.forecast[k])box.append(paragraph(msg("ui.app.render.75ca5568df",{p0:(f.round),p1:(f.name),p2:(name),p3:(f.damage)})));root.append(box)}
  if(v.battle?.history.length){const history=el('details','battle-history');history.append(el('summary','',msg("ui.app.render.literal.518564feda")));for(const r of v.battle.history)history.append(paragraph(msg("ui.app.render.bc7ba68654",{p0:(r.round),p1:(r.dealt),p2:(r.hpLost),p3:(r.enemy)})));root.append(history)}
- const n=el('section','notice');n.setAttribute('role','status');n.setAttribute('aria-live','polite');add(n,paragraph(notice||(!presentationView&&savedResult())||msg("ui.app.render.term.1e05a3a6d6")),el('small','',msg("ui.app.render.2c8ca60f57",{p0:(v.revision)})));root.append(n);
+ const n=el('section','notice');n.setAttribute('role','status');n.setAttribute('aria-live','polite');add(n,paragraph(savedFleeResult(v)||notice||(!presentationView&&savedResult())||msg("ui.app.render.term.1e05a3a6d6")),el('small','',msg("ui.app.render.2c8ca60f57",{p0:(v.revision)})));root.append(n);
  if(v.event){const e=el('section','story');add(e,el('span','eyebrow',v.event.kind),heading(v.event.name),paragraph(v.event.scene));if(v.event.unscripted)add(e,paragraph(msg("ui.app.render.literal.c08e3524c9"),'warning'));if(v.event.puzzle)e.append(puzzlePanel(v.event.puzzle));root.append(e)}
  if(v.prompt?.title)root.append(heading(v.prompt.title));
  if(v.reward){const p=el('section','story');add(p,heading(msg("ui.app.render.literal.def16f80b1")),...rewardRowTexts(v.reward).map(text=>paragraph(text)));root.append(p)}
- if(v.phase==='gate')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.726055e48f")),paragraph(msg("ui.app.render.literal.e485399357"))));
+ appendSavedKingGrowth(root,v);
+ if(v.phase==='gate'){
+ const ribbon=el('section','story castle-ribbon');ribbon.style.background='#E3A41C';add(ribbon,heading(msg("ui.castle.title")),paragraph(msg("ui.app.render.literal.e485399357")));root.append(ribbon);
+ const prep=el('nav','castle-preparation');prep.style.display='grid';prep.style.gridTemplateColumns='1fr 1fr';prep.style.gap='8px';
+ for(const [label,target] of [[msg('ui.app.render.term.b5989f74c7'),'gear'],[msg('ui.castle.herbs'),'herbs'],[msg('ui.app.render.term.86e8df92c1'),'party'],[msg('ui.app.render.term.0ad8cdd51e'),'items']])prep.append(button(label,()=>{tab=target;render()},'quiet'));root.append(prep);
+ }
  if(v.phase==='retryOffer')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.3f905081bb")),paragraph(msg("ui.app.render.literal.3a301ecd5f"))));
  if(v.phase==='finished'){const r=el('section','story result');add(r,el('span','eyebrow',msg("ui.app.render.literal.5308c10dab")),heading(v.result?.defeated?msg("ui.app.render.term.52203486d8"):msg("ui.app.render.term.17bd5d6c12")),paragraph(msg("ui.app.render.7c9988bef2",{p0:(v.route.name),p1:(v.furthest),p2:(v.rolls)})),paragraph(msg("ui.app.render.40d7f7fcb6",{p0:(v.hero.job.name),p1:(v.hero.companions.map(c=>c.name).join(msg("ui.app.render.term.2a21905f43"))||msg("ui.app.render.term.6217280784"))})),button(msg("ui.app.render.literal.e5ed7aa5db"),()=>{screen='home';render()}));r.append(button(tr('ui.share'),()=>sharePanel(v),'share-x'));root.append(r)}
  if(v.phase==='board'||v.phase==='rolled'){const trail=el('ol','trail');for(const sq of v.board.next6){const li=el('li');add(li,el('b','',sq.pos),el('span','',sq.kind));trail.append(li)}root.append(trail)}
  const nav=el('nav','tabs');for(const [id,name] of [['main',msg("ui.app.render.term.b396c18ea5")],['items',msg("ui.app.render.term.0ad8cdd51e")],['gear',msg("ui.app.render.term.b5989f74c7")],['party',msg("ui.app.render.term.86e8df92c1")]])nav.append(button(name,()=>{tab=id;render()},tab===id?'selected':''));root.append(nav);
  const body=el('section','actions');body.setAttribute('aria-label',tab==='main'?msg("ui.app.render.term.f8f6a2fe31"):msg("ui.app.render.term.93a200dea7"));
+ if(tab==='herbs')renderCastleHealing(body,v);
  if(tab==='items')add(body,heading(msg("ui.app.render.8b25e3dabf",{p0:(v.hero.bag.items.length),p1:(v.hero.bag.capacity)})),...v.hero.bag.items.map(it=>paragraph(msg("ui.app.render.c938ee4c06",{p0:(it.name),p1:(it.category),p2:(it.timing),p3:(it.limit||msg("ui.app.render.term.23480562a4")),p4:(it.effect)}),'comparison-copy')));
  if(tab==='gear'){
   add(body,heading(msg("ui.app.render.literal.1ae67cfcaf")),paragraph(msg("ui.app.render.66bc9851e6",{p0:(v.hero.attack),p1:(v.hero.defense)})),...v.hero.gear.map(g=>paragraph(msg("ui.app.render.0c81238d33",{p0:(g.equipped?msg("ui.app.render.term.bf2bbcdd02"):''),p1:(g.name),p2:(g.baseStat),p3:(g.timing||uiContent().gear[g.id]?.timing||''),p4:(g.effect||''),p5:(g.diff?msg("ui.app.module.9876c43d0b",{p0:(JSON.stringify(g.diff))}):'')}))));
  }
  if(tab==='party')add(body,heading(msg("ui.app.render.literal.f544044d74")),...v.hero.companions.map(x=>paragraph(companionSummary(x),'comparison-copy')),!v.hero.companions.length?paragraph(msg("ui.app.render.literal.cd1c50af42")):null);
  if(tab==='party'&&v.inn?.tavern){add(body,heading(msg("ui.app.render.literal.1ae4f6667f")),paragraph(msg("ui.app.render.literal.d27f9b9772")));for(const candidate of v.inn.tavern.candidates)body.append(add(el('article','candidate'),portrait(candidate,''),paragraph(companionSummary(candidate),'comparison-copy')))}
- for(const a of v.actions){const group=['useItem','item','bagSwap','bagDecline','pickBagItem','sellItem'].includes(a.type)?'items':['equip','setSpells','sellGear'].includes(a.type)?'gear':['recruit'].includes(a.type)?'party':'main';if(group!==tab||a.type==='changeJob')continue;body.append(actionForm(a,v))}
+ for(const a of v.actions){if(tab==='herbs')continue;const group=['useItem','item','bagSwap','bagDecline','pickBagItem','sellItem'].includes(a.type)?'items':['equip','setSpells','sellGear'].includes(a.type)?'gear':['recruit'].includes(a.type)?'party':'main';if(group!==tab||a.type==='changeJob')continue;body.append(actionForm(a,v))}
  // Mandatory bag prompts must never be hidden behind an unrelated tab.
  if(v.prompt?.kind==='bagFull'||v.prompt?.kind==='pickBagItem'){if(tab!=='items')body.append(button(msg("ui.app.render.literal.2dcfd06424"),()=>{tab='items';render()},'primary'))}
  if(tab==='main'&&v.inn){if(v.actions.some(a=>a.type==='changeJob'))body.append(button(msg("ui.app.render.literal.6b5afaa3e9"),()=>jobs(v)));add(body,paragraph(msg("ui.app.render.c5af446173",{p0:(v.inn.rest.hp),p1:(v.inn.rest.mp)})));if(v.inn.tavern)body.append(button(msg("ui.app.render.literal.c531094d93"),()=>{tab='party';render()}))}
@@ -357,6 +444,7 @@ function actionForm(a,v){
  let spellChecks=[];
  if(a.type==='setSpells'){for(const sp of v.hero.spells.learned){const lab=el('label','check');const input=el('input');input.type='checkbox';input.checked=sp.prepared;add(lab,input,el('span','',`${sp.name}：${sp.text}`));form.append(lab);spellChecks.push({input,id:sp.id})}if(!spellChecks.length)form.append(paragraph(msg("ui.app.field.literal.31da45f17e"),'muted'))}
  const b=el('button',(['roll','move','attack','challengeKing','continue'].includes(a.type)?'primary':'')+(a.type==='guard'?' guard':''),name);b.type='submit';b.disabled=!a.enabled||a.type==='skipUnscripted'||(a.type==='setSpells'&&!spellChecks.length)||!!error;
+ if(v.phase==='gate'&&a.type==='challengeKing')form.append(paragraph(msg('ui.castle.noFlee'),'muted'));
  add(form,b);if(!a.enabled)form.append(paragraph(a.reasonText||({same:msg("ui.app.field.term.2ba9627cc7"),equipped:msg("ui.app.field.term.5a430d6bb0"),recruitUsed:msg("ui.app.field.term.eaa4774367")}[a.reason]||msg("ui.app.field.term.96105c98cf")),'reason'));
  if(a.preview&&a.type==='rest')form.append(paragraph(msg("ui.app.field.a7d2446f4f",{p0:(a.preview.hp>=0?'+':''),p1:(a.preview.hp),p2:(a.preview.mp>=0?'+':''),p3:(a.preview.mp),p4:(a.preview.gold>=0?'+':''),p5:(a.preview.gold)}),'muted'));
  if(a.preview?.discarded)form.append(paragraph(msg("ui.app.field.f4d7448414",{p0:(a.preview.discarded)}),'muted'));

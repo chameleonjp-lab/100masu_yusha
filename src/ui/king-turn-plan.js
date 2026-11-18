@@ -1,11 +1,12 @@
+import {readKingRewardPacket} from './king-reward-packet.js';
 import {planKingVictorySegment} from './king-victory-segment.js';
 import {planKingCrownSegment} from './king-crown-segment.js';
 const copy=x=>structuredClone(x);
 function freeze(x){if(x&&typeof x==='object'){Object.values(x).forEach(freeze);Object.freeze(x)}return x}
 // Committed, surviving single-hit normal attack by the hero against DK01 only.
 // Unsupported/unknown effects fall back as a WHOLE turn; no effects are discarded.
-export function planKingTurn({before,after,effects=[],settings={},spellVisual=false,victoryVisual=false}={}){
- if(victoryVisual===true&&['battleReward','bagFull'].includes(after?.phase))return planVictoryTurn({before,after,effects,settings,spellVisual});
+export function planKingTurn({before,after,effects=[],settings={},spellVisual=false,victoryVisual=false,expandedRewards=false}={}){
+ if(victoryVisual===true&&['battleReward','bagFull'].includes(after?.phase))return planVictoryTurn({before,after,effects,settings,spellVisual,expandedRewards});
  const b=before?.battle,a=after?.battle,nn=n=>Number.isSafeInteger(n)&&n>=0;
  if(!settings||typeof settings!=='object'||Array.isArray(settings)||!before||!after||!before.runId||typeof before.runId!=='string'||before.runId!==after.runId||!nn(before.revision)||!Number.isSafeInteger(after.revision)||after.revision!==before.revision+1||before.pos!==100||after.pos!==100||before.phase!=='battle'||after.phase!=='battle'||!b||!a||b.kind!=='king'||a.kind!=='king'||b.stage!=='fight'||a.stage!=='fight'||!nn(b.id)||b.id!==a.id||!nn(b.round)||b.round<1||a.round!==b.round+1||b.enemy?.id!=='DK01'||a.enemy?.id!=='DK01'||!Array.isArray(a.history)||!Array.isArray(effects)||effects.some(e=>!e||!['hit','phaseChange','enemyAct','dieSoften','enemyTell','mp','spellCast'].includes(e.t)))return null;
  if(![0,1].includes(b.phase?.index)||![0,1].includes(a.phase?.index)||typeof b.phase.changed!=='boolean'||typeof a.phase.changed!=='boolean'||b.phase.changed!==(b.phase.index===1)||a.phase.changed!==(a.phase.index===1))return null;
@@ -64,16 +65,16 @@ export function planKingTurn({before,after,effects=[],settings={},spellVisual=fa
 
 // Deliberately narrow reward gate: no level-up, hooks, healing, gear or added items.
 // bagFull may be retained as a pending prompt; no choice or continueReward is issued.
-function planVictoryTurn({before,after,effects,settings,spellVisual}){
+function planVictoryTurn({before,after,effects,settings,spellVisual,expandedRewards}){
  const segment=planKingVictorySegment({before,after,effects,settings});if(!segment)return null;
  const b=before.battle,a=after.battle,nn=n=>Number.isSafeInteger(n)&&n>=0;
  if(!nn(after.revision)||!nn(b.id)||![0,1].includes(b.phase?.index)||![0,1].includes(a.phase?.index)||typeof b.phase.changed!=='boolean'||typeof a.phase.changed!=='boolean'||b.phase.changed!==(b.phase.index===1)||a.phase.changed!==(a.phase.index===1))return null;
- if(effects.some(e=>!['hit','victory','gold','xp','rewards','bagFull','mp','spellCast'].includes(e.t))||!Array.isArray(a.history)||a.history.some(r=>!r||typeof r!=='object'||Array.isArray(r)))return null;
+ if(effects.some(e=>!['hit','victory','gold','xp','rewards','bagFull','mp','spellCast',...(expandedRewards===true?['levelUp','gearGained','discover','itemGained']:[])].includes(e.t))||!Array.isArray(a.history)||a.history.some(r=>!r||typeof r!=='object'||Array.isArray(r)))return null;
  const records=a.history.filter(r=>r.round===b.round);if(records.length!==1)return null;
  const rec=records[0],action=rec.action;
  const spell=action?.type==='spell';
  if((spell?spellVisual!==true:action?.type!=='attack')||action.choiceId!==undefined||action.targets!==undefined||action.target!=null||rec.hpLost!==0||rec.enemy!==b.telegraph?.name||a.telegraph?.name!==b.telegraph?.name||a.telegraph?.kind!==b.telegraph?.kind||a.telegraph?.attack!==b.telegraph?.attack||a.telegraph?.defense!==b.telegraph?.defense||a.phase?.index!==b.phase?.index||a.phase?.changed!==b.phase?.changed)return null;
- for(const k of ['hp','maxHp','maxMp','level',...(spell?[]:['mp'])])if(!nn(before.hero[k])||after.hero[k]!==before.hero[k])return null;
+ for(const k of ['hp',...(expandedRewards===true?[]:['maxHp','maxMp','level']),...(spell?[]:['mp'])])if(!nn(before.hero[k])||after.hero[k]!==before.hero[k])return null;
  if(before.hero.hp>before.hero.maxHp||before.hero.mp>before.hero.maxMp)return null;
  const one=t=>effects.filter(e=>e.t===t),hits=one('hit'),wins=one('victory'),golds=one('gold'),xps=one('xp'),rewards=one('rewards'),bags=one('bagFull');
  if(hits.length!==1||wins.length!==1||golds.length!==1||xps.length!==1||rewards.length!==1||bags.length>1)return null;
@@ -83,12 +84,15 @@ function planVictoryTurn({before,after,effects,settings,spellVisual}){
   const mp=mps[0],cast=casts[0],offers=Array.isArray(b.spells)?b.spells.filter(s=>s?.id==='SP01'):[],offer=offers[0];
   if(effects[0]!==mp||effects[1]!==cast||cast.id!=='SP01'||cast.kind!=='attack'||!nn(cast.cost)||cast.cost===0||!nn(before.hero.mp)||!nn(after.hero.mp)||after.hero.mp>after.hero.maxMp||mp.reason!=='spell'||mp.before!==before.hero.mp||mp.after!==after.hero.mp||mp.delta!==-cast.cost||mp.before+mp.delta!==mp.after||action.spellId!==cast.id||action.spellKind!==cast.kind||action.cost!==cast.cost||action.spellMpAfter!==mp.after||offers.length!==1||offer.enabled!==true||offer.cost!==cast.cost||offer.mpAfter!==mp.after)return null;
  }else if(mps.length||casts.length)return null;
- if(h.target!=='enemy'||h.blocked!==undefined||rec.dealt!==h.amount||ix(h)!==offset+0||ix(wins[0])!==offset+1||ix(gold)!==offset+2||ix(xp)!==offset+3||ix(reward)!==offset+4)return null;
+ if(h.target!=='enemy'||h.blocked!==undefined||rec.dealt!==h.amount||ix(h)!==offset+0||ix(wins[0])!==offset+1||ix(gold)!==offset+2||ix(xp)!==offset+3)return null;
  if(!nn(gold.delta)||!nn(gold.before)||!nn(gold.after)||gold.reason!=='battle'||gold.before!==before.hero.gold||gold.after!==after.hero.gold||gold.before+gold.delta!==gold.after||!nn(xp.amount)||!nn(xp.total)||xp.reason!=='battle'||!nn(before.hero.xp)||xp.total!==after.hero.xp||before.hero.xp+xp.amount!==xp.total)return null;
+ if(expandedRewards===true){if(!readKingRewardPacket({before,after,effects,victoryIndex:offset+1}))return null;}else{
+ if(ix(reward)!==offset+4)return null;
  const r=after.reward;if(!r||r.enemyId!=='DK01'||r.victory!==true||reward.gold!==gold.delta||reward.xp!==xp.amount||r.gold!==reward.gold||r.xp!==reward.xp||reward.gear?.hit!==false||reward.gear.id!==null||reward.gear.alreadyOwned!==false||r.gear?.hit!==false||r.gear.id!==null||r.gear.alreadyOwned!==false)return null;
  if(after.phase==='bagFull'){
   if(bags.length!==1||ix(bags[0])!==offset+5||reward.item?.hit!==true||typeof reward.item.id!=='string'||!reward.item.id||r.item?.hit!==true||r.item.id!==reward.item.id||r.item.state!=='prompt'||bags[0].itemId!==r.item.id||bags[0].source!=='reward'||after.prompt?.kind!=='bagFull'||after.prompt.itemId!==r.item.id||after.prompt.source!=='reward')return null;
  }else if(bags.length||reward.item?.hit!==false||reward.item.id!==null||r.item?.hit!==false||r.item.id!==null||r.item.state!=='none')return null;
+ }
  const reduced=!!settings.reducedMotion,short=settings.animation==='short'&&!reduced,steps=[];let time=0;
  const add=(kind,payload,atMs=time)=>steps.push({key:`${after.runId}:${after.revision}:king-victory-turn:${steps.length}`,atMs,kind,payload:copy(payload)});
  const display=(stage,durationMs,payload)=>{add('display',{stage,durationMs,...payload});time+=durationMs};

@@ -7610,5 +7610,10 @@
   "ui.reward.owned": "Đã sở hữu",
   "ui.reward.won": "Trúng thưởng",
   "ui.reward.itemPending": " (chờ dọn chỗ trong túi)",
-  "ui.reward.itemAdded": " (đã thêm vào túi)"
+  "ui.reward.itemAdded": " (đã thêm vào túi)",
+  "ui.castle.title": "Lâu đài Ma Vương · Phòng Vương miện",
+  "ui.castle.noFlee": "Trận chiến không thể bỏ chạy",
+  "ui.castle.herbs": "Dùng thảo dược",
+  "ui.castle.herbsEmpty": "Bạn không có vật phẩm hồi phục",
+  "ui.battle.fledNoReward": "Đã chạy thoát (không có phần thưởng)"
 }
