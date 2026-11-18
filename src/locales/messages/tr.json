@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "Zaten sende var",
   "ui.reward.won": "Kazanıldı",
   "ui.reward.itemPending": " (çantada yer açmalısın)",
-  "ui.reward.itemAdded": " (çantaya eklendi)"
+  "ui.reward.itemAdded": " (çantaya eklendi)",
+  "ui.castle.title": "İblis Kralı’nın Kalesi · Taç Odası",
+  "ui.castle.noFlee": "Kaçılamayan bir savaş",
+  "ui.castle.herbs": "Şifalı ot kullan",
+  "ui.castle.herbsEmpty": "İyileştirme eşyan yok"
 }

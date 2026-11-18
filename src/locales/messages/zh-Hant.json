@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "已擁有",
   "ui.reward.won": "抽中",
   "ui.reward.itemPending": "（等待整理道具袋）",
-  "ui.reward.itemAdded": "（已放入道具袋）"
+  "ui.reward.itemAdded": "（已放入道具袋）",
+  "ui.castle.title": "魔王城・王冠之間",
+  "ui.castle.noFlee": "無法逃離的戰鬥",
+  "ui.castle.herbs": "使用藥草",
+  "ui.castle.herbsEmpty": "你沒有恢復用道具"
 }

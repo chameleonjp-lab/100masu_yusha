@@ -7626,5 +7626,9 @@
   "ui.reward.owned": "入手済み",
   "ui.reward.won": "当たり",
   "ui.reward.itemPending": "（袋の整理待ち）",
-  "ui.reward.itemAdded": "（袋に追加済み）"
+  "ui.reward.itemAdded": "（袋に追加済み）",
+  "ui.castle.title": "魔王城・王冠の間",
+  "ui.castle.noFlee": "にげられない戦い",
+  "ui.castle.herbs": "薬草を使う",
+  "ui.castle.herbsEmpty": "回復用の道具を持っていません"
 }

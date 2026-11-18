@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "Déjà en votre possession",
   "ui.reward.won": "Obtenu",
   "ui.reward.itemPending": " (en attente de place dans le sac)",
-  "ui.reward.itemAdded": " (ajouté au sac)"
+  "ui.reward.itemAdded": " (ajouté au sac)",
+  "ui.castle.title": "Château du Roi démon · Salle de la Couronne",
+  "ui.castle.noFlee": "Un combat sans possibilité de fuite",
+  "ui.castle.herbs": "Utiliser des herbes médicinales",
+  "ui.castle.herbsEmpty": "Vous n’avez aucun objet de soin"
 }

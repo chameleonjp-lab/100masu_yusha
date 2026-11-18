@@ -7626,5 +7626,9 @@
   "ui.reward.owned": "Уже есть",
   "ui.reward.won": "Выигрыш",
   "ui.reward.itemPending": " (нужно освободить место в сумке)",
-  "ui.reward.itemAdded": " (добавлено в сумку)"
+  "ui.reward.itemAdded": " (добавлено в сумку)",
+  "ui.castle.title": "Замок Короля демонов · Зал короны",
+  "ui.castle.noFlee": "Бой, из которого нельзя сбежать",
+  "ui.castle.herbs": "Использовать лечебные травы",
+  "ui.castle.herbsEmpty": "У вас нет лечебных предметов"
 }

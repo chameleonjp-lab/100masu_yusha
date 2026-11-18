@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "Hast du schon",
   "ui.reward.won": "Gewonnen",
   "ui.reward.itemPending": " (im Beutel muss erst Platz sein)",
-  "ui.reward.itemAdded": " (jetzt im Beutel)"
+  "ui.reward.itemAdded": " (jetzt im Beutel)",
+  "ui.castle.title": "Burg des Dämonenkönigs · Kronensaal",
+  "ui.castle.noFlee": "Ein Kampf ohne Fluchtmöglichkeit",
+  "ui.castle.herbs": "Heilkräuter verwenden",
+  "ui.castle.herbsEmpty": "Du hast keine Heilgegenstände"
 }

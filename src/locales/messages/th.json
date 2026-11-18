@@ -7626,5 +7626,9 @@
   "ui.reward.owned": "มีอยู่แล้ว",
   "ui.reward.won": "ได้รับรางวัล",
   "ui.reward.itemPending": " (รอจัดถุงของ)",
-  "ui.reward.itemAdded": " (ใส่ในถุงของแล้ว)"
+  "ui.reward.itemAdded": " (ใส่ในถุงของแล้ว)",
+  "ui.castle.title": "ปราสาทจอมมาร · ห้องมงกุฎ",
+  "ui.castle.noFlee": "การต่อสู้ที่หนีไม่ได้",
+  "ui.castle.herbs": "ใช้สมุนไพร",
+  "ui.castle.herbsEmpty": "คุณไม่มีไอเทมฟื้นฟู"
 }

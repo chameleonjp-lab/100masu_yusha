@@ -44,7 +44,7 @@ function appendSavedKingGrowth(root,v){
 function rewardRowTexts(r){const none=msg('ui.reward.none'),gear=r.gear.hit?(r.gear.alreadyOwned?msg('ui.reward.owned'):(r.gear.name||msg('ui.reward.won'))):none,item=r.item.hit?(r.item.name||msg('ui.reward.won'))+(r.item.state==='prompt'?msg('ui.reward.itemPending'):r.item.state==='added'?msg('ui.reward.itemAdded'):''):none;return [msg('ui.reward.gold',{amount:r.gold}),msg('ui.reward.xp',{amount:r.xp}),msg('ui.reward.gear',{outcome:gear}),msg('ui.reward.item',{outcome:item})]}
 // Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
 // Battle audio retains the existing committed-effects path, not visual-stage synchronization.
-let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null;
+let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null,lastGuardKey=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
  for(const restore of context.supportRestorers||[])restore();context.levelUpPanel?.remove();context.rewardPanel?.remove();context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
@@ -55,10 +55,15 @@ function releasePresentation(context){
 }
 function presentationCurrent(context){return context&&screen==='game'&&!document.hidden&&session?.run?.runId===context.after.runId&&session?.run?.revision===context.after.revision}
 function presentationSound(cue,options){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue,0,options)}catch{/* audio cannot strand a confirmed result */}}
+function normalTellParagraph(battle){const p=el('p','',telegraphText(battle.telegraph));if(battle.kind==='normal'&&battle.telegraph.kind==='大技')p.dataset.danger=session.meta.settings?.animation==='short'||session.meta.settings?.reducedMotion||reduced.matches?'still':'pulse';return p;}
+function guardSound(context,step){
+ if(!presentationCurrent(context)||!context.audio||session.meta.settings?.mute)return;
+ try{if(step.payload.cue.startsWith('tell.')){const e=context.effects[step.payload.effectIndex];if(e?.t==='enemyTell')sound.effects([e],step.key)}else sound.play(step.payload.cue,0,step.payload.options)}catch{/* confirmed state remains final */}
+}
 const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
  onStep(step){
   const context=presentationContext;if(!presentationCurrent(context)){cancelPresentation();return}
-  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
+  if(step.kind==='sound'){if(context.guardVisual){guardSound(context,step);return}if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
   if(p.stage==='king.reward.levelUp'){
@@ -181,6 +186,13 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
    const pose=(actor,key)=>{if(actor)setArt(actor,key)};
    const animate=(actor,frames,duration)=>{if(actor?.animate&&duration)context.animations.push(actor.animate(frames,{duration,easing:'ease-in-out'}))};
    const anchor=actor=>{const value=actor&&globalThis.getComputedStyle?.(actor).transform;return value&&value!=='none'?value:''};
+   if(context.guardVisual&&p.stage==='battle.hero.guard'){pose(hero,`hero-${outfit}-guard`);if(p.motion==='shield')animate(hero,[{filter:'brightness(1)'},{filter:'brightness(1.35)'},{filter:'brightness(1)'}],p.durationMs);}
+   if(context.guardVisual&&p.stage==='battle.nextTell'){
+    const name=root.querySelector('.telegraph p:not(.muted)'),hint=root.querySelector('.telegraph p.muted');name.textContent=telegraphText({...p.telegraph,name:displayText(locale(),p.telegraph.name)});hint.textContent=displayText(locale(),p.telegraph.tell||'');
+    if(p.motion==='fade')animate(name,[{opacity:.65},{opacity:1}],p.durationMs);
+    if(p.motion==='sway')animate(name,[{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'translateX(0)'}],p.durationMs);
+    name.dataset.danger=p.dangerMotion||'';
+   }
    if(p.stage==='battle.hero.prepare'){
     pose(hero,`hero-${outfit}-idle`);
     if(p.motion==='advance')animate(hero,[{transform:anchor(hero)},{transform:`${anchor(hero)} translateX(8px)`}],p.durationMs);
@@ -202,6 +214,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
     if(p.motion==='fade')animate(enemy,[{opacity:.65},{opacity:1}],p.durationMs);
    }
    if(p.stage==='battle.hero.block'&&p.blocked>0){pose(hero,`hero-${outfit}-guard`);context.status.textContent=p.sources.map(f=>effectText(f,localizedContent(content,locale()))).filter(Boolean).join(' · ')}
+   if(context.guardVisual&&p.stage==='battle.hero.hit'){root.querySelector('.stat.hp strong').textContent=`${p.hit.hp} / ${p.hit.maxHp}`;root.querySelector('.stat.hp meter').value=p.hit.hp;}
    if(p.stage==='battle.hero.hit'){pose(hero,`hero-${outfit}-${p.hit.amount>0?'hit':'guard'}`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()))}
    if(p.stage==='battle.result')context.status.textContent=context.notice;
    return;
@@ -233,10 +246,10 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   // A visual-only battle already handed its effects to the existing audio path.
   // Final render invalidates pending unlock work: renew only an unplayed batch,
   // never an already delivered/failed batch. Navigation cancellation returns above.
-  const renewBattleSound=context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
+  const renewBattleSound=context.audio&&context.battleVisual&&!context.guardVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
   lastAction='';notice=context.notice;render();
   if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
-  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
+  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{if(context.guardVisual)guardSound(context,step);else sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
   if(context.audio&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
@@ -247,9 +260,17 @@ function playCommittedPresentation(before,after,effects,audio){
  const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
  if(castleVisual&&(typeof sound.castle!=='function'||typeof stage?.arrivalVisual!=='function'))return false;
  if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
- let plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,kingExpandedRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ let plan=planPresentation({before,after,effects,battleVisual:true,battleGuardVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,kingExpandedRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(castleVisual){plan=appendCastleArrivalUi(plan,{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion});if(!plan)return false;}
  if(!plan.steps.length)return false;
+ const guardVisual=plan.mode==='battle-guard';
+ if(guardVisual){
+  if(typeof sound.effects!=='function'||typeof sound.play!=='function'||['.hero','.enemy','.stat.hp strong','.stat.hp meter','.telegraph p:not(.muted)','.telegraph p.muted'].some(q=>!root.querySelector(q)))return false;
+  const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id],enemy=after.battle?.enemy?.id?.toLowerCase(),kind=before.battle.telegraph.kind,pose=/大/.test(kind)?'big':/守/.test(kind)?'guard':/隙/.test(kind)?'open':'attack';
+  if(!outfit||[`hero-${outfit}-guard`,`hero-${outfit}-hit`,`${enemy}-${pose}`].some(k=>!spriteMetrics[k])||plan.steps.some(x=>x.kind==='display'&&!['battle.hero.guard','battle.enemy.prepare','battle.hero.block','battle.hero.hit','battle.nextTell','battle.result'].includes(x.payload.stage)))return false;
+  if(lastGuardKey===`${after.runId}:${after.revision}`)return true;lastGuardKey=`${after.runId}:${after.revision}`;
+ }
+
  const kingVisual=plan.steps.some(s=>s.kind==='display'&&s.payload.stage==='king.start');if(kingVisual&&typeof sound.king!=='function')return false;
  const kingVictoryVisual=plan.mode==='king-victory-turn',victoryText=kingVictoryVisual?translate(locale(),'ui.king.defeated'):null;
  if(kingVictoryVisual&&(typeof sound.kingVictory!=='function'||!victoryText.sourceLocale||!victoryText.text))return false;
@@ -284,7 +305,7 @@ function playCommittedPresentation(before,after,effects,audio){
  if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
  const resultNotice=kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
  if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
- const context={before,after,effects,audio,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
+ const context={before,after,effects,audio,guardVisual,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -293,7 +314,7 @@ function playCommittedPresentation(before,after,effects,audio){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
+ presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.guardVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
@@ -319,6 +340,18 @@ function scene(v,home=false){
  const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))});
  stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die,phase:v?.phase,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion},lastAction==='roll'&&animated())});return wrap;
 }
+// BEGIN castle preparation
+function renderCastleHealing(body,v){
+ if(v.phase!=='gate'||v.prompt)return;
+ body.append(heading(msg('ui.castle.herbs')));
+ const seen=new Set(),items=v.hero.bag.items.filter(it=>{if(content.items[it.id]?.category!=='回復用'||seen.has(it.id))return false;seen.add(it.id);return true});
+ if(!items.length){body.append(paragraph(msg('ui.castle.herbsEmpty'),'muted'));return}
+ for(const it of items){
+  body.append(paragraph(msg('ui.app.render.c938ee4c06',{p0:it.name,p1:it.category,p2:it.timing,p3:it.limit||msg('ui.app.render.term.23480562a4'),p4:it.effect}),'comparison-copy'));
+  for(const a of v.actions.filter(a=>a.type==='useItem'&&a.itemId===it.id))body.append(actionForm(a,v));
+ }
+}
+// END castle preparation
 function render(presentationView=null,options={}){
  const castleContext=options.castleContext,keepCastle=!!castleContext&&castleContext===presentationContext&&castleContext.castleVisual&&presentationView===castleContext.after&&presentationView.phase==='gate';
  if(!keepCastle)cancelPresentation();
@@ -331,11 +364,12 @@ function render(presentationView=null,options={}){
  if(!session){root.append(paragraph(msg("ui.app.render.literal.f1c2c7d3df")));return}
  if(screen==='home'){home();return}
  const v=localizedView(presentationView||session.view,content,locale());if(!v){screen='home';home();return}
+ if(tab==='herbs'&&(v.phase!=='gate'||v.prompt))tab='main';
  const title=el('div','chapter');add(title,el('span','eyebrow',`${v.route.id} / ${v.route.name}`),el('h1','',`${v.pos} / 100`),el('span','roll-count',msg("ui.app.render.bdfdbc6d58",{p0:(v.rolls)})));root.append(title);
  const mapLauncher=button(msg("ui.app.render.literal.b6e1addfac"),()=>worldMap(v,mapLauncher),'quiet');
  const stats=el('section','stats');stats.setAttribute('aria-label',msg("ui.app.render.literal.998f75677a"));add(stats,stat(msg("ui.app.render.term.d6d2aa99fd"),v.hero.hp,v.hero.maxHp,'hp'),stat(msg("ui.app.render.term.522148a1fd"),v.hero.mp,v.hero.maxMp,'mp'),el('strong','gold',`${v.hero.gold} G`),el('span','level',`Lv.${v.hero.level} ${v.hero.job.name}`));root.append(stats);root.append(add(el('div','map-strip'),paragraph(msg("ui.app.render.7dcec7dac2",{p0:(v.board.nextStop===100?msg("ui.app.render.term.a4c5f93082"):msg("ui.app.render.term.6038669e41")),p1:(v.board.distanceToNextStop)})),mapLauncher));
  root.append(paragraph(msg("ui.app.render.f65841c006",{p0:(v.pos),p1:(v.board.currentName)}),'muted'));root.append(scene(v));
- if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
+ if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),normalTellParagraph(v.battle),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
  if(v.battle?.temporaryStatuses?.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.78ea180ba1")));for(const st of v.battle.temporaryStatuses)box.append(paragraph(msg("ui.app.render.f1030d5885",{p0:(st.label),p1:(st.kinds.map(k=>({attackDown:msg("ui.app.render.term.bb59eb7119"),defenseDown:msg("ui.app.render.term.862a6a31e3"),turnEndHpLoss:msg("ui.app.render.term.082937427d")}[k]||k)).join(msg("ui.app.render.term.2a21905f43"))),p2:(st.amount),p3:(st.remainingTurns)})));root.append(box)}
  if(v.battle?.forecast?.unguarded.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.34675f17d7")),paragraph(msg("ui.app.render.literal.87577bfcf3")));for(const [k,name]of [['unguarded',msg("ui.app.render.term.2e483eb82e")],['guarded',msg("ui.app.render.term.1177af8a7d")]])for(const f of v.battle.forecast[k])box.append(paragraph(msg("ui.app.render.75ca5568df",{p0:(f.round),p1:(f.name),p2:(name),p3:(f.damage)})));root.append(box)}
  if(v.battle?.history.length){const history=el('details','battle-history');history.append(el('summary','',msg("ui.app.render.literal.518564feda")));for(const r of v.battle.history)history.append(paragraph(msg("ui.app.render.bc7ba68654",{p0:(r.round),p1:(r.dealt),p2:(r.hpLost),p3:(r.enemy)})));root.append(history)}
@@ -345,22 +379,23 @@ function render(presentationView=null,options={}){
  if(v.reward){const p=el('section','story');add(p,heading(msg("ui.app.render.literal.def16f80b1")),...rewardRowTexts(v.reward).map(text=>paragraph(text)));root.append(p)}
  appendSavedKingGrowth(root,v);
  if(v.phase==='gate'){
- const ribbon=el('section','story castle-ribbon');ribbon.style.background='#E3A41C';add(ribbon,heading(msg("ui.app.render.literal.726055e48f")),paragraph(msg("ui.app.render.literal.e485399357")));root.append(ribbon);
+ const ribbon=el('section','story castle-ribbon');ribbon.style.background='#E3A41C';add(ribbon,heading(msg("ui.castle.title")),paragraph(msg("ui.app.render.literal.e485399357")));root.append(ribbon);
  const prep=el('nav','castle-preparation');prep.style.display='grid';prep.style.gridTemplateColumns='1fr 1fr';prep.style.gap='8px';
- for(const [label,target] of [[msg('ui.app.render.term.b5989f74c7'),'gear'],[msg('ui.app.render.term.0ad8cdd51e')+' · '+msg('ui.presentation.actionLabel.term.12413235d3'),'items'],[msg('ui.app.render.term.86e8df92c1'),'party'],[msg('ui.app.render.term.0ad8cdd51e'),'items']])prep.append(button(label,()=>{tab=target;render()},'quiet'));root.append(prep);
+ for(const [label,target] of [[msg('ui.app.render.term.b5989f74c7'),'gear'],[msg('ui.castle.herbs'),'herbs'],[msg('ui.app.render.term.86e8df92c1'),'party'],[msg('ui.app.render.term.0ad8cdd51e'),'items']])prep.append(button(label,()=>{tab=target;render()},'quiet'));root.append(prep);
  }
  if(v.phase==='retryOffer')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.3f905081bb")),paragraph(msg("ui.app.render.literal.3a301ecd5f"))));
  if(v.phase==='finished'){const r=el('section','story result');add(r,el('span','eyebrow',msg("ui.app.render.literal.5308c10dab")),heading(v.result?.defeated?msg("ui.app.render.term.52203486d8"):msg("ui.app.render.term.17bd5d6c12")),paragraph(msg("ui.app.render.7c9988bef2",{p0:(v.route.name),p1:(v.furthest),p2:(v.rolls)})),paragraph(msg("ui.app.render.40d7f7fcb6",{p0:(v.hero.job.name),p1:(v.hero.companions.map(c=>c.name).join(msg("ui.app.render.term.2a21905f43"))||msg("ui.app.render.term.6217280784"))})),button(msg("ui.app.render.literal.e5ed7aa5db"),()=>{screen='home';render()}));r.append(button(tr('ui.share'),()=>sharePanel(v),'share-x'));root.append(r)}
  if(v.phase==='board'||v.phase==='rolled'){const trail=el('ol','trail');for(const sq of v.board.next6){const li=el('li');add(li,el('b','',sq.pos),el('span','',sq.kind));trail.append(li)}root.append(trail)}
  const nav=el('nav','tabs');for(const [id,name] of [['main',msg("ui.app.render.term.b396c18ea5")],['items',msg("ui.app.render.term.0ad8cdd51e")],['gear',msg("ui.app.render.term.b5989f74c7")],['party',msg("ui.app.render.term.86e8df92c1")]])nav.append(button(name,()=>{tab=id;render()},tab===id?'selected':''));root.append(nav);
  const body=el('section','actions');body.setAttribute('aria-label',tab==='main'?msg("ui.app.render.term.f8f6a2fe31"):msg("ui.app.render.term.93a200dea7"));
+ if(tab==='herbs')renderCastleHealing(body,v);
  if(tab==='items')add(body,heading(msg("ui.app.render.8b25e3dabf",{p0:(v.hero.bag.items.length),p1:(v.hero.bag.capacity)})),...v.hero.bag.items.map(it=>paragraph(msg("ui.app.render.c938ee4c06",{p0:(it.name),p1:(it.category),p2:(it.timing),p3:(it.limit||msg("ui.app.render.term.23480562a4")),p4:(it.effect)}),'comparison-copy')));
  if(tab==='gear'){
   add(body,heading(msg("ui.app.render.literal.1ae67cfcaf")),paragraph(msg("ui.app.render.66bc9851e6",{p0:(v.hero.attack),p1:(v.hero.defense)})),...v.hero.gear.map(g=>paragraph(msg("ui.app.render.0c81238d33",{p0:(g.equipped?msg("ui.app.render.term.bf2bbcdd02"):''),p1:(g.name),p2:(g.baseStat),p3:(g.timing||uiContent().gear[g.id]?.timing||''),p4:(g.effect||''),p5:(g.diff?msg("ui.app.module.9876c43d0b",{p0:(JSON.stringify(g.diff))}):'')}))));
  }
  if(tab==='party')add(body,heading(msg("ui.app.render.literal.f544044d74")),...v.hero.companions.map(x=>paragraph(companionSummary(x),'comparison-copy')),!v.hero.companions.length?paragraph(msg("ui.app.render.literal.cd1c50af42")):null);
  if(tab==='party'&&v.inn?.tavern){add(body,heading(msg("ui.app.render.literal.1ae4f6667f")),paragraph(msg("ui.app.render.literal.d27f9b9772")));for(const candidate of v.inn.tavern.candidates)body.append(add(el('article','candidate'),portrait(candidate,''),paragraph(companionSummary(candidate),'comparison-copy')))}
- for(const a of v.actions){const group=['useItem','item','bagSwap','bagDecline','pickBagItem','sellItem'].includes(a.type)?'items':['equip','setSpells','sellGear'].includes(a.type)?'gear':['recruit'].includes(a.type)?'party':'main';if(group!==tab||a.type==='changeJob')continue;body.append(actionForm(a,v))}
+ for(const a of v.actions){if(tab==='herbs')continue;const group=['useItem','item','bagSwap','bagDecline','pickBagItem','sellItem'].includes(a.type)?'items':['equip','setSpells','sellGear'].includes(a.type)?'gear':['recruit'].includes(a.type)?'party':'main';if(group!==tab||a.type==='changeJob')continue;body.append(actionForm(a,v))}
  // Mandatory bag prompts must never be hidden behind an unrelated tab.
  if(v.prompt?.kind==='bagFull'||v.prompt?.kind==='pickBagItem'){if(tab!=='items')body.append(button(msg("ui.app.render.literal.2dcfd06424"),()=>{tab='items';render()},'primary'))}
  if(tab==='main'&&v.inn){if(v.actions.some(a=>a.type==='changeJob'))body.append(button(msg("ui.app.render.literal.6b5afaa3e9"),()=>jobs(v)));add(body,paragraph(msg("ui.app.render.c5af446173",{p0:(v.inn.rest.hp),p1:(v.inn.rest.mp)})));if(v.inn.tavern)body.append(button(msg("ui.app.render.literal.c531094d93"),()=>{tab='party';render()}))}
@@ -397,6 +432,7 @@ function actionForm(a,v){
  let spellChecks=[];
  if(a.type==='setSpells'){for(const sp of v.hero.spells.learned){const lab=el('label','check');const input=el('input');input.type='checkbox';input.checked=sp.prepared;add(lab,input,el('span','',`${sp.name}：${sp.text}`));form.append(lab);spellChecks.push({input,id:sp.id})}if(!spellChecks.length)form.append(paragraph(msg("ui.app.field.literal.31da45f17e"),'muted'))}
  const b=el('button',(['roll','move','attack','challengeKing','continue'].includes(a.type)?'primary':'')+(a.type==='guard'?' guard':''),name);b.type='submit';b.disabled=!a.enabled||a.type==='skipUnscripted'||(a.type==='setSpells'&&!spellChecks.length)||!!error;
+ if(v.phase==='gate'&&a.type==='challengeKing')form.append(paragraph(msg('ui.castle.noFlee'),'muted'));
  add(form,b);if(!a.enabled)form.append(paragraph(a.reasonText||({same:msg("ui.app.field.term.2ba9627cc7"),equipped:msg("ui.app.field.term.5a430d6bb0"),recruitUsed:msg("ui.app.field.term.eaa4774367")}[a.reason]||msg("ui.app.field.term.96105c98cf")),'reason'));
  if(a.preview&&a.type==='rest')form.append(paragraph(msg("ui.app.field.a7d2446f4f",{p0:(a.preview.hp>=0?'+':''),p1:(a.preview.hp),p2:(a.preview.mp>=0?'+':''),p3:(a.preview.mp),p4:(a.preview.gold>=0?'+':''),p5:(a.preview.gold)}),'muted'));
  if(a.preview?.discarded)form.append(paragraph(msg("ui.app.field.f4d7448414",{p0:(a.preview.discarded)}),'muted'));

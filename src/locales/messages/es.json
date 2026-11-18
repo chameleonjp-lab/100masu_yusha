@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "Ya lo tienes",
   "ui.reward.won": "Conseguido",
   "ui.reward.itemPending": " (tienes que hacer sitio en la bolsa)",
-  "ui.reward.itemAdded": " (añadido a la bolsa)"
+  "ui.reward.itemAdded": " (añadido a la bolsa)",
+  "ui.castle.title": "Castillo del Rey Demonio · Sala de la Corona",
+  "ui.castle.noFlee": "Una batalla de la que no puedes huir",
+  "ui.castle.herbs": "Usar hierbas medicinales",
+  "ui.castle.herbsEmpty": "No tienes objetos curativos"
 }

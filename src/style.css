@@ -11,3 +11,8 @@
 .puzzle-grid{display:grid;grid-template-columns:repeat(3,44px);gap:6px;margin:12px}.puzzle-grid span{display:grid;place-items:center;min-height:44px;border:3px solid #6c5135}.puzzle-grid .lit{background:#f7cb58}.puzzle-grid .dark{background:#38405a;color:white}
 
 .share-x{background:#000;color:#fff;border-color:#000;box-shadow:none}.share-x:hover{background:#222}.translation-notice{font-size:12px;background:#fff0c5;padding:10px;border:1px solid #d7af56}dialog textarea{width:100%;min-height:140px;font:inherit;padding:12px}
+
+/* Normal enemy big-tell warning survives the finite presentation in its own DOM node. */
+.telegraph p[data-danger="pulse"]{animation:normal-tell-danger 1200ms ease-in-out infinite}
+@keyframes normal-tell-danger{0%,100%{opacity:1}50%{opacity:.65}}
+@media(prefers-reduced-motion:reduce){.telegraph p[data-danger="pulse"]{animation:none}}

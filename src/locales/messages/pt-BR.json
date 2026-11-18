@@ -7610,5 +7610,9 @@
   "ui.reward.owned": "Você já tem",
   "ui.reward.won": "Conseguido",
   "ui.reward.itemPending": " (falta abrir espaço na bolsa)",
-  "ui.reward.itemAdded": " (adicionado à bolsa)"
+  "ui.reward.itemAdded": " (adicionado à bolsa)",
+  "ui.castle.title": "Castelo do Rei Demônio · Câmara da Coroa",
+  "ui.castle.noFlee": "Uma batalha da qual não se pode fugir",
+  "ui.castle.herbs": "Usar ervas medicinais",
+  "ui.castle.herbsEmpty": "Você não tem itens de cura"
 }

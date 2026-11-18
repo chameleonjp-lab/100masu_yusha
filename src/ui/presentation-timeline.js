@@ -1,3 +1,4 @@
+import {planNormalGuard} from './normal-guard-plan.js';
 import {planKingTurn} from './king-turn-plan.js';
 import {planKingSpellTimeline} from './king-spell-timeline.js';
 import {appendKingRewardSequence} from './king-reward-sequence.js';
@@ -52,7 +53,7 @@ function normalAttackTurn(before,after,effects){
  return {round:b.round,action,enemyAct,enemyHit,heroHit,soften};
 }
 // Nonpersistent opt-in: existing app callers remain board-only until the battle renderer is wired.
-export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,kingRewardVisual=false,kingExpandedRewardVisual=false,regionVisual=false,castleVisual=false}){
+export function planPresentation({before,after,effects=[],settings={},battleVisual=false,battleGuardVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,kingRewardVisual=false,kingExpandedRewardVisual=false,regionVisual=false,castleVisual=false}){
  const finalView=copy(after),steps=[];let time=0,resultEffects=[],parallelEnd=0;
  const result=()=>freeze({steps,durationMs:time,finalView,resultEffects});
  const expandedRewards=kingRewardVisual===true&&kingExpandedRewardVisual===true;
@@ -76,6 +77,9 @@ export function planPresentation({before,after,effects=[],settings={},battleVisu
   return kingResult(planKingSpellTimeline({before,after,effects,settings,spellVisual,victoryVisual,expandedRewards}));
  const spellTurn=spellVisual===true&&recordedSpell;
  if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual,expandedRewards});if(turn)return kingResult(turn);}
+ const guardHistory=Array.isArray(after.battle?.history)&&after.battle.history.some(r=>r?.round===before.battle?.round&&r?.action?.type==='guard');
+ if(battleVisual===true&&battleGuardVisual===true&&before.battle?.kind==='normal'&&(guardHistory||effects.some(e=>e?.t==='guard')))
+  return planNormalGuard({before,after,effects,settings})??result();
  const moved=effects.find(e=>e.t==='moved'),rolled=effects.find(e=>e.t==='dieRolled');
  const battle=battleVisual===true&&!moved&&!rolled?normalAttackTurn(before,after,effects):null;
  if(!moved&&!rolled&&!battle)return result();
