@@ -7617,5 +7617,14 @@
   "ui.region.bands.5.name": "城下と外堀",
   "ui.king.crownBreak": "王冠が割れた！",
   "ui.king.crownNextTurn": "次の手から 後半",
-  "ui.king.defeated": "魔王を たおした！"
+  "ui.king.defeated": "魔王を たおした！",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "経験値 {amount}",
+  "ui.reward.gear": "装備：{outcome}",
+  "ui.reward.item": "道具：{outcome}",
+  "ui.reward.none": "なし",
+  "ui.reward.owned": "入手済み",
+  "ui.reward.won": "当たり",
+  "ui.reward.itemPending": "（袋の整理待ち）",
+  "ui.reward.itemAdded": "（袋に追加済み）"
 }

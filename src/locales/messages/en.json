@@ -7601,5 +7601,14 @@
   "ui.region.bands.5.name": "Castle Town and Outer Moat",
   "ui.king.crownBreak": "The crown has cracked!",
   "ui.king.crownNextTurn": "Second phase from the next turn",
-  "ui.king.defeated": "The Demon King is defeated!"
+  "ui.king.defeated": "The Demon King is defeated!",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "Experience {amount}",
+  "ui.reward.gear": "Equipment: {outcome}",
+  "ui.reward.item": "Item: {outcome}",
+  "ui.reward.none": "None",
+  "ui.reward.owned": "Already owned",
+  "ui.reward.won": "Won",
+  "ui.reward.itemPending": " (bag choice pending)",
+  "ui.reward.itemAdded": " (added to bag)"
 }

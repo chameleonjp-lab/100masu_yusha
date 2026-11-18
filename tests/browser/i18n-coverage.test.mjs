@@ -11,7 +11,9 @@ test('settings coverage excludes originally empty optional display fields',async
  assert.equal(structural.emptySource.length,16);
  assert.equal(ui.total,structural.required);
  assert.equal(ui.translated,structural.valid);
- assert.equal(ui.complete,true);assert.deepEqual(ui.missing,[]);
+ // New reward rows deliberately use English fallback until French review.
+ const pending=['gold','xp','gear','item','none','owned','won','itemPending','itemAdded'].map(k=>'ui.reward.'+k).sort();
+ assert.equal(ui.complete,false);assert.deepEqual([...ui.missing].sort(),pending);assert.deepEqual([...structural.missing].sort(),pending);
 });
 test('settings coverage still counts missing nonempty source as untranslated',()=>{
  installMessages('ja',{'coverage.regression.required':'表示が必要','coverage.regression.optional':'  '});
