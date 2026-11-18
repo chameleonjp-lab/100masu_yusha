@@ -440,7 +440,7 @@ const PAGE_POLICY = {
   "src/ui/presentation.js": "02c7d7d9f2201eb5f38f6a5364e5ec925fd787da915ccceb68a8efebc882cd45",
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
-  "src/ui/stage.js": "53c4886f53d9c4037338c5682339e29bf8ae936da718a7460d0ab633a1afbbdd"
+  "src/ui/stage.js": "f52861eae9376713128c890e116fdde1b2539bc7c3c71005d45b9dbc620be7c1"
 };
 const PREVIEW_DB = 'yusha100-publication-preview-v1';
 const hash256 = b => createHash('sha256').update(b).digest('hex');

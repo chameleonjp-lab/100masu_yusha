@@ -23,6 +23,6 @@ export function loadArtifact(root,value,expectedManifestSha256){
 export function assertGateResults({routeResults,missing,blocked,errors,dbNames}){
  assert.deepEqual(missing,[],'Incomplete served resource coverage');assert.deepEqual(blocked,[],'Guard blocked requests');assert.deepEqual(errors,[],'Browser errors');assert.ok(dbNames.length>0&&dbNames.every(n=>n==='yusha100-publication-preview-v1'),'Unexpected or absent native database');
  assert.deepEqual(routeResults.map(r=>r.shortPath?.route).sort(),['B','F','H','M']);
- for(const r of routeResults){assert.equal(r.shortPath.staleSessionRejected,true);assert.equal(r.nativeStorage.twoConnectionAtomicIncrement,2);assert.equal(r.nativeStorage.abortAllStores,true);assert.equal(r.nativeStorage.gameRecordsUnchanged,true);assert.equal(r.semanticReload,'passed');assert.equal(r.uiContinue.uiContinue,true);assert.equal(r.uiContinue.savedStateUnchanged,true);}
+ for(const r of routeResults){assert.equal(r.shortPath.staleSessionRejected,true);assert.equal(r.nativeStorage.twoConnectionAtomicIncrement,2);assert.equal(r.nativeStorage.abortAllStores,true);assert.equal(r.nativeStorage.gameRecordsUnchanged,true);assert.equal(r.settingsPersistence?.settingsPersisted,true);assert.equal(r.settingsPersistence.runUnchanged,true);assert.equal(r.settingsPersistence.otherMetadataUnchanged,true);assert.equal(r.semanticReload,'passed');assert.equal(r.uiContinue.uiContinue,true);assert.equal(r.uiContinue.savedStateUnchanged,true);}
  return 'passed';
 }

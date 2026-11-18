@@ -27,19 +27,24 @@ export function castleScale(band,pos=0){if(pos>=100)return 1;return regionBand(b
 export function regionFrame(fromBand,band,progress,reduced=false,pos=0){
  const from=regionBand(fromBand),to=regionBand(band),t=Math.max(0,Math.min(1,progress));
  const sky=skies[to-1].map((color,i)=>'rgb('+rgb(color).map((v,j)=>Math.round((rgb(skies[from-1][i])[j]*(1-t)+v*t)*255)).join(',')+')');
- return {background:'linear-gradient(180deg,'+sky.join(',')+')',scale:reduced?castleScale(to,pos):castleScale(from)+(castleScale(to,pos)-castleScale(from))*(1-(1-t)**3)};
+ return {castleMix:reduced?{fromScale:castleScale(from),toScale:castleScale(to,pos),progress:t}:null,background:'linear-gradient(180deg,'+sky.join(',')+')',scale:reduced?castleScale(to,pos):castleScale(from)+(castleScale(to,pos)-castleScale(from))*(1-(1-t)**3)};
 }
 export function createStage(canvas,onUnavailable=()=>{}){
  let gl,program,buffer,raf=0,disposed=false,scene={band:1},generation=0;
+ let targets=null,mixProgram=null,mixBuffer=null,fadeUnavailable=false;
  let region=null,regionRaf=0,regionGeneration=0,visual=regionFrame(1,1,1);
  const vs='attribute vec3 p;attribute vec3 c;varying vec3 color;void main(){float x=p.x*.85-p.z*.53;float z=p.x*.53+p.z*.85;gl_Position=vec4(x/7.,(p.y*.85-z*.5-.5)/5.,-(z*.85+p.y*.5)/30.,1.);color=c;}';
  const fs='precision mediump float;varying vec3 color;void main(){gl_FragColor=vec4(color,1.);}';
+ function releaseBase(){if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);buffer=null;program=null;}
  function init(){
   gl=canvas.getContext('webgl',{alpha:true,antialias:true,preserveDrawingBuffer:false});if(!gl){onUnavailable();return false}
-  function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error('3D shader');return s}
-  program=gl.createProgram();const shaders=[shader(gl.VERTEX_SHADER,vs),shader(gl.FRAGMENT_SHADER,fs)];shaders.forEach(s=>gl.attachShader(program,s));gl.linkProgram(program);shaders.forEach(s=>gl.deleteShader(s));if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('3D program');buffer=gl.createBuffer();return true;
+  const shaders=[];let nextProgram=null,nextBuffer=null;
+  try{
+   for(const [kind,source] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){const shader=gl.createShader(kind);if(!shader)throw Error('3D shader');shaders.push(shader);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error('3D shader');}
+   nextProgram=gl.createProgram();if(!nextProgram)throw Error('3D program');shaders.forEach(shader=>gl.attachShader(nextProgram,shader));gl.linkProgram(nextProgram);if(!gl.getProgramParameter(nextProgram,gl.LINK_STATUS))throw Error('3D program');nextBuffer=gl.createBuffer();if(!nextBuffer)throw Error('3D buffer');program=nextProgram;buffer=nextBuffer;return true;
+  }catch(error){if(nextBuffer)gl.deleteBuffer(nextBuffer);if(nextProgram)gl.deleteProgram(nextProgram);program=null;buffer=null;throw error;}finally{shaders.forEach(shader=>gl.deleteShader(shader));}
  }
- function geometry(angle=0){
+ function geometry(angle=0,castleSize=visual.scale){
   const a=[],ground=['91ae73','6b9e94','a89778','7b7189','5d637c'][Math.max(0,Math.min(4,scene.band-1))];
   const box=(x,y,z,w,h,d,c)=>a.push(...cuboid(x,y,z,w,h,d,rgb(c)));
   box(0,-.8,0,10,.7,7,'aa8057');box(0,-.12,0,10,.16,7,ground);
@@ -53,7 +58,7 @@ export function createStage(canvas,onUnavailable=()=>{}){
   for(const prop of (scene.band===5?props.slice(0,2):props))box(...prop);
   // Keep the distant castle anchored at the horizon in every region.
   for(const [x,y,z,w,h,d,c] of regionProps(5).slice(2)){
-   const k=visual.scale;box(3.1+(x-3.1)*k,y*k,-1.8+(z+1.8)*k,w*k,h*k,d*k,c);
+   const k=castleSize;box(3.1+(x-3.1)*k,y*k,-1.8+(z+1.8)*k,w*k,h*k,d*k,c);
   }
   if(scene.die){
    const dice=cuboid(0,0,0,1,1,1,rgb('fffae9'));
@@ -65,18 +70,62 @@ export function createStage(canvas,onUnavailable=()=>{}){
    if(!angle)for(const [x,z] of patterns[scene.die]||[])box(x,1.31,z+1,.12,.018,.12,'3b3029');
   }return a;
  }
- function draw(angle=0){if(disposed||!gl||gl.isContextLost()||document.hidden)return;
-  const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);const w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
-  gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const data=new Float32Array(geometry(angle));gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
-  for(const [name,offset] of [['p',0],['c',12]]){const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,24,offset)}gl.drawArrays(gl.TRIANGLES,0,data.length/6);
+
+ function releaseTargets(){
+  if(targets){for(const t of targets.layers){gl.deleteTexture(t.texture);gl.deleteRenderbuffer(t.depth);gl.deleteFramebuffer(t.framebuffer);}targets=null;}
+ }
+ function releaseMix(){releaseTargets();if(mixBuffer)gl.deleteBuffer(mixBuffer);if(mixProgram)gl.deleteProgram(mixProgram);mixBuffer=null;mixProgram=null;}
+ function ensureMix(w,h){
+  if(!mixProgram){
+   const shaders=[];let pendingProgram=null,pendingBuffer=null;
+   try{
+    for(const [kind,source] of [[gl.VERTEX_SHADER,'attribute vec2 position;varying vec2 uv;void main(){uv=(position+1.)*.5;gl_Position=vec4(position,0.,1.);}'],[gl.FRAGMENT_SHADER,'precision mediump float;varying vec2 uv;uniform sampler2D oldScene;uniform sampler2D newScene;uniform float weight;void main(){gl_FragColor=mix(texture2D(oldScene,uv),texture2D(newScene,uv),weight);}']]){
+     const shader=gl.createShader(kind);if(!shader)throw Error('castle shader');shaders.push(shader);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error('castle shader');
+    }
+    pendingProgram=gl.createProgram();if(!pendingProgram)throw Error('castle program');shaders.forEach(shader=>gl.attachShader(pendingProgram,shader));gl.linkProgram(pendingProgram);if(!gl.getProgramParameter(pendingProgram,gl.LINK_STATUS))throw Error('castle program');
+    pendingBuffer=gl.createBuffer();if(!pendingBuffer)throw Error('castle quad');gl.bindBuffer(gl.ARRAY_BUFFER,pendingBuffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+    mixProgram=pendingProgram;mixBuffer=pendingBuffer;
+   }catch(error){if(pendingBuffer)gl.deleteBuffer(pendingBuffer);if(pendingProgram)gl.deleteProgram(pendingProgram);throw error;}finally{shaders.forEach(shader=>gl.deleteShader(shader));}
+  }
+  if(targets&&targets.w===w&&targets.h===h)return;
+  releaseTargets();targets={w,h,layers:[]};
+  try{for(let i=0;i<2;i++){
+   const layer={texture:gl.createTexture(),depth:gl.createRenderbuffer(),framebuffer:gl.createFramebuffer()};targets.layers.push(layer);if(!layer.texture||!layer.depth||!layer.framebuffer)throw Error('castle target');
+   gl.bindTexture(gl.TEXTURE_2D,layer.texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+   gl.bindRenderbuffer(gl.RENDERBUFFER,layer.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,w,h);gl.bindFramebuffer(gl.FRAMEBUFFER,layer.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,layer.texture,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,layer.depth);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('castle framebuffer');
+  }}catch(error){releaseTargets();throw error;}finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);}
+ }
+ function scenePass(angle,scale,w,h,framebuffer=null){
+  gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,w,h);gl.colorMask(true,true,true,true);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const data=new Float32Array(geometry(angle,scale));gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
+  for(const [name,offset] of [['p',0],['c',12]]){const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,24,offset);}gl.drawArrays(gl.TRIANGLES,0,data.length/6);
+ }
+ function draw(angle=0){if(disposed||!gl||!program||!buffer||gl.isContextLost()||document.hidden)return;
+  const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
+  const mix=visual.castleMix;
+  if(mix&&mix.progress>0&&mix.progress<1&&!fadeUnavailable){
+   try{
+    ensureMix(w,h);
+    // Each image is rendered opaque with its own depth. Only castle scale differs.
+    // Transparent background is premultiplied (zero RGB), so linear RGBA mix
+    // preserves full coverage at shared pixels and never stacks cuboid faces.
+    scenePass(angle,mix.fromScale,w,h,targets.layers[0].framebuffer);scenePass(angle,mix.toScale,w,h,targets.layers[1].framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.disable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.useProgram(mixProgram);gl.bindBuffer(gl.ARRAY_BUFFER,mixBuffer);
+    const loc=gl.getAttribLocation(mixProgram,'position');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,8,0);
+    for(let i=0;i<2;i++){gl.activeTexture(i?gl.TEXTURE1:gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,targets.layers[i].texture);gl.uniform1i(gl.getUniformLocation(mixProgram,i?'newScene':'oldScene'),i);}
+    gl.uniform1f(gl.getUniformLocation(mixProgram,'weight'),mix.progress);gl.drawArrays(gl.TRIANGLES,0,6);
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,null);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);gl.enable(gl.DEPTH_TEST);return;
+   }catch{fadeUnavailable=true;releaseMix();gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.activeTexture(gl.TEXTURE0);}
+  }
+  releaseTargets();scenePass(angle,mix&&mix.progress===0&&!fadeUnavailable?mix.fromScale:visual.scale,w,h);
  }
  function paintRegion(progress=1){
   visual=region?regionFrame(region.from,region.to,progress,region.reduced,scene.pos):regionFrame(scene.band,scene.band,1,false,scene.pos);
   canvas.style.background=visual.background;
  }
  function cancelTransition(){
+  if(disposed)return;
   cancelAnimationFrame(regionRaf);regionGeneration++;
-  if(region){scene={...scene,band:region.to};paintRegion(1);region=null;}else paintRegion();
+  if(region){scene={...scene,band:region.to};paintRegion(1);region=null;releaseTargets();}else paintRegion();
   draw();
  }
  function transitionRegion({fromBand,band,durationMs=1200,reducedMotion=false}={}){
@@ -90,13 +139,13 @@ export function createStage(canvas,onUnavailable=()=>{}){
    if(f<1)regionRaf=requestAnimationFrame(tick);else {region=null;regionRaf=0;}
   };
   if(document.hidden||!duration)cancelTransition();else regionRaf=requestAnimationFrame(tick);
-  return {cancel(){if(id===regionGeneration)cancelTransition()}};
+  return {cancel(){if(region&&id===regionGeneration)cancelTransition()}};
  }
  function stop(){cancelAnimationFrame(raf);generation++}
  function visibility(){stop();cancelTransition();if(!document.hidden)draw()}
- function lost(e){e.preventDefault();stop();cancelTransition();onUnavailable('lost')}
- function restored(){try{if(init()){onUnavailable('restored');draw()}else onUnavailable()}catch{onUnavailable()}}
+ function lost(e){e.preventDefault();stop();cancelTransition();releaseMix();releaseBase();onUnavailable('lost')}
+ function restored(){if(disposed)return;fadeUnavailable=false;try{if(init()){onUnavailable('restored');draw()}else onUnavailable()}catch{onUnavailable()}}
  canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);document.addEventListener('visibilitychange',visibility);
  const observer=new ResizeObserver(()=>draw());observer.observe(canvas);try{init()}catch{onUnavailable()}
- return {transitionRegion,cancelTransition,update(next,animate=false){stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){stop();cancelTransition();disposed=true;observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl){gl.deleteBuffer(buffer);gl.deleteProgram(program)}}};
+ return {transitionRegion,cancelTransition,update(next,animate=false){if(disposed)return;stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){if(disposed)return;stop();cancelAnimationFrame(regionRaf);regionGeneration++;region=null;disposed=true;releaseMix();observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl)releaseBase()}};
 }

@@ -5,6 +5,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
+import {runSettingsPersistence,collectPageErrors} from './pages-settings.mjs';
 import {runUiContinue} from './pages-ui-continue.mjs';
 import {ROUTES,runRouteConflict} from './pages-route-conflict.mjs';
 import {runNativeScenarios,nativeStorageAction,verifyResumedState} from './pages-native-storage.mjs';
@@ -33,7 +34,7 @@ try{
   };
   IDBFactory.prototype.deleteDatabase=function(){throw new Error('Database deletion prohibited by probe');};
  });
- context.on('page',page=>page.on('pageerror',e=>errors.push(e.message)));
+ context.on('page',page=>collectPageErrors(page,errors));
  const page=await context.newPage();
  await page.goto(base.href);
  // Exercise every declared response through the same guarded page, never context.request.
@@ -45,11 +46,12 @@ try{
  const shortPath=await runRouteConflict({page,execute,route:routeId,key});
  await page.locator('#app:not([data-presentation])').waitFor();
  const native=await runNativeScenarios(execute,key);
+ const settingsPersistence=await runSettingsPersistence({page,readSnapshot:()=>execute(0,'resume',key)});
  const beforeReload=await execute(0,'resume',key);
  await page.reload();await page.locator('#app').waitFor();
  verifyResumedState(beforeReload,await execute(0,'resume',key));
  const uiContinue=await runUiContinue({page,before:beforeReload,readSnapshot:()=>execute(0,'resume',key)});
- await second.close();routeResults.push({shortPath,nativeStorage:native,semanticReload:'passed',uiContinue});await context.close();
+ await second.close();routeResults.push({shortPath,nativeStorage:native,settingsPersistence,semanticReload:'passed',uiContinue});await context.close();
  }
  snapshot.recheck();
  const status=assertGateResults({routeResults,missing:served.missing(),blocked,errors,dbNames});
