@@ -7630,5 +7630,6 @@
   "ui.castle.title": "Замок Короля демонов · Зал короны",
   "ui.castle.noFlee": "Бой, из которого нельзя сбежать",
   "ui.castle.herbs": "Использовать лечебные травы",
-  "ui.castle.herbsEmpty": "У вас нет лечебных предметов"
+  "ui.castle.herbsEmpty": "У вас нет лечебных предметов",
+  "ui.battle.fledNoReward": "Побег (без награды)"
 }

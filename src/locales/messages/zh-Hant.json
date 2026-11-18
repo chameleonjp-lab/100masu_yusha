@@ -7614,5 +7614,6 @@
   "ui.castle.title": "魔王城・王冠之間",
   "ui.castle.noFlee": "無法逃離的戰鬥",
   "ui.castle.herbs": "使用藥草",
-  "ui.castle.herbsEmpty": "你沒有恢復用道具"
+  "ui.castle.herbsEmpty": "你沒有恢復用道具",
+  "ui.battle.fledNoReward": "已逃跑（沒有獎勵）"
 }

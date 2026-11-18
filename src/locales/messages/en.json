@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Demon King’s Castle · Crown Chamber",
   "ui.castle.noFlee": "A battle you cannot flee",
   "ui.castle.herbs": "Use healing herbs",
-  "ui.castle.herbsEmpty": "You have no healing items"
+  "ui.castle.herbsEmpty": "You have no healing items",
+  "ui.battle.fledNoReward": "Escaped (no rewards)"
 }

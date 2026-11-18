@@ -7614,5 +7614,6 @@
   "ui.castle.title": "İblis Kralı’nın Kalesi · Taç Odası",
   "ui.castle.noFlee": "Kaçılamayan bir savaş",
   "ui.castle.herbs": "Şifalı ot kullan",
-  "ui.castle.herbsEmpty": "İyileştirme eşyan yok"
+  "ui.castle.herbsEmpty": "İyileştirme eşyan yok",
+  "ui.battle.fledNoReward": "Kaçtın (ödül yok)"
 }

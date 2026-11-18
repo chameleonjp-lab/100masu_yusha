@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Burg des Dämonenkönigs · Kronensaal",
   "ui.castle.noFlee": "Ein Kampf ohne Fluchtmöglichkeit",
   "ui.castle.herbs": "Heilkräuter verwenden",
-  "ui.castle.herbsEmpty": "Du hast keine Heilgegenstände"
+  "ui.castle.herbsEmpty": "Du hast keine Heilgegenstände",
+  "ui.battle.fledNoReward": "Du bist entkommen (keine Belohnung)"
 }

@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Kastel Raja Iblis · Ruang Mahkota",
   "ui.castle.noFlee": "Pertarungan tanpa jalan kabur",
   "ui.castle.herbs": "Gunakan herba penyembuh",
-  "ui.castle.herbsEmpty": "Kamu tidak memiliki item pemulih"
+  "ui.castle.herbsEmpty": "Kamu tidak memiliki item pemulih",
+  "ui.battle.fledNoReward": "Berhasil kabur (tidak ada hadiah)"
 }

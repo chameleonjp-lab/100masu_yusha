@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Castelo do Rei Demônio · Câmara da Coroa",
   "ui.castle.noFlee": "Uma batalha da qual não se pode fugir",
   "ui.castle.herbs": "Usar ervas medicinais",
-  "ui.castle.herbsEmpty": "Você não tem itens de cura"
+  "ui.castle.herbsEmpty": "Você não tem itens de cura",
+  "ui.battle.fledNoReward": "Você fugiu (sem recompensas)"
 }

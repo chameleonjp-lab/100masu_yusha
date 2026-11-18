@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Lâu đài Ma Vương · Phòng Vương miện",
   "ui.castle.noFlee": "Trận chiến không thể bỏ chạy",
   "ui.castle.herbs": "Dùng thảo dược",
-  "ui.castle.herbsEmpty": "Bạn không có vật phẩm hồi phục"
+  "ui.castle.herbsEmpty": "Bạn không có vật phẩm hồi phục",
+  "ui.battle.fledNoReward": "Đã chạy thoát (không có phần thưởng)"
 }

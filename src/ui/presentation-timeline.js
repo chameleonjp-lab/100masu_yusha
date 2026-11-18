@@ -1,3 +1,4 @@
+import {planNormalFlee} from './normal-flee-plan.js';
 import {planNormalGuard} from './normal-guard-plan.js';
 import {planKingTurn} from './king-turn-plan.js';
 import {planKingSpellTimeline} from './king-spell-timeline.js';
@@ -53,14 +54,14 @@ function normalAttackTurn(before,after,effects){
  return {round:b.round,action,enemyAct,enemyHit,heroHit,soften};
 }
 // Nonpersistent opt-in: existing app callers remain board-only until the battle renderer is wired.
-export function planPresentation({before,after,effects=[],settings={},battleVisual=false,battleGuardVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,kingRewardVisual=false,kingExpandedRewardVisual=false,regionVisual=false,castleVisual=false}){
+export function planPresentation({before,after,effects=[],settings={},battleVisual=false,battleGuardVisual=false,battleFleeVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,kingRewardVisual=false,kingExpandedRewardVisual=false,regionVisual=false,castleVisual=false}){
  const finalView=copy(after),steps=[];let time=0,resultEffects=[],parallelEnd=0;
  const result=()=>freeze({steps,durationMs:time,finalView,resultEffects});
  const expandedRewards=kingRewardVisual===true&&kingExpandedRewardVisual===true;
  const kingResult=turn=>kingRewardVisual===true&&turn?.mode==='king-victory-turn'?(appendKingRewardSequence(turn,settings,{before,expandedRewards})??result()):(turn??result());
  // Not proof of persistence: the caller must supply only successfully committed pairs.
  if(!before||!after||before.runId!==after.runId||!Number.isSafeInteger(before.revision)||!Number.isSafeInteger(after.revision)||after.revision!==before.revision+1)return result();
- if(!Array.isArray(effects)||effects.some(e=>!e||typeof e!=='object'))return result();
+ if(!Array.isArray(effects)||Array.from(effects).some(e=>!e||typeof e!=='object'||Array.isArray(e)))return result();
  const starts=effects.filter(e=>e.t==='battleStart'),tells=effects.filter(e=>e.t==='enemyTell'),a=after.battle;
  const kingStart=kingVisual===true&&effects.every(e=>['discover','battleStart','enemyTell'].includes(e.t))&&tells.length===1&&tells[0].round===1&&tells[0].name===a?.telegraph?.name&&tells[0].kind===a?.telegraph?.kind&&before.phase==='gate'&&!before.battle&&before.pos===100&&after.pos===100&&after.phase==='battle'&&a?.kind==='king'&&a.stage==='fight'&&a.round===1&&a.phase?.index===0&&a.phase.changed===false&&a.enemy?.id==='DK01'&&a.enemy.hp===a.enemy.maxHp&&Number.isSafeInteger(a.enemy.hp)&&a.enemy.hp>0&&starts.length===1&&starts[0].kind==='king'&&starts[0].enemyId===a.enemy.id&&starts[0].maxHp===a.enemy.maxHp;
  if(kingStart){
@@ -77,6 +78,8 @@ export function planPresentation({before,after,effects=[],settings={},battleVisu
   return kingResult(planKingSpellTimeline({before,after,effects,settings,spellVisual,victoryVisual,expandedRewards}));
  const spellTurn=spellVisual===true&&recordedSpell;
  if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual,expandedRewards});if(turn)return kingResult(turn);}
+ if(battleVisual===true&&battleFleeVisual===true&&before.battle?.kind==='normal'&&effects.some(e=>e?.t==='fled'))
+  return planNormalFlee({before,after,effects,settings})??result();
  const guardHistory=Array.isArray(after.battle?.history)&&after.battle.history.some(r=>r?.round===before.battle?.round&&r?.action?.type==='guard');
  if(battleVisual===true&&battleGuardVisual===true&&before.battle?.kind==='normal'&&(guardHistory||effects.some(e=>e?.t==='guard')))
   return planNormalGuard({before,after,effects,settings})??result();

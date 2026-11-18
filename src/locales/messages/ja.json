@@ -7630,5 +7630,6 @@
   "ui.castle.title": "魔王城・王冠の間",
   "ui.castle.noFlee": "にげられない戦い",
   "ui.castle.herbs": "薬草を使う",
-  "ui.castle.herbsEmpty": "回復用の道具を持っていません"
+  "ui.castle.herbsEmpty": "回復用の道具を持っていません",
+  "ui.battle.fledNoReward": "逃げた（報酬なし）"
 }

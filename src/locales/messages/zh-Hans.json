@@ -7614,5 +7614,6 @@
   "ui.castle.title": "魔王城·王冠之间",
   "ui.castle.noFlee": "无法逃离的战斗",
   "ui.castle.herbs": "使用药草",
-  "ui.castle.herbsEmpty": "你没有恢复用道具"
+  "ui.castle.herbsEmpty": "你没有恢复用道具",
+  "ui.battle.fledNoReward": "已逃跑（没有奖励）"
 }

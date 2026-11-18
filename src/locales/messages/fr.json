@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Château du Roi démon · Salle de la Couronne",
   "ui.castle.noFlee": "Un combat sans possibilité de fuite",
   "ui.castle.herbs": "Utiliser des herbes médicinales",
-  "ui.castle.herbsEmpty": "Vous n’avez aucun objet de soin"
+  "ui.castle.herbsEmpty": "Vous n’avez aucun objet de soin",
+  "ui.battle.fledNoReward": "Vous avez pris la fuite (pas de récompense)"
 }

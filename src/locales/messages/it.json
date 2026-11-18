@@ -7614,5 +7614,6 @@
   "ui.castle.title": "Castello del Re dei demoni · Sala della Corona",
   "ui.castle.noFlee": "Una battaglia da cui non puoi fuggire",
   "ui.castle.herbs": "Usa erbe medicinali",
-  "ui.castle.herbsEmpty": "Non hai oggetti curativi"
+  "ui.castle.herbsEmpty": "Non hai oggetti curativi",
+  "ui.battle.fledNoReward": "Sei fuggito (nessuna ricompensa)"
 }
