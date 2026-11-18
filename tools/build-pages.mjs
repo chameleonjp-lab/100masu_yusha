@@ -427,20 +427,22 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "02d84759efb7649bae1234b965bf73bd595719b76b75395edb023496637e3f76",
-  "src/ui/app.js": "29e37a4dcf89e044b8b4f73af1caecdd29fd0ea8a1bbd54756a18d74d94da941",
+  "src/ui/app.js": "0973909aa0d97c5af1d25be59bee8ec0622d2f4dd207ce73264170cde075572f",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
-  "src/ui/audio.js": "7f31956d208c482d7ec4589ea006b250fd531546041e42b8bf4236d474d1fbaf",
+  "src/ui/audio.js": "7fc6bfe2be124ffd842887ab3d387f17307d711ea446e602ec7025545f9ad2e3",
   "src/ui/i18n.js": "972e7753c74f3ee2dbb504766e0b7fe723107f6bfe3fe60c9ce86479085ef1bf",
   "src/ui/king-crown-renderer.js": "69f0edd89ce4fb4ca03af1184d141245f21e015039b12054c79c1a2957e93021",
   "src/ui/king-crown-segment.js": "48d6234580c05ccf954872a3162539a68e97efddfc9174eafe037113e2a3847b",
   "src/ui/king-turn-plan.js": "b8be83ab5155160f7b36da2bbabe8076969952dd7dd7573b3a194aa1a22a211d",
   "src/ui/king-victory-renderer.js": "1655ccfe09a228eea5ac0de3dac82cf25a99a1826a871bd4fa08393b32f52afb",
   "src/ui/king-victory-segment.js": "672204f67d4ed0af93e4ec5a624af0c810244ee0e982f996bcf779a1a5aea627",
-  "src/ui/presentation-timeline.js": "5d6dc3db9a9a0317ee61f920c10bb60b311fa86b5aef52f342a4df9112512d22",
+  "src/ui/presentation-timeline.js": "d15a5aa62e026b1b92780dad8731b3dbd5029dde7a04d8d2985d0335449963de",
   "src/ui/presentation.js": "02c7d7d9f2201eb5f38f6a5364e5ec925fd787da915ccceb68a8efebc882cd45",
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
-  "src/ui/stage.js": "f52861eae9376713128c890e116fdde1b2539bc7c3c71005d45b9dbc620be7c1"
+  "src/ui/stage.js": "f52861eae9376713128c890e116fdde1b2539bc7c3c71005d45b9dbc620be7c1",
+  "src/ui/king-spell-timeline.js": "688158824dff1571946b88882d084e4c1ad74faa404f095d9a4c0a2ee8a50db6",
+  "src/ui/spell-effect-consumer.js": "9f1627e1d4566fa2e1a02c9b4ac70e3f6a9ccbf40612a2b1909def2671cd275f"
 };
 const PREVIEW_DB = 'yusha100-publication-preview-v1';
 const hash256 = b => createHash('sha256').update(b).digest('hex');

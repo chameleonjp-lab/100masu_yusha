@@ -1,4 +1,5 @@
 import {planKingTurn} from './king-turn-plan.js';
+import {planKingSpellTimeline} from './king-spell-timeline.js';
 // Board timeline plus a visual-only normal-attack slice; battle is not connected to app/stage/audio/CSS.
 // Contract: before/after are plain view snapshots around ONE successful session.act + readback.
 // Effects are that act's returned array. Reload/start/failed or superseded commits must not replay.
@@ -50,7 +51,7 @@ function normalAttackTurn(before,after,effects){
  return {round:b.round,action,enemyAct,enemyHit,heroHit,soften};
 }
 // Nonpersistent opt-in: existing app callers remain board-only until the battle renderer is wired.
-export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,victoryVisual=false,regionVisual=false,castleVisual=false}){
+export function planPresentation({before,after,effects=[],settings={},battleVisual=false,kingVisual=false,kingTurnVisual=false,spellVisual=false,kingSpellTimeline=false,victoryVisual=false,regionVisual=false,castleVisual=false}){
  const finalView=copy(after),steps=[];let time=0,resultEffects=[],parallelEnd=0;
  const result=()=>freeze({steps,durationMs:time,finalView,resultEffects});
  // Not proof of persistence: the caller must supply only successfully committed pairs.
@@ -65,7 +66,12 @@ export function planPresentation({before,after,effects=[],settings={},battleVisu
    {key:`${after.runId}:${after.revision}:presentation:2`,atMs:800,kind:'controls',payload:{enabled:true,actionsVisible:true}});
   return result();
  }
- const spellTurn=spellVisual===true&&Array.isArray(after.battle?.history)&&after.battle.history.some(r=>r?.round===before.battle?.round&&r.action?.type==='spell');
+ const recordedSpell=Array.isArray(after.battle?.history)&&after.battle.history.some(r=>r?.round===before.battle?.round&&r?.action?.type==='spell');
+ // Only app callers with complete renderer/audio ownership may opt in. A failed
+ // recognized spell is static, not a partial reroute to another planner.
+ if(kingSpellTimeline===true&&before.battle?.kind==='king'&&(recordedSpell||effects.some(e=>e.t==='spellCast')))
+  return planKingSpellTimeline({before,after,effects,settings,spellVisual,victoryVisual})??result();
+ const spellTurn=spellVisual===true&&recordedSpell;
  if(kingTurnVisual===true||spellTurn||(victoryVisual===true&&['battleReward','bagFull'].includes(after.phase))){const turn=planKingTurn({before,after,effects,settings,victoryVisual,spellVisual});if(turn)return turn;}
  const moved=effects.find(e=>e.t==='moved'),rolled=effects.find(e=>e.t==='dieRolled');
  const battle=battleVisual===true&&!moved&&!rolled?normalAttackTurn(before,after,effects):null;

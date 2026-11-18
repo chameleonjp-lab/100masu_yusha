@@ -28,18 +28,18 @@ function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&
 let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
- context.spellMp?.remove();context.spellCast?.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
+ context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
  for(const [control,disabled] of context.controls)control.disabled=disabled;
  for(const animation of context.animations)animation.cancel();
  for(const timer of context.regionTimers||[])clearTimeout(timer);context.regionHandle?.cancel();context.regionBanner?.remove();
  context.skip?.remove();context.path?.remove();context.status?.remove();delete root.dataset.presentation;
 }
 function presentationCurrent(context){return context&&screen==='game'&&!document.hidden&&session?.run?.runId===context.after.runId&&session?.run?.revision===context.after.revision}
-function presentationSound(cue){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue)}catch{/* audio cannot strand a confirmed result */}}
+function presentationSound(cue,options){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue,0,options)}catch{/* audio cannot strand a confirmed result */}}
 const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
  onStep(step){
   const context=presentationContext;if(!presentationCurrent(context)){cancelPresentation();return}
-  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.sp01'].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:'SP01',cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue);return}
+  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
   if(p.stage.startsWith('king.victory.')){
@@ -70,7 +70,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
    if(!hero||!enemy)throw Error('Missing king turn actors');
    const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.before.hero.job.id]||'traveler';
    const phase=context.kingPhase||(context.before.battle.phase.index>0?2:1);
-   const animate=(actor,frames,ms)=>{if(actor.animate&&ms)context.animations.push(actor.animate(frames,{duration:ms,easing:'ease-in-out'}))};
+   const animate=(actor,frames,ms)=>{if(actor.animate&&ms)context.animations.push(actor.animate(frames,{duration:reduced.matches||session.meta.settings?.reducedMotion?Math.min(ms,150):ms,easing:'ease-in-out'}))};
    if(p.stage==='king.turn.spell.mp'){
     const value=root.querySelector('.stat.mp strong'),meter=root.querySelector('.stat.mp meter');if(!value||!meter)throw Error('Missing hero MP');value.textContent=`${p.effect.after}/${context.before.hero.maxMp}`;meter.value=p.effect.after;
     context.spellMp?.remove();context.spellMp=el('p','presentation-spell-mp',`${p.effect.before} → ${p.effect.after} · ${effectText(p.effect,localizedContent(content,locale()))}`);context.spellMp.setAttribute('role','status');root.append(context.spellMp);
@@ -79,6 +79,13 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
    if(p.stage==='king.turn.spell.cast'){
     setArt(hero,`hero-${outfit}-cast`);context.spellCast?.remove();context.spellCast=el('p','presentation-spell-cast',effectText(p.effect,localizedContent(content,locale())));root.append(context.spellCast);
     animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
+   }
+   if(['king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource'].includes(p.stage)){
+    const localized=localizedContent(content,locale());let text=effectText(p.effect,localized);
+    if(p.stage==='king.turn.spell.hp'){const value=root.querySelector('.stat.hp strong'),meter=root.querySelector('.stat.hp meter');if(!value||!meter)throw Error('Missing hero HP');value.textContent=`${p.effect.after}/${context.before.hero.maxHp}`;meter.value=p.effect.after;text=`${p.effect.before} → ${p.effect.after} · ${text}`;}
+    if(p.stage==='king.turn.spell.blockSource'){if(p.effect.t==='rule')text=localized.spells.SP03.name;else text=msg('ui.presentation.module.fc72b13abf',{p0:p.effect.amount});}
+    const result=el('p','presentation-spell-result',text);root.append(result);context.spellResults.push(result);context.status.textContent=text;
+    if(p.motion==='fade'||p.motion==='heal')animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
    }
    if(p.stage==='king.turn.hero.prepare')setArt(hero,`hero-${outfit}-idle`);
    if(p.stage==='king.turn.hero.slash')setArt(hero,`hero-${outfit}-attack`);
@@ -163,7 +170,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   const context=presentationContext;if(!context)return;
   // Cancellation is navigation/lifecycle cleanup, not a second committed action.
   
-  const current=presentationCurrent(context);if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:'SP01'})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
+  const current=presentationCurrent(context);if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:context.spellId})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
   if(reason==='cancel'||!current)return;
   // A visual-only battle already handed its effects to the existing audio path.
   // Final render invalidates pending unlock work: renew only an unplayed batch,
@@ -182,7 +189,7 @@ function playCommittedPresentation(before,after,effects,audio){
  const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
  if(castleVisual&&typeof sound.castle!=='function')return false;
  if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
- const plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,spellVisual:true,victoryVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ const plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(!plan.steps.length)return false;
  const kingVisual=plan.steps.some(s=>s.kind==='display'&&s.payload.stage==='king.start');if(kingVisual&&typeof sound.king!=='function')return false;
  const kingVictoryVisual=plan.mode==='king-victory-turn',victoryText=kingVictoryVisual?translate(locale(),'ui.king.defeated'):null;
@@ -190,16 +197,30 @@ function playCommittedPresentation(before,after,effects,audio){
  const kingTurnVisual=plan.mode==='king-turn',crownVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.crown.'));
  if(kingTurnVisual&&typeof sound.kingTurn!=='function')return false;
  const spellVisual=(kingTurnVisual||kingVictoryVisual)&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.turn.spell.'));
+ const spellId=spellVisual?(plan.spellId||'SP01'):null;
  const spellOutfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id];
- if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]))return false;
- if(spellVisual&&(typeof sound.spell!=='function'||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!=='SP01')))return false;
+ if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]||!spriteMetrics[`hero-${spellOutfit}-cast`]))return false;
+ if(spellVisual&&(typeof sound.spell!=='function'||!['SP01','SP02','SP03','SP04'].includes(spellId)||(spellId!=='SP01'&&!sound.spell.supportedIds?.includes(spellId))||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!==spellId)))return false;
+ if(spellVisual){const supported=new Set(['king.turn.spell.mp','king.turn.spell.prepare','king.turn.spell.cast','king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource','king.turn.enemy.hit','king.turn.enemy.prepare','king.turn.hero.hit','king.turn.hero.block','king.turn.nextTell','king.crown.pause','king.crown.crack','king.crown.banner','king.crown.resume','king.victory.music','king.victory.disappear','king.victory.label']);if(plan.steps.some(s=>s.kind==='display'&&!supported.has(s.payload.stage)))return false;}
+ if(spellVisual&&plan.spellId){
+  if(kingVictoryVisual&&plan.steps.some(s=>s.kind==='display'&&(s.payload.stage.startsWith('king.crown.')||['king.turn.enemy.prepare','king.turn.nextTell'].includes(s.payload.stage))))return false;
+  if(['.hero','.enemy','.stat.mp strong','.stat.mp meter','.stat.hp strong','.stat.hp meter','.telegraph h2','.telegraph p:not(.muted)','.telegraph p.muted'].some(selector=>!root.querySelector(selector)))return false;
+  let phase=before.battle.phase.index>0?2:1;const required=[];
+  for(const step of plan.steps){if(step.kind!=='display')continue;const p=step.payload;
+   if(p.stage==='king.crown.resume')phase=2;
+   if(p.stage==='king.turn.enemy.hit'||p.stage==='king.crown.resume')required.push(`dk01-p${phase}-idle`);
+   if(p.stage==='king.turn.enemy.prepare'){const k=p.enemyAct.kind,pose=/big|大/.test(k)?'big':/guard|守/.test(k)?'guard':/open|隙/.test(k)?'open':'attack';required.push(`dk01-p${phase}-${pose}`)}
+   if(p.stage==='king.turn.hero.hit')required.push(`hero-${spellOutfit}-${p.hit.amount>0?'hit':'guard'}`);
+  }
+  if(required.some(key=>!spriteMetrics[key]))return false;
+ }
  const crownLabels=crownVisual?{break:translate(locale(),'ui.king.crownBreak'),next:translate(locale(),'ui.king.crownNextTurn')}:null;
  if(crownLabels&&Object.values(crownLabels).some(x=>!x.sourceLocale||!x.text))return false;
  if((kingTurnVisual||kingVictoryVisual)&&lastKingTurnKey===`${after.runId}:${after.revision}`)return true;
  if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
  const resultNotice=kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
- if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId:'SP01'})}catch{}
- const context={before,after,effects,audio,spellVisual,kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
+ if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
+ const context={before,after,effects,audio,spellVisual,spellId,spellResults:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');

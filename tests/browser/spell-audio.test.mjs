@@ -35,5 +35,26 @@ async function ready(){const f=fixture();f.api.scene({phase:'gate',board:{band:{
 test('SP01 base five voices then one spark; cue duplicate and out of order blocked',async()=>{const f=await ready();f.api.spell(start);f.api.spell(spark);assert.equal(f.sources.length,0);f.api.spell(cast);assert.equal(f.sources.length,5);f.api.spell(cast);assert.equal(f.sources.length,5);f.api.spell(spark);assert.equal(f.sources.length,6);f.api.spell(spark);assert.equal(f.sources.length,6);const voiceGain=f.gains.at(-1).gain;assert.ok(voiceGain.events.filter(e=>e[2]==='linear').length>=5)});
 for(const how of ['cancel','skip','hide','mute','stop'])test('SP01 '+how+' stops owned sources and blocks late cue',async()=>{const f=await ready();f.api.spell(start);f.api.spell(cast);if(how==='hide')f.visibility(true);else if(how==='mute')f.api.configure({mute:true});else if(how==='stop')f.api.stop();else f.api.spell({type:how,key:'r:4'});f.api.spell(spark);f.api.spell(start);assert.equal(f.sources.length,5);assert.ok(f.sources.every(s=>s.stops.includes(undefined)))});
 test('locked start consumed and finish closes unplayed cue',async()=>{const f=fixture();f.api.scene({phase:'gate',board:{band:{id:5}}});f.api.spell(start);await f.api.unlock();f.api.spell(cast);assert.equal(f.sources.length,0);const g=await ready();g.api.spell(start);g.api.spell({type:'finish',key:'r:4'});g.api.spell(cast);assert.equal(g.sources.length,0)});
-test('unsupported spell and stale key cannot play or cancel new owner',async()=>{const f=await ready();f.api.spell({...start,spellId:'SP04'});f.api.spell(cast);assert.equal(f.sources.length,0);f.api.spell(start);f.api.spell({...cast,key:'old'});assert.equal(f.sources.length,0);f.api.spell(cast);f.api.spell({type:'cancel',key:'old'});assert.ok(f.sources.every(s=>!s.stops.includes(undefined)))});
+test('unsupported spell and stale key cannot play or cancel new owner',async()=>{const f=await ready();f.api.spell({...start,spellId:'SP99'});f.api.spell(cast);assert.equal(f.sources.length,0);f.api.spell(start);f.api.spell({...cast,key:'old'});assert.equal(f.sources.length,0);f.api.spell(cast);f.api.spell({type:'cancel',key:'old'});assert.ok(f.sources.every(s=>!s.stops.includes(undefined)))});
 test('later static spell batch is not suppressed by finished SP01 ownership',async()=>{const f=await ready();f.api.spell(start);f.api.spell(cast);f.api.spell({type:'finish',key:'r:4'});const n=f.sources.length;f.api.effects([{t:'spellCast',id:'SP04'}],'r:5');assert.equal(f.sources.length,n+5)});
+for(const [spellId,count] of [['SP02',SFX.heal.length],['SP03',1],['SP04',3]])test(spellId+' exactly owns its additive cue and can cancel all its nodes',async()=>{
+ const f=await ready(),begin={...start,spellId},addon={...cast,spellId,cue:'cast.'+spellId.toLowerCase()};
+ f.api.spell(begin);f.api.spell(addon);assert.equal(f.sources.length,0);
+ f.api.spell({...cast,spellId:'SP01'});assert.equal(f.sources.length,0);
+ f.api.spell(cast);f.api.spell(spark);assert.equal(f.sources.length,5);
+ f.api.spell(addon);f.api.spell(addon);f.api.spell(begin);assert.equal(f.sources.length,5+count);
+ f.api.spell({type:'skip',key:start.key,spellId});f.api.spell(addon);assert.ok(f.sources.every(s=>s.stops.includes(undefined)));
+});
+for(const how of ['hide','mute','cancel'])test('SP04 '+how+' does not replay additive cue after resuming',async()=>{
+ const f=await ready(),begin={...start,spellId:'SP04'},bright={...cast,spellId:'SP04',cue:'cast.sp04'};
+ f.api.spell(begin);f.api.spell(cast);
+ if(how==='hide'){f.visibility(true);f.visibility(false);await f.api.unlock();}else if(how==='mute'){f.api.configure({mute:true});f.api.configure({mute:false});}
+ else f.api.spell({type:'cancel',key:start.key,spellId:'SP04'});
+ f.api.spell(begin);f.api.spell(bright);assert.equal(f.sources.length,5);
+});
+test('real sound API exposes exact immutable spell capability list',()=>{
+ const {api}=fixture(),ids=api.spell.supportedIds;
+ assert.ok(Array.isArray(ids));assert.deepEqual([...ids],['SP01','SP02','SP03','SP04']);
+ assert.ok(Object.isFrozen(ids));assert.equal(Object.getOwnPropertyDescriptor(api.spell,'supportedIds').writable,false);
+ assert.equal(Object.getOwnPropertyDescriptor(api.spell,'supportedIds').configurable,false);
+});

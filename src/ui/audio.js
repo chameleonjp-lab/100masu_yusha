@@ -142,22 +142,27 @@ export function createAudio(){
   }
  }
  function cancelSpell(){if(!spellState)return;spellState.closed=true;for(const record of spellState.nodes){try{record.source.stop()}catch{}nodes.delete(record)}spellState.nodes.clear();}
+ const supportedSpellIds=Object.freeze(['SP01','SP02','SP03','SP04']);
  function spell({type,key,spellId,cue}={}){
   if(typeof key!=='string'||!key)return;
   if(type==='start'){
-   if(spellId!=='SP01'||spellKeys.has(key))return;
-   cancelSpell();spellKeys.add(key);spellState={key,played:new Set(),nodes:new Set(),closed:!ctx||ctx.state!=='running'||document.hidden||!!settings.mute};return;
+   if(!supportedSpellIds.includes(spellId)||spellKeys.has(key))return;
+   cancelSpell();spellKeys.add(key);spellState={key,spellId,additive:'cast.'+spellId.toLowerCase(),played:new Set(),nodes:new Set(),closed:!ctx||ctx.state!=='running'||document.hidden||!!settings.mute};return;
   }
-  if(spellState?.key!==key)return;
+  if(spellState?.key!==key||(spellId!==undefined&&spellId!==spellState.spellId))return;
   if(type==='cancel'||type==='skip'){cancelSpell();return;}
   if(type==='finish'){spellState.closed=true;return;}
-  if(type!=='cue'||spellState.closed||!['cast','cast.sp01'].includes(cue)||spellState.played.has(cue)||cue==='cast.sp01'&&!spellState.played.has('cast'))return;
+  if(type!=='cue'||spellState.closed||(cue!=='cast'&&cue!==spellState.additive)||spellState.played.has(cue)||(cue===spellState.additive&&!spellState.played.has('cast')))return;
   if(!ctx||ctx.state!=='running'||document.hidden||settings.mute){cancelSpell();return;}
   const previous=new Set(nodes);
   if(cue==='cast')play('cast',0,{spellKey:key});
-  else voice({o:'noise',ft:'highpass',f:4000,a:5,d:200,v:.06,spark:true},ctx.currentTime+.01);
+  else if(cue==='cast.sp01')voice({o:'noise',ft:'highpass',f:4000,a:5,d:200,v:.06,spark:true},ctx.currentTime+.01);
+  else if(cue==='cast.sp02')play('heal');
+  else if(cue==='cast.sp03')voice({o:'sine',f:1250,a:1,d:320,v:.06},ctx.currentTime+.01);
+  else for(const v of SFX.slash)voice(v.f2===5000?{...v,f2:8000}:v,ctx.currentTime+.01+(v.t||0)/1000);
   spellState.played.add(cue);for(const record of nodes)if(!previous.has(record))spellState.nodes.add(record);
  }
+ Object.defineProperty(spell,'supportedIds',{value:supportedSpellIds});
  const api={castle,king,kingTurn,kingVictory,spell,async unlock(){try{if(!ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;ctx=new C();if(globalThis.navigator?.audioSession)navigator.audioSession.type='ambient';music=ctx.createGain();se=ctx.createGain();master=ctx.createGain();compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-10;compressor.ratio.value=4;compressor.attack.value=.003;compressor.release.value=.12;music.connect(master);se.connect(master);master.connect(compressor);compressor.connect(ctx.destination);noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const a=noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;volume()}await ctx.resume();if(!timer){nextTime=ctx.currentTime+.03;schedule()}}catch{/* sound failures never affect saving */}},configure(next){if(!settings.mute&&next?.mute){cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();for(const record of nodes)if(record.bus===se){try{record.source.stop()}catch{}nodes.delete(record)}}settings=next||{};volume()},scene(v){if(victoryState){if(v?.battle?.kind==='king'){if(victoryState.stopped||victoryState.cancelled){stop(music);mode='silence';}volume();return;}cancelVictory();victoryState=null;}if(kingTurnState){if(v?.battle?.kind==='king'){volume();return}cancelKingTurn()}if(kingState){if(v?.battle?.kind==='king'){volume();return}cancelKing()}if(castleState){if(!v||v.phase==='gate'){if(v?.phase==='gate'&&castleState.cancelled)castleState.quietEnded=true;volume();return}cancelCastle();castleState=null}const next=v?.phase==='gate'||v?.phase==='finished'||v?.battle?.kind==='king'&&v.battle.stage==='won'?'silence':v?.battle?(v.battle.kind==='king'?'king':'battle'):'road';band=v?.board.band?.id||1;pendingPhase=v?.battle?.phase.index||0;menu=v?.phase==='inn';if(next!==mode){stop(music);mode=next;index=0;phase=pendingPhase;if(ctx){nextTime=ctx.currentTime+.03;schedule()}}volume()},menu(open){menu=open;volume()},play,
  effects(fx,key){if(spellState&&key!==spellState.key){cancelSpell();spellState=null;}if(!ctx||ctx.state!=='running'||document.hidden)return;const unique=fx.filter((f,i)=>!seen.has(`${key}:${i}`));const all=effectCues(fx,key,seen);void all;const terminalLoss=unique.some(f=>f.t==='runFinished'&&f.result?.defeated===false);const events=unique;
   let delay=0;for(const f of events){if(terminalLoss&&f.t==='defeat')continue;if(f.t==='castleReached'){if(castleKeys.has(key))continue;castleKeys.add(key)}let cue=({guard:'shield',castleReached:'bell',phaseChange:'crown.crack',victory:'win.battle',levelUp:'levelup',rested:'rest',jobChanged:'job.change',companionJoined:'join.call',companionSwapped:'join.call',itemGained:'bag',itemUsed:'item.use',bagFull:'bag.full',spellLearned:'learn',spellCast:'cast',fled:'flee',innArrived:'door.bell',chestOpened:'chest.open',trapAvoided:'charm',battleStart:'encounter',defeat:'defeat'}[f.t]);if(f.t==='runFinished')cue=f.result?.defeated?'victory':'defeat';if(f.t==='gold')cue=f.delta>0?'coin.in':f.delta<0?'coin.pay':null;if(f.t==='hit')cue=f.target==='hero'?'hit.party':'slash';if(f.t==='hp'&&f.delta>0)cue='heal';if(f.t==='enemyTell')cue=/大/.test(f.kind)?'tell.big':/守/.test(f.kind)?'tell.guard':/隙/.test(f.kind)?'tell.open':'tell.attack';if(f.t==='equipped')cue=f.slot==='armor'?'buckle':'sheath';
