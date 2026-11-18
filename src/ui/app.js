@@ -1,3 +1,5 @@
+import {createKingVictoryRenderer} from './king-victory-renderer.js';
+import {createKingCrownRenderer} from './king-crown-renderer.js';
 import {planPresentation,createPresentationPlayer} from './presentation-timeline.js';
 import {createLocalBoard,namePreview} from './ranking.js';
 import {msg,setMessageLocale} from './i18n.js';
@@ -21,23 +23,114 @@ function invalidateCommittedSound(){committedSoundGeneration++;pendingCommittedS
 function prepareCommittedSound(){if(committedSoundPreparation)return;const preparation={};committedSoundPreparation=preparation;try{Promise.resolve(sound.unlock()).then(()=>{if(committedSoundPreparation!==preparation)return;committedSoundPreparation=null;const play=pendingCommittedSound;pendingCommittedSound=null;play?.();},()=>{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}});}catch{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}}}
 function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&!cue)||document.hidden||screen!=='game'||session?.meta?.settings?.mute)return;const generation=committedSoundGeneration;const play=()=>{if(generation!==committedSoundGeneration||document.hidden||screen!=='game'||session?.meta?.settings?.mute||session?.run?.runId!==runId||session?.run?.revision!==revision)return;try{if(cue)sound.play(cue);else sound.effects(fx,key)}catch{/* audio failure must not relabel a committed save */}};if(committedSoundPreparation)pendingCommittedSound=play;else play();}
 // BEGIN committed presentation bridge
+function rewardRowTexts(r){const none=msg('ui.reward.none'),gear=r.gear.hit?(r.gear.alreadyOwned?msg('ui.reward.owned'):(r.gear.name||msg('ui.reward.won'))):none,item=r.item.hit?(r.item.name||msg('ui.reward.won'))+(r.item.state==='prompt'?msg('ui.reward.itemPending'):r.item.state==='added'?msg('ui.reward.itemAdded'):''):none;return [msg('ui.reward.gold',{amount:r.gold}),msg('ui.reward.xp',{amount:r.xp}),msg('ui.reward.gear',{outcome:gear}),msg('ui.reward.item',{outcome:item})]}
 // Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
 // Battle audio retains the existing committed-effects path, not visual-stage synchronization.
-let presentationContext=null,skipSoundGeneration=0;
+let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
+ for(const restore of context.supportRestorers||[])restore();context.rewardPanel?.remove();context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
  for(const [control,disabled] of context.controls)control.disabled=disabled;
  for(const animation of context.animations)animation.cancel();
+ for(const timer of context.regionTimers||[])clearTimeout(timer);context.regionHandle?.cancel();context.regionBanner?.remove();
  context.skip?.remove();context.path?.remove();context.status?.remove();delete root.dataset.presentation;
 }
 function presentationCurrent(context){return context&&screen==='game'&&!document.hidden&&session?.run?.runId===context.after.runId&&session?.run?.revision===context.after.revision}
-function presentationSound(cue){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue)}catch{/* audio cannot strand a confirmed result */}}
+function presentationSound(cue,options){if(presentationCurrent(presentationContext)&&presentationContext.audio&&!session.meta.settings?.mute)try{sound.play(cue,0,options)}catch{/* audio cannot strand a confirmed result */}}
 const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
  onStep(step){
   const context=presentationContext;if(!presentationCurrent(context)){cancelPresentation();return}
-  if(step.kind==='sound'){presentationSound(step.payload.cue);return}
+  if(step.kind==='sound'){if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
+  if(p.stage.startsWith('king.reward.')){
+   if(!context.rewardPanel){context.rewardPanel=el('section','presentation-rewards');root.append(context.rewardPanel)}
+   const rows=rewardRowTexts(localizedView(context.after,content,locale()).reward);
+   for(const i of p.stage==='king.reward.money'?[0,1]:p.stage==='king.reward.gear'?[2]:[3])context.rewardPanel.append(el('p','',rows[i]));
+   return;
+  }
+  if(p.stage.startsWith('king.victory.')){
+   if(p.stage==='king.victory.music'){if(context.audio)try{sound.kingVictory({type:'stop',key:context.castleKey})}catch{}return}
+   if(!context.victoryRenderer)context.victoryRenderer=createKingVictoryRenderer({root,enemy:root.querySelector('.enemy'),document,label:context.victoryLabel});
+   if(p.stage==='king.victory.disappear')context.victoryRenderer.disappear(p);
+   if(p.stage==='king.victory.label')context.victoryRenderer.label();
+   return;
+  }
+  if(p.stage.startsWith('king.crown.')){
+   if(p.stage==='king.crown.pause'){
+    for(const a of context.animations)a.pause?.();if(context.audio)try{sound.kingTurn({type:'pause',key:context.castleKey,view:context.before})}catch{}
+   }
+   if(p.stage==='king.crown.crack'||p.stage==='king.crown.banner'){
+    if(!context.crownRenderer)context.crownRenderer=createKingCrownRenderer({root,enemy:root.querySelector('.enemy'),document,labels:context.crownLabels});
+    if(p.stage==='king.crown.crack')context.crownRenderer.crack(p);else context.crownRenderer.banner(p);
+   }
+   if(p.stage==='king.crown.resume'){
+    context.crownRenderer?.dispose();context.crownRenderer=null;context.kingPhase=2;
+    const enemy=root.querySelector('.enemy');if(!enemy)throw Error('Missing king actor');setArt(enemy,'dk01-p2-idle');
+    const heading=root.querySelector('.telegraph h2');if(!heading)throw Error('Missing king heading');const badge=el('span','king-phase-badge',displayText(locale(),context.after.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';heading.append(badge);context.crownBadge=badge;
+    for(const a of context.animations)a.play?.();if(context.audio)try{sound.kingTurn({type:'resume',key:context.castleKey,view:context.before})}catch{}
+   }
+   return;
+  }
+  if(p.stage.startsWith('king.turn.')){
+   const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
+   if(!hero||!enemy)throw Error('Missing king turn actors');
+   const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.before.hero.job.id]||'traveler';
+   const phase=context.kingPhase||(context.before.battle.phase.index>0?2:1);
+   const animate=(actor,frames,ms)=>{if(actor.animate&&ms)context.animations.push(actor.animate(frames,{duration:reduced.matches||session.meta.settings?.reducedMotion?Math.min(ms,150):ms,easing:'ease-in-out'}))};
+   if(p.stage==='king.turn.spell.mp'){
+    const value=root.querySelector('.stat.mp strong'),meter=root.querySelector('.stat.mp meter');if(!value||!meter)throw Error('Missing hero MP');value.textContent=`${p.effect.after}/${context.before.hero.maxMp}`;meter.value=p.effect.after;
+    context.spellMp?.remove();context.spellMp=el('p','presentation-spell-mp',`${p.effect.before} → ${p.effect.after} · ${effectText(p.effect,localizedContent(content,locale()))}`);context.spellMp.setAttribute('role','status');root.append(context.spellMp);
+   }
+   if(p.stage==='king.turn.spell.prepare'){setArt(hero,`hero-${outfit}-cast-prepare`);if(p.motion==='fade')animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);}
+   if(p.stage==='king.turn.spell.cast'){
+    setArt(hero,`hero-${outfit}-cast`);context.spellCast?.remove();context.spellCast=el('p','presentation-spell-cast',effectText(p.effect,localizedContent(content,locale())));root.append(context.spellCast);
+    animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
+   }
+   if(['king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource'].includes(p.stage)){
+    const localized=localizedContent(content,locale());let text=effectText(p.effect,localized);
+    if(p.stage==='king.turn.spell.hp'){const value=root.querySelector('.stat.hp strong'),meter=root.querySelector('.stat.hp meter');if(!value||!meter)throw Error('Missing hero HP');value.textContent=`${p.effect.after}/${context.before.hero.maxHp}`;meter.value=p.effect.after;text=`${p.effect.before} → ${p.effect.after} · ${text}`;}
+    if(p.stage==='king.turn.spell.blockSource'){if(p.effect.t==='rule')text=localized.spells.SP03.name;else text=msg('ui.presentation.module.fc72b13abf',{p0:p.effect.amount});}
+    const result=el('p','presentation-spell-result',text);root.append(result);context.spellResults.push(result);context.status.textContent=text;
+    if(p.stage==='king.turn.spell.support'){
+     const actor=[...root.querySelectorAll('.companion')].find(n=>n.dataset.companionId===p.effect.id&&n.dataset.companionRole===p.effect.role);if(!actor)throw Error('Missing support actor');
+     const idle='comp-'+p.effect.role+'-idle';setArt(actor,'comp-'+p.effect.role+'-support');
+     const previous=context.supportOwners.get(actor);previous?.animation?.cancel();const owner={};context.supportOwners.set(actor,owner);let active=true;const restore=()=>{if(!active)return;active=false;if(context.supportOwners.get(actor)!==owner)return;context.supportOwners.delete(actor);setArt(actor,idle)};context.supportRestorers.push(restore);
+     const reducedSupport=reduced.matches||session.meta.settings?.reducedMotion,ms=reducedSupport?150:p.durationMs;
+     if(actor.animate&&ms){const rawTransform=getComputedStyle(actor).transform,transform=rawTransform&&rawTransform!=='none'?rawTransform:'translate(0px,0px)';const frames=reducedSupport?[{opacity:.65},{opacity:1}]:[{transform},{transform:transform+' translateX(12px)'},{transform}];const a=actor.animate(frames,{duration:ms,easing:'ease-in-out'});owner.animation=a;a.onfinish=restore;context.animations.push(a)}else restore();
+    }
+    if(p.stage!=='king.turn.spell.support'&&(p.motion==='fade'||p.motion==='heal'))animate(hero,[{opacity:.65},{opacity:1}],p.durationMs);
+   }
+   if(p.stage==='king.turn.hero.prepare')setArt(hero,`hero-${outfit}-idle`);
+   if(p.stage==='king.turn.hero.slash')setArt(hero,`hero-${outfit}-attack`);
+   if(p.stage==='king.turn.enemy.hit'){
+    setArt(enemy,`dk01-p${phase}-idle`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()));
+    const hp=root.querySelector('.telegraph h2');if(!hp)throw Error('Missing king HP');const phaseBadge=hp.querySelector?.('.king-phase-badge');hp.textContent=`${displayText(locale(),context.before.battle.enemy.name)} · ${p.hit.hp}/${p.hit.maxHp}`;if(phaseBadge)hp.append(phaseBadge);
+    animate(enemy,p.motion==='fade'?[{opacity:.65},{opacity:1}]:[{filter:'brightness(1.6)'},{filter:'brightness(1)'}],p.durationMs);
+   }
+   if(p.stage==='king.turn.enemy.prepare'){
+    context.status.textContent=displayText(locale(),p.enemyAct.name);const kind=p.enemyAct.kind,pose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';setArt(enemy,`dk01-p${phase}-${pose}`);
+   }
+   if(p.stage==='king.turn.hero.block'&&p.blocked>0){setArt(hero,`hero-${outfit}-guard`);context.status.textContent=p.sources.map(f=>effectText(f,localizedContent(content,locale()))).filter(Boolean).join(' · ')}
+   if(p.stage==='king.turn.hero.hit'){
+    setArt(hero,`hero-${outfit}-${p.hit.amount>0?'hit':'guard'}`);context.status.textContent=effectText(p.hit,localizedContent(content,locale()));
+    const value=root.querySelector('.stat.hp strong'),meter=root.querySelector('.stat.hp meter');if(!value||!meter)throw Error('Missing hero HP');value.textContent=`${p.hit.hp}/${p.hit.maxHp}`;meter.value=p.hit.hp;
+   }
+   if(p.stage==='king.turn.nextTell'){
+    const name=root.querySelector('.telegraph p:not(.muted)'),hint=root.querySelector('.telegraph p.muted');if(!name||!hint)throw Error('Missing king telegraph');name.textContent=telegraphText({...p.telegraph,name:displayText(locale(),p.telegraph.name)});hint.textContent=displayText(locale(),p.telegraph.tell||'');
+   }
+   return;
+  }
+  if(p.stage==='king.start'){context.status.textContent=displayText(locale(),p.telegraph.name);return;}
+  if(p.stage==='castle.fade'||p.stage==='castle.arrive'){if(context.audio)sound.castle({type:p.stage==='castle.fade'?'fade':'arrive',key:context.castleKey});return;}
+  if(p.stage==='region.transition'){
+   context.regionHandle?.cancel();
+   context.regionHandle=stage.transitionRegion({fromBand:p.fromBand,band:p.band.id,durationMs:p.durationMs,reducedMotion:p.motion==='fade'});
+   context.regionBanner?.remove();const banner=el('p','presentation-region',tr(`ui.region.bands.${p.band.id}.name`));banner.setAttribute('role','status');root.append(banner);context.regionBanner=banner;
+   const timer=setTimeout(()=>{if(presentationCurrent(context)&&context.regionBanner===banner)banner.remove()},p.bannerMs);context.regionTimers.push(timer);
+   if(context.audio)sound.scene({phase:'board',board:{band:p.band}});
+   return;
+  }
   if(p.stage.startsWith('battle.')){
    const hero=root.querySelector('.hero'),enemy=root.querySelector('.enemy');
    const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[context.after.hero.job.id]||'traveler';
@@ -71,13 +164,14 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   }
   const position=p.stage==='walk'?p.to:p.stage==='trail'?p.pos:['arrival','inn.stop','move.fade'].includes(p.stage)?p.to:null;
   if(Number.isInteger(position)){
+   const stagePos=p.stage==='walk'?p.from:position;stage?.update({band:Math.ceil(stagePos/20),pos:stagePos,die:context.beforeDie},false);
    for(const marker of context.path?.children||[]){const current=Number(marker.dataset.pos)===position;marker.removeAttribute('aria-current');if(current)marker.setAttribute('aria-current','step');marker.style.background=current?'#f4b942':Number(marker.dataset.pos)<position?'#d5e4ba':'transparent'}
    context.status.textContent=`${position} / 100`;
   }
   if(p.stage==='preview')context.status.textContent=`${context.after.pos} → ${p.preview.to??context.after.pos}`;
   if(p.stage==='inn.stop')context.status.textContent=`${p.to} / 100 · ${context.after.board?.currentName||''}`;
 
-  if(p.stage==='dice.roll'||p.stage==='dice.lock')stage?.update({band:context.after.board?.band?.id||1,die:p.die},p.stage==='dice.roll'&&p.motion!=='fade');
+  if(p.stage==='dice.roll'||p.stage==='dice.lock')stage?.update({band:context.after.board?.band?.id||1,pos:context.after.pos,die:p.die},p.stage==='dice.roll'&&p.motion!=='fade');
   if(p.stage==='quiet')sound.scene(null);
   const hero=root.querySelector('.hero');
   if(hero?.animate&&p.durationMs&&p.motion!=='none'){
@@ -90,27 +184,62 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   const context=presentationContext;if(!context)return;
   // Cancellation is navigation/lifecycle cleanup, not a second committed action.
   
-  const current=presentationCurrent(context);presentationContext=null;releasePresentation(context);
+  const current=presentationCurrent(context);if(context.spellVisual&&context.audio)try{sound.spell({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,spellId:context.spellId})}catch{}if(context.kingVictoryVisual&&context.audio)try{sound.kingVictory({type:reason==='finish'&&current?'finish':reason==='skip'?'skip':'cancel',key:context.castleKey,view:context.after})}catch{}if(context.kingTurnVisual&&context.audio)try{sound.kingTurn({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey,view:context.after})}catch{/* audio cannot strand controls */}if(context.kingVisual&&context.audio)sound.king({type:reason==='finish'&&current?'finish':'cancel',key:context.castleKey});if(context.castleVisual&&context.audio&&(reason!=='finish'||!current))sound.castle({type:reason==='skip'?'skip':'cancel',key:context.castleKey});presentationContext=null;releasePresentation(context);
   if(reason==='cancel'||!current)return;
   // A visual-only battle already handed its effects to the existing audio path.
   // Final render invalidates pending unlock work: renew only an unplayed batch,
   // never an already delivered/failed batch. Navigation cancellation returns above.
-  const renewBattleSound=context.audio&&context.battleVisual&&pendingCommittedSound!==null;
+  const renewBattleSound=context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&pendingCommittedSound!==null;
   lastAction='';notice=context.notice;render();
   if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
-  if(reason==='skip'&&context.audio){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
-  if(context.audio&&!context.battleVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
+  if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
+  if(context.audio&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
 function cancelPresentation(){skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
 function playCommittedPresentation(before,after,effects,audio){
  if(screen!=='game'||document.hidden||session?.run?.runId!==after.runId||session?.run?.revision!==after.revision)return false;
- // Castle audio fade and regional transition are not supported by this app-only slice.
- if(effects.some(f=>f.t==='moved'&&f.stop==='castle')||before.board?.band?.id!==after.board?.band?.id)return false;
- const plan=planPresentation({before,after,effects,battleVisual:true,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ // Castle remains static until its audio/visual bridge is connected; region requires the stage API.
+ const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
+ if(castleVisual&&typeof sound.castle!=='function')return false;
+ if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
+ const plan=planPresentation({before,after,effects,battleVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(!plan.steps.length)return false;
- const resultNotice=notice;lastAction='';notice='';render(before);
- const context={after,effects,audio,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[]};
+ const kingVisual=plan.steps.some(s=>s.kind==='display'&&s.payload.stage==='king.start');if(kingVisual&&typeof sound.king!=='function')return false;
+ const kingVictoryVisual=plan.mode==='king-victory-turn',victoryText=kingVictoryVisual?translate(locale(),'ui.king.defeated'):null;
+ if(kingVictoryVisual&&(typeof sound.kingVictory!=='function'||!victoryText.sourceLocale||!victoryText.text))return false;
+ const kingTurnVisual=plan.mode==='king-turn',crownVisual=kingTurnVisual&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.crown.'));
+ if(kingTurnVisual&&typeof sound.kingTurn!=='function')return false;
+ const spellVisual=(kingTurnVisual||kingVictoryVisual)&&plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('king.turn.spell.'));
+ const spellId=spellVisual?(plan.spellId||'SP01'):null;
+ const spellOutfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[before.hero?.job?.id];
+ if(spellVisual&&(!spellOutfit||!spriteMetrics[`hero-${spellOutfit}-cast-prepare`]||!spriteMetrics[`hero-${spellOutfit}-cast`]))return false;
+ if(spellVisual&&(typeof sound.spell!=='function'||!['SP01','SP02','SP03','SP04'].includes(spellId)||(spellId!=='SP01'&&!sound.spell.supportedIds?.includes(spellId))||plan.steps.some(s=>s.kind==='display'&&['king.turn.spell.prepare','king.turn.spell.cast'].includes(s.payload.stage)&&s.payload.effect?.id!==spellId)))return false;
+ if(spellVisual){const supported=new Set(['king.turn.spell.mp','king.turn.spell.prepare','king.turn.spell.cast','king.turn.spell.hp','king.turn.spell.support','king.turn.spell.blockSource','king.turn.enemy.hit','king.turn.enemy.prepare','king.turn.hero.hit','king.turn.hero.block','king.turn.nextTell','king.crown.pause','king.crown.crack','king.crown.banner','king.crown.resume','king.victory.music','king.victory.disappear','king.victory.label','king.reward.money','king.reward.gear','king.reward.item']);if(plan.steps.some(s=>s.kind==='display'&&!supported.has(s.payload.stage)))return false;}
+ if(spellVisual&&plan.spellId){
+  if(kingVictoryVisual&&plan.steps.some(s=>s.kind==='display'&&(s.payload.stage.startsWith('king.crown.')||['king.turn.enemy.prepare','king.turn.nextTell'].includes(s.payload.stage))))return false;
+  if(['.hero','.enemy','.stat.mp strong','.stat.mp meter','.stat.hp strong','.stat.hp meter','.telegraph h2','.telegraph p:not(.muted)','.telegraph p.muted'].some(selector=>!root.querySelector(selector)))return false;
+  let phase=before.battle.phase.index>0?2:1;const required=[];
+  for(const step of plan.steps){if(step.kind!=='display')continue;const p=step.payload;
+   if(p.stage==='king.turn.spell.support'){
+    const e=p.effect,comp=before.hero.companions.find(c=>c.id===e?.id&&c.role===e?.role);if(!comp||!['shield','medic','thrower','lantern'].includes(e.role))return false;
+    required.push('comp-'+e.role+'-support','comp-'+e.role+'-idle');
+    if(![...root.querySelectorAll('.companion')].some(n=>n.dataset.companionId===e.id&&n.dataset.companionRole===e.role))return false;
+   }
+   if(p.stage==='king.crown.resume')phase=2;
+   if(p.stage==='king.turn.enemy.hit'||p.stage==='king.crown.resume')required.push(`dk01-p${phase}-idle`);
+   if(p.stage==='king.turn.enemy.prepare'){const k=p.enemyAct.kind,pose=/big|大/.test(k)?'big':/guard|守/.test(k)?'guard':/open|隙/.test(k)?'open':'attack';required.push(`dk01-p${phase}-${pose}`)}
+   if(p.stage==='king.turn.hero.hit')required.push(`hero-${spellOutfit}-${p.hit.amount>0?'hit':'guard'}`);
+  }
+  if(required.some(key=>!spriteMetrics[key]))return false;
+ }
+ const crownLabels=crownVisual?{break:translate(locale(),'ui.king.crownBreak'),next:translate(locale(),'ui.king.crownNextTurn')}:null;
+ if(crownLabels&&Object.values(crownLabels).some(x=>!x.sourceLocale||!x.text))return false;
+ if((kingTurnVisual||kingVictoryVisual)&&lastKingTurnKey===`${after.runId}:${after.revision}`)return true;
+ if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
+ const resultNotice=kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
+ if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
+ const context={before,after,effects,audio,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -119,7 +248,7 @@ function playCommittedPresentation(before,after,effects,audio){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- presentationContext=context;stage?.update({band:before.board?.band?.id||1,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
+ presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
@@ -138,12 +267,12 @@ function scene(v,home=false){
  const outfit={JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[v?.hero.job.id]||'traveler';
  const pose=lastAction==='guard'?'guard':lastAction==='attack'?'attack':lastAction==='spell'?'cast':lastAction==='move'?'walk1':v?.phase==='finished'?(v.result?.defeated?'victory':'down'):'idle';
  const hero=art(`hero-${outfit}`,pose,'hero');const p=project(-2,.24,1.5-Math.sin(1.1)*1.2);hero.style.left=p.x+'%';hero.style.top=p.y+'%';if(lastAction==='move'&&animated())hero.classList.add('walking');wrap.append(hero);
- for(const [i,c] of (v?.hero.companions||[]).entries()){const comp=art('comp-'+c.role,'idle','companion');const cp=project(-3.25-i*.85,.2,1.0+i*.5);comp.style.left=cp.x+'%';comp.style.top=cp.y+'%';comp.title=c.name;wrap.append(comp)}
+ for(const [i,c] of (v?.hero.companions||[]).entries()){const comp=art('comp-'+c.role,'idle','companion');comp.dataset.companionId=c.id;comp.dataset.companionRole=c.role;const cp=project(-3.25-i*.85,.2,1.0+i*.5);comp.style.left=cp.x+'%';comp.style.top=cp.y+'%';comp.title=c.name;wrap.append(comp)}
  if(v?.battle){const b=v.battle,kind=b.telegraph.kind;const pose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';const id=b.enemy.id.toLowerCase();const en=art(id,id==='dk01'?`p${b.phase.index>0?2:1}-${pose}`:pose,'enemy');const p=project(2,.1,.3);en.style.left=p.x+'%';en.style.top=p.y+'%';wrap.append(en);}
  if(v?.rolled)wrap.append(el('strong','die-value',msg("ui.app.scene.f51ade3b85",{p0:(v.rolled.die)})));
- const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):v?.board.band?.name);wrap.append(ribbon);
+ const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):tr(`ui.region.bands.${v?.board.band?.id||1}.name`));wrap.append(ribbon);
  const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))});
- stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,die:v?.rolled?.die},lastAction==='roll'&&animated())});return wrap;
+ stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die},lastAction==='roll'&&animated())});return wrap;
 }
 function render(presentationView=null){
  cancelPresentation();
@@ -157,16 +286,17 @@ function render(presentationView=null){
  if(screen==='home'){home();return}
  const v=localizedView(presentationView||session.view,content,locale());if(!v){screen='home';home();return}
  const title=el('div','chapter');add(title,el('span','eyebrow',`${v.route.id} / ${v.route.name}`),el('h1','',`${v.pos} / 100`),el('span','roll-count',msg("ui.app.render.bdfdbc6d58",{p0:(v.rolls)})));root.append(title);
- const stats=el('section','stats');stats.setAttribute('aria-label',msg("ui.app.render.literal.998f75677a"));add(stats,stat(msg("ui.app.render.term.d6d2aa99fd"),v.hero.hp,v.hero.maxHp,'hp'),stat(msg("ui.app.render.term.522148a1fd"),v.hero.mp,v.hero.maxMp,'mp'),el('strong','gold',`${v.hero.gold} G`),el('span','level',`Lv.${v.hero.level} ${v.hero.job.name}`));root.append(stats);root.append(add(el('div','map-strip'),paragraph(msg("ui.app.render.7dcec7dac2",{p0:(v.board.nextStop===100?msg("ui.app.render.term.a4c5f93082"):msg("ui.app.render.term.6038669e41")),p1:(v.board.distanceToNextStop)})),button(msg("ui.app.render.literal.b6e1addfac"),()=>worldMap(v),'quiet')));
+ const mapLauncher=button(msg("ui.app.render.literal.b6e1addfac"),()=>worldMap(v,mapLauncher),'quiet');
+ const stats=el('section','stats');stats.setAttribute('aria-label',msg("ui.app.render.literal.998f75677a"));add(stats,stat(msg("ui.app.render.term.d6d2aa99fd"),v.hero.hp,v.hero.maxHp,'hp'),stat(msg("ui.app.render.term.522148a1fd"),v.hero.mp,v.hero.maxMp,'mp'),el('strong','gold',`${v.hero.gold} G`),el('span','level',`Lv.${v.hero.level} ${v.hero.job.name}`));root.append(stats);root.append(add(el('div','map-strip'),paragraph(msg("ui.app.render.7dcec7dac2",{p0:(v.board.nextStop===100?msg("ui.app.render.term.a4c5f93082"):msg("ui.app.render.term.6038669e41")),p1:(v.board.distanceToNextStop)})),mapLauncher));
  root.append(paragraph(msg("ui.app.render.f65841c006",{p0:(v.pos),p1:(v.board.currentName)}),'muted'));root.append(scene(v));
- if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));root.append(t)}
+ if(v.battle){const t=el('section','telegraph');add(t,el('span','eyebrow',msg("ui.app.render.literal.cd7539d915")),heading(`${v.battle.enemy.name} · ${v.battle.enemy.hp}/${v.battle.enemy.maxHp}`),paragraph(telegraphText(v.battle.telegraph)),paragraph(v.battle.telegraph.tell,'muted'));if(v.battle.kind==='king'&&v.battle.phase.changed){const badge=el('span','king-phase-badge',displayText(locale(),v.battle.phase.name));badge.style.background='#E3A41C';badge.style.padding='.15rem .4rem';t.querySelector('h2').append(badge)}root.append(t)}
  if(v.battle?.temporaryStatuses?.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.78ea180ba1")));for(const st of v.battle.temporaryStatuses)box.append(paragraph(msg("ui.app.render.f1030d5885",{p0:(st.label),p1:(st.kinds.map(k=>({attackDown:msg("ui.app.render.term.bb59eb7119"),defenseDown:msg("ui.app.render.term.862a6a31e3"),turnEndHpLoss:msg("ui.app.render.term.082937427d")}[k]||k)).join(msg("ui.app.render.term.2a21905f43"))),p2:(st.amount),p3:(st.remainingTurns)})));root.append(box)}
  if(v.battle?.forecast?.unguarded.length){const box=el('section','story');box.append(heading(msg("ui.app.render.literal.34675f17d7")),paragraph(msg("ui.app.render.literal.87577bfcf3")));for(const [k,name]of [['unguarded',msg("ui.app.render.term.2e483eb82e")],['guarded',msg("ui.app.render.term.1177af8a7d")]])for(const f of v.battle.forecast[k])box.append(paragraph(msg("ui.app.render.75ca5568df",{p0:(f.round),p1:(f.name),p2:(name),p3:(f.damage)})));root.append(box)}
  if(v.battle?.history.length){const history=el('details','battle-history');history.append(el('summary','',msg("ui.app.render.literal.518564feda")));for(const r of v.battle.history)history.append(paragraph(msg("ui.app.render.bc7ba68654",{p0:(r.round),p1:(r.dealt),p2:(r.hpLost),p3:(r.enemy)})));root.append(history)}
  const n=el('section','notice');n.setAttribute('role','status');n.setAttribute('aria-live','polite');add(n,paragraph(notice||(!presentationView&&savedResult())||msg("ui.app.render.term.1e05a3a6d6")),el('small','',msg("ui.app.render.2c8ca60f57",{p0:(v.revision)})));root.append(n);
  if(v.event){const e=el('section','story');add(e,el('span','eyebrow',v.event.kind),heading(v.event.name),paragraph(v.event.scene));if(v.event.unscripted)add(e,paragraph(msg("ui.app.render.literal.c08e3524c9"),'warning'));if(v.event.puzzle)e.append(puzzlePanel(v.event.puzzle));root.append(e)}
  if(v.prompt?.title)root.append(heading(v.prompt.title));
- if(v.reward){const p=el('section','story');add(p,heading(msg("ui.app.render.literal.def16f80b1")),paragraph(msg("ui.app.render.ad5147affc",{p0:(v.reward.gold),p1:(v.reward.xp)})),paragraph([v.reward.gear.name,v.reward.item.name].filter(Boolean).join(msg("ui.app.render.term.2a21905f43"))));root.append(p)}
+ if(v.reward){const p=el('section','story');add(p,heading(msg("ui.app.render.literal.def16f80b1")),...rewardRowTexts(v.reward).map(text=>paragraph(text)));root.append(p)}
  if(v.phase==='gate')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.726055e48f")),paragraph(msg("ui.app.render.literal.e485399357"))));
  if(v.phase==='retryOffer')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.3f905081bb")),paragraph(msg("ui.app.render.literal.3a301ecd5f"))));
  if(v.phase==='finished'){const r=el('section','story result');add(r,el('span','eyebrow',msg("ui.app.render.literal.5308c10dab")),heading(v.result?.defeated?msg("ui.app.render.term.52203486d8"):msg("ui.app.render.term.17bd5d6c12")),paragraph(msg("ui.app.render.7c9988bef2",{p0:(v.route.name),p1:(v.furthest),p2:(v.rolls)})),paragraph(msg("ui.app.render.40d7f7fcb6",{p0:(v.hero.job.name),p1:(v.hero.companions.map(c=>c.name).join(msg("ui.app.render.term.2a21905f43"))||msg("ui.app.render.term.6217280784"))})),button(msg("ui.app.render.literal.e5ed7aa5db"),()=>{screen='home';render()}));r.append(button(tr('ui.share'),()=>sharePanel(v),'share-x'));root.append(r)}
@@ -196,10 +326,10 @@ function home(){
  add(section,button(tr('ui.help'),help,'quiet'),button(tr('ui.records'),records,'quiet'));section.append(button(tr('ui.share'),()=>sharePanel(),'share-x'));section.append(button(msg('ui.ranking.open'),rankingPreview,'quiet'));root.append(section);root.append(paragraph(msg("ui.app.home.literal.3041e9cda8"),'footer'));
 }
 function portrait(c,label){const figure=el('figure','portrait');const img=art('comp-'+c.role);img.className='portrait-image';img.alt=c.name;return add(figure,img,el('figcaption','',`${label} ${c.name}`))}
-function worldMap(v){sound.play('map.open');const d=modal(msg("ui.app.worldMap.term.b6e1addfac"));add(d,paragraph(msg("ui.app.worldMap.250a2572a7",{p0:(v.route.name),p1:(v.pos),p2:(v.board.band.name)})));const grid=el('ol','world-map');for(const tile of mapTiles(v)){const li=el('li',(tile.current?'current ':tile.visited?'visited ':'')+(tile.inn?'inn':''));li.setAttribute('aria-label',tile.label+(tile.current?msg("ui.app.worldMap.term.c4fd09e10a"):''));li.title=tile.name;add(li,el('b','',tile.pos),tile.inn?el('small','',msg("ui.app.worldMap.literal.34eb96f43d")):tile.pos===100?el('small','',msg("ui.app.worldMap.literal.76f47004cc")):null);grid.append(li)}add(d,grid,paragraph(msg("ui.app.worldMap.literal.7d01e2c98c")));}
+function worldMap(v,opener){sound.play('map.open');const d=modal(msg("ui.app.worldMap.term.b6e1addfac"),{closeCue:'map.close',opener});add(d,paragraph(msg("ui.app.worldMap.250a2572a7",{p0:(v.route.name),p1:(v.pos),p2:(v.board.band.name)})));const grid=el('ol','world-map');let current=null;for(const tile of mapTiles(v)){const li=el('li',(tile.current?'current ':tile.visited?'visited ':'')+(tile.inn?'inn':''));li.setAttribute('aria-label',tile.label+(tile.current?msg("ui.app.worldMap.term.c4fd09e10a"):''));li.title=tile.name;if(tile.current){current=li;li.setAttribute('aria-current','location')}add(li,el('b','',tile.pos),tile.inn?el('small','',msg("ui.app.worldMap.literal.34eb96f43d")):tile.pos===100?el('small','',msg("ui.app.worldMap.literal.76f47004cc")):null);grid.append(li)}add(d,grid,paragraph(msg("ui.app.worldMap.literal.7d01e2c98c")));const close=el('button','primary map-close',msg('ui.app.modal.literal.f6c244f988'));close.type='button';close.style.width='100%';close.style.minHeight='56px';close.addEventListener('click',()=>d.close());d.append(close);current?.scrollIntoView?.({block:'center',inline:'nearest',behavior:reduced.matches||session?.meta?.settings?.reducedMotion?'instant':'smooth'});}
 function jobs(v){const d=modal(msg("ui.app.jobs.term.a9e0b26002"));add(d,paragraph(msg("ui.app.jobs.83411198f0",{p0:(v.hero.job.name)})));const preview=el('div','job-preview');d.append(preview);function choose(id){sound.play('try.on');const job=uiContent().jobs[id],img=art('hero-'+({JB00:'traveler',JB01:'warrior',JB02:'mage',JB03:'bard'}[id]));img.className='try-on';preview.replaceChildren(img,heading(job.name),paragraph(job.text),actionForm(v.actions.find(a=>a.type==='changeJob'&&a.jobId===id),v));}for(const j of v.inn.jobs)d.append(button(msg("ui.app.choose.4363446e2e",{p0:(j.name)}),()=>choose(j.id),'quiet'));d.append(button(msg("ui.app.choose.literal.8a4ba79f47"),()=>d.close(),'quiet'));choose(v.hero.job.id);}
 function help(){const d=modal(msg("ui.app.help.term.16679487f2"));add(d,paragraph(msg("ui.app.help.literal.dd817f4395")),paragraph(msg("ui.app.help.literal.298c2d3866")),paragraph(msg("ui.app.help.literal.9bb2c9eceb")),paragraph(msg("ui.app.help.literal.4661ec53d0")));}
-function modal(title){sound.menu(true);const d=el('dialog');const h=heading(title);h.id='dialog-'+crypto.randomUUID();d.setAttribute('aria-labelledby',h.id);add(d,h);root.append(d);const close=button(msg("ui.app.modal.literal.f6c244f988"),()=>d.close(),'quiet');d.append(close);d.addEventListener('close',()=>{sound.menu(session?.view?.phase==='inn');sound.play('ui.cancel');d.remove()});d.showModal();return d}
+function modal(title,{closeCue='ui.cancel',opener=null}={}){sound.menu(true);const d=el('dialog');const h=heading(title);h.id='dialog-'+crypto.randomUUID();d.setAttribute('aria-labelledby',h.id);add(d,h);root.append(d);const close=closeCue==='map.close'?el('button','quiet',msg("ui.app.modal.literal.f6c244f988")):button(msg("ui.app.modal.literal.f6c244f988"),()=>d.close(),'quiet');if(closeCue==='map.close'){close.type='button';close.addEventListener('click',()=>d.close())}d.append(close);let closed=false;d.addEventListener('close',()=>{if(closed)return;closed=true;sound.menu(session?.view?.phase==='inn');sound.play(closeCue);d.remove();if(closeCue==='map.close'&&opener?.isConnected&&typeof opener.focus==='function')opener.focus({preventScroll:true})});d.showModal();return d}
 function confirmStart(route){if(session.run||session.status==='unsupported'){const d=modal(msg("ui.app.confirmStart.term.f60f49b1c2"));add(d,paragraph(msg("ui.app.confirmStart.3b2526dd1a",{p0:(session.run?session.run.pos+msg('ui.app.confirmStart.runSuffix'):msg("ui.app.confirmStart.term.3eac9e4bd4")),p1:(uiContent().routes[route].name)})),button(msg("ui.app.confirmStart.literal.7f915bacbc"),()=>{d.close();start(route,true)},'primary'));}else start(route,false)}
 async function start(route,confirmed){try{const soundGeneration=committedSoundGeneration;prepareCommittedSound();await session.start(route,confirmed);const allowCommittedSound=soundGeneration===committedSoundGeneration,runId=session.run.runId,revision=session.run.revision;screen='game';tab='main';notice=msg("ui.app.start.term.ed4b98dc3e");lastAction='';render();if(allowCommittedSound)scheduleCommittedSound([],`${runId}:${revision}`,runId,revision,'depart')}catch(e){showError(e)}}
 function showError(e){lastAction='';error=({stale_revision:msg("ui.app.showError.term.d590327e68"),stale_meta_revision:msg("ui.app.showError.term.a0ade14b58"),run_replaced:msg("ui.app.showError.term.67d55c7ff2"),unsupported_record:msg("ui.app.showError.term.4cbfc7c680")}[e.code]||msg("ui.app.showError.term.9a3bad2d43"))+` (${e.code||e.message})`;render()}

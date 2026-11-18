@@ -7593,5 +7593,10 @@
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
   "ui.literal.868310e193d1": "Không có",
   "ui.receipt.gearTitle": "Bạn sẽ nhận được {name}",
-  "ui.receipt.confirmGear": "Xác nhận nhận trang bị"
+  "ui.receipt.confirmGear": "Xác nhận nhận trang bị",
+  "ui.region.bands.1.name": "Khởi hành trên đồng cỏ",
+  "ui.region.bands.2.name": "Thị trấn trạm nghỉ ven nước",
+  "ui.region.bands.3.name": "Đèo vùng mỏ",
+  "ui.region.bands.4.name": "Rừng sương mù",
+  "ui.region.bands.5.name": "Thị trấn chân thành và hào ngoài"
 }

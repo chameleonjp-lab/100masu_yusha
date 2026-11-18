@@ -7609,5 +7609,10 @@
   "scripts.events.M5-50.options.0.label": "ส่งพลังผ่านเครื่องหมายสีน้ำเงิน (ใช้มานา 4)",
   "scripts.events.M5-50.options.1.label": "จับเสาฝ่าลม (ใช้พลังชีวิต 6 ต่ำสุด 1)",
   "ui.receipt.gearTitle": "คุณจะได้รับ {name}",
-  "ui.receipt.confirmGear": "ยืนยันการรับอุปกรณ์"
+  "ui.receipt.confirmGear": "ยืนยันการรับอุปกรณ์",
+  "ui.region.bands.1.name": "ออกเดินทางจากทุ่งหญ้า",
+  "ui.region.bands.2.name": "เมืองพักแรมริมน้ำ",
+  "ui.region.bands.3.name": "ช่องเขาเหมืองแร่",
+  "ui.region.bands.4.name": "ป่าหมอก",
+  "ui.region.bands.5.name": "เมืองใต้ปราสาทและคูน้ำชั้นนอก"
 }

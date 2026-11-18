@@ -7609,5 +7609,22 @@
   "scripts.items.BD50.uses.0.effects.0.then.0.label": "BD50",
   "ui.literal.868310e193d1": "なし",
   "ui.receipt.gearTitle": "{name}を受け取ります",
-  "ui.receipt.confirmGear": "装備の受け取りを確定"
+  "ui.receipt.confirmGear": "装備の受け取りを確定",
+  "ui.region.bands.1.name": "草原の門出",
+  "ui.region.bands.2.name": "水辺の宿場",
+  "ui.region.bands.3.name": "鉱山の峠",
+  "ui.region.bands.4.name": "霧の森",
+  "ui.region.bands.5.name": "城下と外堀",
+  "ui.king.crownBreak": "王冠が割れた！",
+  "ui.king.crownNextTurn": "次の手から 後半",
+  "ui.king.defeated": "魔王を たおした！",
+  "ui.reward.gold": "{amount}G",
+  "ui.reward.xp": "経験値 {amount}",
+  "ui.reward.gear": "装備：{outcome}",
+  "ui.reward.item": "道具：{outcome}",
+  "ui.reward.none": "なし",
+  "ui.reward.owned": "入手済み",
+  "ui.reward.won": "当たり",
+  "ui.reward.itemPending": "（袋の整理待ち）",
+  "ui.reward.itemAdded": "（袋に追加済み）"
 }
