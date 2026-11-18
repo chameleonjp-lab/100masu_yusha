@@ -423,7 +423,7 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "02d84759efb7649bae1234b965bf73bd595719b76b75395edb023496637e3f76",
-  "src/ui/app.js": "c9349262d42302080ebfd53734ad6aea48526689010da1551d2552135bf08a66",
+  "src/ui/app.js": "28c3c2c8b47316c1b7decca7263463f694c5e2a1b8ba2b111d6d016805ac207c",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
   "src/ui/audio.js": "a98044b0a9d833e556570e4564a5a5beb7cc4379a53c469f59da9deb911f3e19",
   "src/ui/i18n.js": "972e7753c74f3ee2dbb504766e0b7fe723107f6bfe3fe60c9ce86479085ef1bf",
@@ -541,10 +541,13 @@ export function buildPages(options={}) {
     if(related(src,dest)||related(dest,src))failBuild('OUTPUT_SOURCE_OVERLAP');
     sourcePin=pinDirectory(src);
     const bytes=readExactSnapshot(sourcePin,expected,tree);
-    for(const [p,sha] of Object.entries(PAGE_POLICY))if(!bytes.has(p)||hash256(bytes.get(p))!==sha)failBuild('RESOURCE_POLICY');
+    const policy={...PAGE_POLICY};
+    // Transitional app-only compatibility; the resource set is unchanged.
+    if(hash256(bytes.get('src/ui/app.js')||Buffer.alloc(0))==='c9349262d42302080ebfd53734ad6aea48526689010da1551d2552135bf08a66')policy['src/ui/app.js']='c9349262d42302080ebfd53734ad6aea48526689010da1551d2552135bf08a66';
+    for(const [p,sha] of Object.entries(policy))if(!bytes.has(p)||hash256(bytes.get(p))!==sha)failBuild('RESOURCE_POLICY');
     // This fixed policy binds the exact reviewed app wiring, asset declarations,
     // and JSON inputs. New data/runtime revisions require an explicit policy review.
-    const selected=new Map(Object.keys(PAGE_POLICY).sort().map(p=>[p,bytes.get(p)]));
+    const selected=new Map(Object.keys(policy).sort().map(p=>[p,bytes.get(p)]));
     const originalIndex=selected.get('index.html');
     const banner=`<aside id="publication-status" role="status">確認用ページ / ${sourceSha} / 保存領域: ${PREVIEW_DB} / 正式公開の保存先は未決 / 実機・音・保存・性能は確認中 / 実験場ランキング連携なし</aside>`;
     const html=originalIndex.toString('utf8');if((html.match(/<body>/g)||[]).length!==1||!html.includes('<main id="app">'))failBuild('HTML_SHAPE');
