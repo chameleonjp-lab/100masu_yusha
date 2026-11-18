@@ -427,7 +427,7 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "61bd1dfbf6c3f09487920a5f83e5974b382d6d1134c7dd1e3b3c62269dfea41d",
-  "src/ui/app.js": "caf38a82ba497d53085e8e58aca31c61b90982654ae44d701778686b1cb17708",
+  "src/ui/app.js": "0e0586f7b779b9e1017e373bb99277cbe371c8c9952e6ecd366bad86d5d5f129",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
   "src/ui/audio.js": "7fc6bfe2be124ffd842887ab3d387f17307d711ea446e602ec7025545f9ad2e3",
   "src/ui/castle-arrival-ui.js": "b04df4be2ccfbe91a7a0a3ab6b06d15140617fbc290a35a78aed50cbf2afc940",
@@ -440,14 +440,15 @@ const PAGE_POLICY = {
   "src/ui/king-turn-plan.js": "4e02efaa0141c2eb443cd3478c675576591b8de1a557764589ac6f35a516e930",
   "src/ui/king-victory-renderer.js": "1655ccfe09a228eea5ac0de3dac82cf25a99a1826a871bd4fa08393b32f52afb",
   "src/ui/king-victory-segment.js": "672204f67d4ed0af93e4ec5a624af0c810244ee0e982f996bcf779a1a5aea627",
-  "src/ui/presentation-timeline.js": "d417e6a77dd28e097a7507a583a87d42c2c31f8ac0af2235ef03d562f03dd3f7",
+  "src/ui/presentation-timeline.js": "d925d4f4a634fd6750bfcc422ee72831a657bbcfd6ad10b18dc787175440fe50",
   "src/ui/presentation.js": "02c7d7d9f2201eb5f38f6a5364e5ec925fd787da915ccceb68a8efebc882cd45",
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
   "src/ui/spell-effect-consumer.js": "19da6b373b5da818ddfd05f11f3423277a7dec1b1cda23aa00b1539d5c3594bb",
   "src/ui/stage.js": "6e743be2f09a5bfaa80f10fb292a0ef5e5042653e7c716132c94f4d78e7b4260",
   "src/ui/normal-guard-plan.js": "333358f781a42b572ef055de259022179abcd9ee4dbd7e844e582a4b617ee1cb",
-  "src/ui/normal-flee-plan.js": "44c34e7f50611a6fe100e4c811b1f1cdad01a4cb7fa652c192d8d399d4959a9b"
+  "src/ui/normal-flee-plan.js": "44c34e7f50611a6fe100e4c811b1f1cdad01a4cb7fa652c192d8d399d4959a9b",
+  "src/ui/result-route-light.js": "01989712b6cfa8f64b2ace517972096e6fe0698548bc7f8149b399396c11283e"
 };
 const PREVIEW_DB = 'yusha100-publication-preview-v1';
 const hash256 = b => createHash('sha256').update(b).digest('hex');

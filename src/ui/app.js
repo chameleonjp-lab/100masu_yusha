@@ -1,3 +1,4 @@
+import {completedKingRouteMap} from './result-route-light.js';
 import {appendCastleArrivalUi} from './castle-arrival-ui.js';
 import {createKingVictoryRenderer} from './king-victory-renderer.js';
 import {createKingCrownRenderer} from './king-crown-renderer.js';
@@ -24,6 +25,23 @@ function invalidateCommittedSound(){committedSoundGeneration++;pendingCommittedS
 function prepareCommittedSound(){if(pendingFleeSound)pendingFleeSound.cancelled=true;if(committedSoundPreparation)return;const preparation={};committedSoundPreparation=preparation;try{Promise.resolve(sound.unlock()).then(()=>{if(committedSoundPreparation!==preparation)return;committedSoundPreparation=null;const play=pendingCommittedSound;pendingCommittedSound=null;play?.();},()=>{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}});}catch{if(committedSoundPreparation===preparation){committedSoundPreparation=null;pendingCommittedSound=null;}}}
 function scheduleCommittedSound(fx,key,runId,revision,cue=null){if((!fx.length&&!cue)||document.hidden||screen!=='game'||session?.meta?.settings?.mute)return;const generation=committedSoundGeneration;const play=()=>{if(generation!==committedSoundGeneration||document.hidden||screen!=='game'||session?.meta?.settings?.mute||session?.run?.runId!==runId||session?.run?.revision!==revision)return;try{if(cue)sound.play(cue);else sound.effects(fx,key)}catch{/* audio failure must not relabel a committed save */}};if(committedSoundPreparation)pendingCommittedSound=play;else play();}
 // BEGIN committed presentation bridge
+// BEGIN result route map
+function lightResultRoute(svg,litBands){if(!svg)return;for(const g of svg.querySelectorAll('[data-band]')){const lit=Number(g.dataset.band)<=litBands;g.dataset.lit=String(lit);g.setAttribute('fill',lit?'#F4B942':'#BDA882');g.setAttribute('stroke',lit?'#F4B942':'#BDA882');}}
+function resultRouteMap(v){
+ const model=completedKingRouteMap(v);if(!model)return null;
+ if(typeof document.createElementNS!=='function'){const list=el('ol','world-map result-route-fallback');list.dataset.routeFallback='static';list.setAttribute('aria-label',msg('ui.app.worldMap.term.b6e1addfac'));for(const tile of mapTiles(v)){const item=el('li','visited'+(tile.inn?' inn':''),String(tile.pos));item.setAttribute('aria-label',tile.label);if(tile.inn)item.dataset.inn=String(tile.pos);if(tile.pos===100)item.dataset.castle='100';list.append(item);}return list;}
+ const ns='http://www.w3.org/2000/svg',make=(tag,attrs={})=>{const n=document.createElementNS(ns,tag);for(const [k,val] of Object.entries(attrs))n.setAttribute(k,val);return n;};
+ const svg=make('svg',{viewBox:'0 0 370 200',role:'img','aria-label':msg('ui.app.worldMap.term.b6e1addfac'),class:'result-route-map',width:'100%'});svg.dataset.resultRoute='';
+ const xy=pos=>{const i=pos-1,row=Math.floor(i/20),col=i%20;return [22+(row%2?19-col:col)*17,28+row*36];};
+ for(const segment of model.segments){const g=make('g',{'stroke-width':2});g.dataset.band=String(segment.band);const points=[];if(segment.from>1)points.push(xy(segment.from-1).join(','));for(let pos=segment.from;pos<=segment.to;pos++)points.push(xy(pos).join(','));g.append(make('polyline',{points:points.join(' '),fill:'none','stroke-width':4,'stroke-linejoin':'round'}));
+  for(const tile of mapTiles(v).filter(t=>t.pos>=segment.from&&t.pos<=segment.to)){const [x,y]=xy(tile.pos),point=make('circle',{cx:x,cy:y,r:3});point.dataset.pos=String(tile.pos);const title=make('title');title.textContent=tile.label;point.append(title);g.append(point);
+   if(tile.inn){const lamp=make('rect',{x:x-3,y:y-12,width:6,height:8,rx:2});lamp.dataset.inn=String(tile.pos);g.append(lamp);}
+   if(tile.pos===100){const castle=make('path',{d:`M${x-7} ${y-4}v-12h4v3h6v-3h4v12z`});castle.dataset.castle='100';g.append(castle);}
+   if(tile.pos===1||tile.pos===100){const label=make('text',{x,y:y+17,fill:'#2A1E16',stroke:'none','font-size':11,'text-anchor':'middle'});label.textContent=String(tile.pos);g.append(label);}
+  }svg.append(g);
+ }lightResultRoute(svg,5);return svg;
+}
+// END result route map
 // BEGIN saved growth display
 function levelUpRows(e,h){
  const change=(key)=>String(h[key]-e.gains[key])+' → '+h[key]+' (+'+e.gains[key]+')';
@@ -44,9 +62,10 @@ function appendSavedKingGrowth(root,v){
 function rewardRowTexts(r){const none=msg('ui.reward.none'),gear=r.gear.hit?(r.gear.alreadyOwned?msg('ui.reward.owned'):(r.gear.name||msg('ui.reward.won'))):none,item=r.item.hit?(r.item.name||msg('ui.reward.won'))+(r.item.state==='prompt'?msg('ui.reward.itemPending'):r.item.state==='added'?msg('ui.reward.itemAdded'):''):none;return [msg('ui.reward.gold',{amount:r.gold}),msg('ui.reward.xp',{amount:r.xp}),msg('ui.reward.gear',{outcome:gear}),msg('ui.reward.item',{outcome:item})]}
 // Visual integration: board and strict nonterminal normal attack only. No dispatch or persistence.
 // Battle audio retains the existing committed-effects path, not visual-stage synchronization.
-let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null,lastGuardKey=null,lastFleeKey=null,pendingFleeSound=null;
+let presentationContext=null,skipSoundGeneration=0,lastKingTurnKey=null,lastGuardKey=null,lastFleeKey=null,lastResultRouteKey=null,pendingFleeSound=null;
 const skipSoundTimers=new Set();
 function releasePresentation(context){
+ if(context.resultRouteVisual)lightResultRoute(context.resultMap,5);
  for(const restore of context.supportRestorers||[])restore();context.levelUpPanel?.remove();context.rewardPanel?.remove();context.spellMp?.remove();context.spellCast?.remove();for(const node of context.spellResults||[])node.remove();context.crownRenderer?.dispose();context.crownBadge?.remove();context.victoryRenderer?.dispose();
  for(const [control,disabled] of context.controls)control.disabled=disabled;
  for(const animation of context.animations)animation.cancel();
@@ -72,6 +91,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   if(step.kind==='sound'){if(context.fleeVisual){if(step.payload.cue==='flee')fleeSound(context);return}if(context.guardVisual){guardSound(context,step);return}if(context.spellVisual&&['cast','cast.'+context.spellId.toLowerCase()].includes(step.payload.cue)){if(context.audio&&!session.meta.settings?.mute)try{sound.spell({type:'cue',key:context.castleKey,spellId:context.spellId,cue:step.payload.cue})}catch{}return}if(context.kingVictoryVisual&&step.payload.cue==='victory'){if(context.audio&&!session.meta.settings?.mute)try{sound.kingVictory({type:'cue',key:context.castleKey})}catch{}return}presentationSound(step.payload.cue,step.payload.options);return}
   if(step.kind!=='display')return;
   const p=step.payload;root.dataset.presentation=p.stage;
+  if(context.resultRouteVisual&&p.stage==='result.route.light'){lightResultRoute(context.resultMap,p.litBands);return;}
   if(p.stage==='king.reward.levelUp'){
    context.levelUpPanel?.remove();const panel=el('section','presentation-level-up'),rows=levelUpRows(p.effect,context.after.hero);panel.setAttribute('role','status');panel.append(el('p','',rows[0]));context.levelUpPanel=panel;root.append(panel);
    rows.slice(1).forEach((text,i)=>{const show=()=>{if(presentationContext===context&&presentationCurrent(context)&&context.levelUpPanel===panel)panel.append(el('p','',text))};const delay=i*p.durationMs/4;if(!delay)show();else context.regionTimers.push(setTimeout(show,delay))});return;
@@ -260,7 +280,7 @@ const presentation=createPresentationPlayer({clock:{setTimeout:(fn,ms)=>setTimeo
   if(context.fleeSound)context.fleeSound.finalizing=true;lastAction='';notice=context.notice;render();if(context.fleeSound)context.fleeSound.finalizing=false;
   if(renewBattleSound)scheduleCommittedSound(context.effects,`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
   if(reason==='skip'&&context.audio&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual){const generation=skipSoundGeneration;for(const step of sounds){const id=setTimeout(()=>{skipSoundTimers.delete(id);if(generation===skipSoundGeneration&&presentationCurrent(context)&&!session.meta.settings?.mute)try{if(context.fleeVisual)fleeSound(context);else if(context.guardVisual)guardSound(context,step);else sound.play(step.payload.cue)}catch{}},step.atMs);skipSoundTimers.add(id)}}
-  if(context.audio&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
+  if(context.audio&&!context.resultRouteVisual&&!context.battleVisual&&!context.castleVisual&&!context.kingVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual&&reason!=='skip')scheduleCommittedSound(context.effects.filter(f=>!['dieRolled','moved','levelUp','innArrived'].includes(f.t)),`${context.after.runId}:${context.after.revision}`,context.after.runId,context.after.revision);
  }
 });
 function cancelPresentation(){if(pendingFleeSound&&!pendingFleeSound.finalizing)pendingFleeSound.cancelled=true;skipSoundGeneration++;for(const id of skipSoundTimers)clearTimeout(id);skipSoundTimers.clear();presentation.cancel();if(presentationContext){const context=presentationContext;presentationContext=null;releasePresentation(context)}}
@@ -270,9 +290,11 @@ function playCommittedPresentation(before,after,effects,audio){
  const castleVisual=effects.some(f=>f.t==='moved'&&f.stop==='castle');
  if(castleVisual&&(typeof sound.castle!=='function'||typeof stage?.arrivalVisual!=='function'))return false;
  if(before.board?.band?.id!==after.board?.band?.id&&typeof stage?.transitionRegion!=='function')return false;
- let plan=planPresentation({before,after,effects,battleVisual:true,battleGuardVisual:true,battleFleeVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,kingExpandedRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
+ let plan=planPresentation({before,after,effects,battleVisual:true,battleGuardVisual:true,battleFleeVisual:true,resultRouteVisual:true,kingVisual:true,kingTurnVisual:true,kingSpellTimeline:true,spellVisual:true,victoryVisual:true,kingRewardVisual:true,kingExpandedRewardVisual:true,regionVisual:true,castleVisual,settings:{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion}});
  if(castleVisual){plan=appendCastleArrivalUi(plan,{...session.meta.settings,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion});if(!plan)return false;}
  if(!plan.steps.length)return false;
+ const resultRouteVisual=plan.mode==='result-route-light';
+ if(resultRouteVisual){if(!completedKingRouteMap(after)||plan.steps.some(s=>s.kind==='sound'||s.kind==='display'&&s.payload.stage!=='result.route.light'))return false;if(lastResultRouteKey===`${after.runId}:${after.revision}`)return true;lastResultRouteKey=`${after.runId}:${after.revision}`;if(typeof document.createElementNS!=='function'){lastAction='';render(after);return true;}}
  const fleeVisual=plan.mode==='battle-flee',fleeTranslation=fleeVisual?translate(locale(),'ui.battle.fledNoReward'):null;
  if(fleeVisual){const hero=root.querySelector('.hero'),actors=[...root.querySelectorAll('.companion')];if(!fleeTranslation?.sourceLocale||!fleeTranslation.text||typeof sound.play!=='function'||typeof sound.unlock!=='function'||!hero||typeof hero.animate!=='function'||actors.length!==before.hero.companions.length||before.hero.companions.some(c=>!actors.some(a=>a.dataset.companionId===c.id&&typeof a.animate==='function'))||plan.steps.some(x=>x.kind==='display'&&!['battle.flee.departure','battle.flee.result'].includes(x.payload.stage)))return false;if(lastFleeKey===`${after.runId}:${after.revision}`)return true;lastFleeKey=`${after.runId}:${after.revision}`;}
  const guardVisual=plan.mode==='battle-guard';
@@ -315,9 +337,10 @@ function playCommittedPresentation(before,after,effects,audio){
  if(crownLabels&&Object.values(crownLabels).some(x=>!x.sourceLocale||!x.text))return false;
  if((kingTurnVisual||kingVictoryVisual)&&lastKingTurnKey===`${after.runId}:${after.revision}`)return true;
  if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
- const resultNotice=fleeVisual?fleeTranslation.text:kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
+ const resultNotice=fleeVisual?fleeTranslation.text:kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual||resultRouteVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
  if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
- const context={before,after,effects,audio,fleeVisual,fleeText:fleeTranslation?.text,guardVisual,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
+ const context={before,after,effects,audio,resultRouteVisual,resultMap:resultRouteVisual?root.querySelector('.result-route-map'):null,fleeVisual,fleeText:fleeTranslation?.text,guardVisual,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
+ if(resultRouteVisual){if(!context.resultMap)return false;context.controls.push(...[...root.querySelectorAll('.result button')].filter(c=>!context.controls.some(([x])=>x===c)).map(c=>[c,c.disabled]));lightResultRoute(context.resultMap,0);}
  for(const [control] of context.controls)control.disabled=true;
  const status=el('p','presentation-status',`${before.pos} / 100`);status.dataset.presentationStatus='';status.setAttribute('role','status');root.append(status);context.status=status;
  const moved=effects.find(f=>f.t==='moved');
@@ -396,7 +419,7 @@ function render(presentationView=null,options={}){
  for(const [label,target] of [[msg('ui.app.render.term.b5989f74c7'),'gear'],[msg('ui.castle.herbs'),'herbs'],[msg('ui.app.render.term.86e8df92c1'),'party'],[msg('ui.app.render.term.0ad8cdd51e'),'items']])prep.append(button(label,()=>{tab=target;render()},'quiet'));root.append(prep);
  }
  if(v.phase==='retryOffer')root.append(add(el('section','story'),heading(msg("ui.app.render.literal.3f905081bb")),paragraph(msg("ui.app.render.literal.3a301ecd5f"))));
- if(v.phase==='finished'){const r=el('section','story result');add(r,el('span','eyebrow',msg("ui.app.render.literal.5308c10dab")),heading(v.result?.defeated?msg("ui.app.render.term.52203486d8"):msg("ui.app.render.term.17bd5d6c12")),paragraph(msg("ui.app.render.7c9988bef2",{p0:(v.route.name),p1:(v.furthest),p2:(v.rolls)})),paragraph(msg("ui.app.render.40d7f7fcb6",{p0:(v.hero.job.name),p1:(v.hero.companions.map(c=>c.name).join(msg("ui.app.render.term.2a21905f43"))||msg("ui.app.render.term.6217280784"))})),button(msg("ui.app.render.literal.e5ed7aa5db"),()=>{screen='home';render()}));r.append(button(tr('ui.share'),()=>sharePanel(v),'share-x'));root.append(r)}
+ if(v.phase==='finished'){const r=el('section','story result');const resultMap=resultRouteMap(v);if(resultMap)r.append(resultMap);add(r,el('span','eyebrow',msg("ui.app.render.literal.5308c10dab")),heading(v.result?.defeated?msg("ui.app.render.term.52203486d8"):msg("ui.app.render.term.17bd5d6c12")),paragraph(msg("ui.app.render.7c9988bef2",{p0:(v.route.name),p1:(v.furthest),p2:(v.rolls)})),paragraph(msg("ui.app.render.40d7f7fcb6",{p0:(v.hero.job.name),p1:(v.hero.companions.map(c=>c.name).join(msg("ui.app.render.term.2a21905f43"))||msg("ui.app.render.term.6217280784"))})),button(msg("ui.app.render.literal.e5ed7aa5db"),()=>{screen='home';render()}));r.append(button(tr('ui.share'),()=>sharePanel(v),'share-x'));root.append(r)}
  if(v.phase==='board'||v.phase==='rolled'){const trail=el('ol','trail');for(const sq of v.board.next6){const li=el('li');add(li,el('b','',sq.pos),el('span','',sq.kind));trail.append(li)}root.append(trail)}
  const nav=el('nav','tabs');for(const [id,name] of [['main',msg("ui.app.render.term.b396c18ea5")],['items',msg("ui.app.render.term.0ad8cdd51e")],['gear',msg("ui.app.render.term.b5989f74c7")],['party',msg("ui.app.render.term.86e8df92c1")]])nav.append(button(name,()=>{tab=id;render()},tab===id?'selected':''));root.append(nav);
  const body=el('section','actions');body.setAttribute('aria-label',tab==='main'?msg("ui.app.render.term.f8f6a2fe31"):msg("ui.app.render.term.93a200dea7"));
