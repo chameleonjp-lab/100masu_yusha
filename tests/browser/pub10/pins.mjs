@@ -1,0 +1,3 @@
+import assert from'node:assert/strict';import path from'node:path';import{createHash}from'node:crypto';import{readPinned}from'./loader.mjs';
+export function readVerifiedPin(e){assert.equal(typeof e.path,'string');assert.match(e.expectedSha256??'',/^[a-f0-9]{64}$/,'Independent expected SHA required');const p=path.resolve(e.path),bytes=readPinned(path.dirname(p),path.basename(p));assert.equal(createHash('sha256').update(bytes).digest('hex'),e.expectedSha256,'Pinned input mismatch');return bytes;}
+export function verifyPins(entries){assert.ok(Array.isArray(entries)&&entries.length>0,'Independent expected pins required');for(const e of entries)readVerifiedPin(e);return true;}

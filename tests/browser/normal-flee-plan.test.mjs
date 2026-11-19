@@ -3,8 +3,8 @@ import {getContent,exampleRun,startBattle} from '../fixtures/helpers.mjs';
 import {createMeta} from '../../src/engine/index.js';import {createSession} from '../../src/ui/session.js';import {createMemoryStore} from '../../src/save/index.js';
 import {planPresentation,createPresentationPlayer} from '../../src/ui/presentation-timeline.js';
 const c=await getContent();
-async function fixture({die=3,action={type:'flee'},bag=[]}={}){
- const q=startBattle(c,exampleRun(c,'M'),'EN09',{die,patch:{hp:25,bag}}),store=createMemoryStore();
+async function fixture({die=3,action={type:'flee'},bag=[],hp=25,mp=10,companions=[]}={}){
+ const q=startBattle(c,exampleRun(c,'M'),'EN09',{die,patch:{hp,mp,bag,companions}}),store=createMemoryStore();
  await store.startNew({run:q.state,meta:createMeta()});const s=createSession(q.content,store);await s.load();
  const before=structuredClone(s.view),effects=await s.act(action),after=structuredClone(s.view);
  return {before,after,effects,store};
@@ -25,9 +25,19 @@ test('opt-in is double literal and leaves guard integration untouched',async()=>
  const f=await fixture();for(const key of ['battleVisual','battleFleeVisual'])assert.deepEqual(p(f,{[key]:false}).steps,[]);
  const g=await fixture({action:{type:'guard'}});assert.equal(p(g).mode,'battle-guard');assert.deepEqual(p(g),p(g,{battleFleeVisual:false}));
 });
-test('real item-assisted flee is not animated in this slice',async()=>{
- const f=await fixture({action:{type:'flee',itemId:'HE20'},bag:['HE20']});assert.ok(f.effects.some(e=>e.t==='fled'));assert.ok(f.effects.length>1);
- assert.deepEqual(p(f).steps,[]);
+for(const [hp,mp] of [[25,2],[39,9],[40,10]])test('HE20 committed heal then flee '+hp+'/'+mp,async()=>{
+ const f=await fixture({action:{type:'flee',itemId:'HE20'},bag:['HE01','HE20','HE20'],hp,mp}),r=p(f);
+ assert.equal(r.mode,'battle-flee');assert.equal(r.steps.filter(s=>s.kind==='sound').length,1);
+ assert.equal(r.steps.find(s=>s.kind==='sound').payload.effectIndex,f.effects.length-1);
+ assert.deepEqual(f.after.hero.bag.items.map(x=>[x.id,x.index]),[['HE01',0],['HE20',1]]);
+ assert.equal(f.after.hero.bag.free,f.before.hero.bag.free+1);
+ assert.equal(f.after.hero.hp,Math.min(40,hp+12));assert.equal(f.after.hero.mp,Math.min(10,mp+3));
+ for(const k of ['gold','xp','level','attack','defense'])assert.equal(f.after.hero[k],f.before.hero[k]);
+ assert.equal(f.after.pos,f.before.pos);assert.equal(f.after.reward,null);
+ assert.deepEqual(r.resultEffects,f.effects);assert.deepEqual(r.finalView,f.after);
+});
+for(const [name,mutate] of Object.entries({extra:f=>f.effects.splice(1,0,{t:'future'}),wrongItem:f=>f.effects[0].id='HE01',order:f=>f.effects.reverse(),wrongDelta:f=>f.effects[1].delta++,wrongFree:f=>f.after.hero.bag.free++,wrongBag:f=>f.after.hero.bag.items.reverse(),gold:f=>f.after.hero.gold++}))test('HE20 static '+name,async()=>{
+ const f=await fixture({action:{type:'flee',itemId:'HE20'},bag:['HE01','HE20','HE20'],mp:2});mutate(f);assert.deepEqual(p(f).steps,[]);
 });
 for(const [name,mutate] of Object.entries({
  oldId:f=>f.before.battle.enemy.id='EN05',wrongEnemy:f=>f.effects[0].enemyId='EN05',extra:f=>f.effects.push({t:'future'}),
@@ -44,3 +54,6 @@ test('cancel and skip discard queued steps and return committed final view',asyn
  assert.deepEqual(ended[0].sounds.map(s=>s.payload.cue),reason==='skip'?['flee']:[]);
  }
 });
+
+for(const [name,mutate] of Object.entries({capacity:f=>f.after.hero.bag.capacity++,counts:f=>f.after.hero.bag.counts.HE20=8,metadata:f=>f.after.hero.bag.items[0].name='bad',nullItem:f=>f.after.hero.bag.items[0]=null,nullGear:f=>f.before.hero.gear[0]=null,hole:f=>delete f.before.hero.bag.items[0]}))test('HE20 rejects malformed '+name,async()=>{const f=await fixture({action:{type:'flee',itemId:'HE20'},bag:['HE01','HE20','HE20'],mp:2});mutate(f);assert.deepEqual(p(f).steps,[]);});
+test('HE20 unknown companion hook stays static after real committed escape',async()=>{const f=await fixture({action:{type:'flee',itemId:'HE20'},bag:['HE20'],companions:['CP01']});assert.ok(f.effects.some(e=>e.t==='fled'));assert.deepEqual(p(f).steps,[]);});
