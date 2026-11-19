@@ -447,7 +447,7 @@ const PAGE_POLICY = {
   "src/ui/king-victory-renderer.js": "1655ccfe09a228eea5ac0de3dac82cf25a99a1826a871bd4fa08393b32f52afb",
   "src/ui/king-victory-segment.js": "672204f67d4ed0af93e4ec5a624af0c810244ee0e982f996bcf779a1a5aea627",
   "src/ui/presentation-timeline.js": "6b5c2cf9385c313969d091c958bd88fc975b0c5d29d1c1ac2510f04869f085bf",
-  "src/ui/presentation.js": "02c7d7d9f2201eb5f38f6a5364e5ec925fd787da915ccceb68a8efebc882cd45",
+  "src/ui/presentation.js": "32d7b90d8c5d5c50a5a85260a9ae4e66f3ba534a32684a60d915fc1463d4752e",
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
   "src/ui/spell-effect-consumer.js": "19da6b373b5da818ddfd05f11f3423277a7dec1b1cda23aa00b1539d5c3594bb",

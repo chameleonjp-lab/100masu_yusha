@@ -10,3 +10,10 @@ test('saved narration retains MP, real damage, reduction, consumed and lost name
 test('puzzle inputs preserve public string ids and validate matching',()=>{assert.deepEqual(m.parseInput({type:'sequence',of:['red','blue']},'blue, red'),['blue','red']);assert.deepEqual(m.parseInput({type:'matching',of:['flower'],targets:['white','red']},'{"flower":"white"}'),{flower:'white'});assert.throws(()=>m.parseInput({type:'matching',of:['flower'],targets:['white']},'{"flower":"secret"}'));});
 test('puzzle help speaks Japanese positions, correctness and public names',()=>{assert.match(m.puzzleHintText({kind:'firstMismatch',index:1}),/2番目/);assert.match(m.puzzleHintText({kind:'difference',id:'cell2'},{cell2:'1行2列'}),/1行2列/);assert.equal(m.puzzleHintText({kind:'correctness',correct:true}),'選んだ答えは合っています。');});
 test('telegraph prefers isolated action outcome over unmodified base damage',()=>{assert.match(m.telegraphText({name:'強い体当たり',damageIfUnguarded:1,damageIfGuarded:1,predictions:[{label:'通常攻撃',available:true,damage:4,hitCount:1,enemyHeal:0},{label:'防御',available:true,damage:2,hitCount:1,enemyHeal:0}]}),/通常攻撃：受ける傷 4.*防御：受ける傷 2/);});
+test('skip label does not need a content catalogue during committed roll presentation',()=>{
+ assert.equal(m.actionLabel({type:'skip'}),m.actionLabel({type:'skip'},{}));
+ assert.equal(m.actionLabel({type:'skip'}),'今回は見送る');
+});
+test('catalogue remains used for content-dependent action labels',()=>{
+ assert.match(m.actionLabel({type:'useItem',itemId:'HE01'},{items:{HE01:{name:'薬草'}}}),/薬草/);
+});
