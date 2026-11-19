@@ -39,14 +39,21 @@ jobs:
           git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/source"
           git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/helpers"
 
-          # Update only the pinned browser test helper; never the preview source.
-          helper=tests/browser/pages-settings.mjs
-          test -f "$work/helpers/$helper"
-          test ! -L "$work/helpers/$helper"
-          git show "$GITHUB_SHA:$helper" > "$work/pages-settings.candidate.mjs"
-          printf '%s  %s\n' '97b69974637c8a43e6e82efcb1e189c554f5edcd12966ae6630f30659bd4b852' "$work/pages-settings.candidate.mjs" | sha256sum --check --status
-          mv -- "$work/pages-settings.candidate.mjs" "$work/helpers/$helper"
-          printf '%s  %s\n' '97b69974637c8a43e6e82efcb1e189c554f5edcd12966ae6630f30659bd4b852' "$work/helpers/$helper" | sha256sum --check --status
+          # Overlay only explicitly pinned diagnostic helpers; keep the game source fixed.
+          for pair in \
+            '3a00ffbf967cc593c5a2ea15fbd30193d8558b410a5980c10ecc8d62c541ec3d:tests/browser/pages-settings.mjs' \
+            '5606cbd9733996f0313602e6de8d50536b481f80d97e8ac79c643beb12cbb93e:tests/browser/pages-route-conflict.mjs' \
+            '87aa97f16c7fc94944f492424ee83e0fbb9ff1894cab64fddad9479a486b04b6:tests/browser/pages-ui-continue.mjs'; do
+            helper=${pair#*:}
+            pin=${pair%%:*}
+            test -f "$work/helpers/$helper"
+            test ! -L "$work/helpers/$helper"
+            temporary=$(mktemp "$work/helper.XXXXXX")
+            git show "$GITHUB_SHA:$helper" > "$temporary"
+            printf '%s  %s\n' "$pin" "$temporary" | sha256sum --check --status
+            mv -- "$temporary" "$work/helpers/$helper"
+            printf '%s  %s\n' "$pin" "$work/helpers/$helper" | sha256sum --check --status
+          done
 
           # Public fixed GitHub metadata only; no application endpoints, token, or redirect.
           api=https://api.github.com/repos/chameleonjp-lab/100masu_yusha/git
@@ -188,7 +195,7 @@ jobs:
           # Observe the existing test once, from the same browser process.
           # Discard all raw stdout/stderr; emit only fixed diagnostic codes.
           env -i PATH="$PATH" HOME="$YUSHA_VERIFY_ROOT/home" LANG=C.UTF-8 \
-            DEBUG=pw:browser,pw:api DEBUG_COLORS=0 \
+            DEBUG=pw:browser,pw:api DEBUG_COLORS=0 YUSHA_OBSERVE_UI_PHASE=1 \
             python3 - "$node_bin" helpers/tests/browser/pub10/cli.mjs --run-permitted config.json <<'SAFE_DIAGNOSTIC'
           import json
           import re
@@ -204,6 +211,7 @@ jobs:
           PREFIX = rb'^(?:\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?Z )?'
           API_RE = re.compile(PREFIX + rb'pw:api (?:=>|<=) ([a-zA-Z0-9.]+) (started|succeeded|failed)\r?\n$')
           BROWSER_RE = re.compile(PREFIX + rb'pw:browser <(launching|launched)> ')
+          PHASE_RE = re.compile(rb'^YUSHA_FIXED_UI_PHASE (open-settings|reopen-settings|save-settings|close-settings|choose-route|roll-die|commit-move|resume-game) (started|succeeded|failed)\r?\n$')
           STAGES = {
               b'browsertype.launch': 'launch',
               b'chromium.launch': 'launch',
@@ -227,6 +235,7 @@ jobs:
               output_invalid = []
               saw_attempt = saw_spawn = saw_launch_ok = False
               last_forward_api = last_failed_api = None
+              last_ui_phase = failed_ui_phase = None
               with subprocess.Popen(sys.argv[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as child:
                   def drain_stdout():
                       try:
@@ -248,6 +257,11 @@ jobs:
                           if truncated_line or len(line) > 8192:
                               truncated_line = False
                               continue
+                          phase = PHASE_RE.match(line)
+                          if phase:
+                              last_ui_phase = [part.decode('ascii') for part in phase.groups()]
+                              if last_ui_phase[1] == 'failed':
+                                  failed_ui_phase = last_ui_phase[0]
                           browser = BROWSER_RE.match(line)
                           if browser:
                               saw_attempt |= browser[1] == b'launching'
@@ -305,7 +319,8 @@ jobs:
               receipt = {'status': status, 'source_sha': SOURCE, 'manifest_sha256': MANIFEST,
                          'launch_attempt': saw_attempt, 'spawn_observed': saw_spawn,
                          'launch_completed': saw_launch_ok, 'last_forward_api': last_forward_api,
-                         'last_failed_api': last_failed_api, 'returned_identity_matches': matched, 'gates': gates}
+                         'last_failed_api': last_failed_api, 'last_ui_phase': last_ui_phase,
+                         'failed_ui_phase': failed_ui_phase, 'returned_identity_matches': matched, 'gates': gates}
               print(json.dumps(receipt, separators=(',', ':')))
               return 0 if code == 0 else 1
 
