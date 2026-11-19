@@ -42,7 +42,7 @@ jobs:
           # Overlay only explicitly pinned diagnostic helpers; keep the game source fixed.
           for pair in \
             '3a00ffbf967cc593c5a2ea15fbd30193d8558b410a5980c10ecc8d62c541ec3d:tests/browser/pages-settings.mjs' \
-            '5606cbd9733996f0313602e6de8d50536b481f80d97e8ac79c643beb12cbb93e:tests/browser/pages-route-conflict.mjs' \
+            'c55678b78c79f213c99256e08b79762016e7a9bf2142994ec7975a8809da59c1:tests/browser/pages-route-conflict.mjs' \
             '87aa97f16c7fc94944f492424ee83e0fbb9ff1894cab64fddad9479a486b04b6:tests/browser/pages-ui-continue.mjs'; do
             helper=${pair#*:}
             pin=${pair%%:*}
@@ -210,6 +210,7 @@ jobs:
           BASES = ('http://127.0.0.1:41973/', 'http://127.0.0.1:41974/100masu_yusha/')
           PREFIX = rb'^(?:\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?Z )?'
           API_RE = re.compile(PREFIX + rb'pw:api (?:=>|<=) ([a-zA-Z0-9.]+) (started|succeeded|failed)\r?\n$')
+          MOVE_RE = re.compile(rb'^YUSHA_FIXED_MOVE_FAILURE (ambiguous|pointer-intercept|disabled|not-visible|unstable|detached|outside-viewport|target-closed|timeout|other) (unavailable|(?:missing|unique|multiple)(?::[01]){7})\r?\n$')
           BROWSER_RE = re.compile(PREFIX + rb'pw:browser <(launching|launched)> ')
           PHASE_RE = re.compile(rb'^YUSHA_FIXED_UI_PHASE (open-settings|reopen-settings|save-settings|close-settings|choose-route|roll-die|commit-move|resume-game) (started|succeeded|failed)\r?\n$')
           STAGES = {
@@ -236,6 +237,7 @@ jobs:
               saw_attempt = saw_spawn = saw_launch_ok = False
               last_forward_api = last_failed_api = None
               last_ui_phase = failed_ui_phase = None
+              move_failure = None
               with subprocess.Popen(sys.argv[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as child:
                   def drain_stdout():
                       try:
@@ -262,6 +264,13 @@ jobs:
                               last_ui_phase = [part.decode('ascii') for part in phase.groups()]
                               if last_ui_phase[1] == 'failed':
                                   failed_ui_phase = last_ui_phase[0]
+                          move = MOVE_RE.match(line)
+                          if move:
+                              reason, state = (part.decode('ascii') for part in move.groups())
+                              checks = ('match_count', 'disabled', 'visible', 'in_view', 'center_receives_pointer',
+                                        'presentation', 'app_alert', 'document_hidden')
+                              move_failure = {'reason': reason, 'snapshot': None if state == 'unavailable'
+                                              else dict(zip(checks, state.split(':')))}
                           browser = BROWSER_RE.match(line)
                           if browser:
                               saw_attempt |= browser[1] == b'launching'
@@ -320,7 +329,8 @@ jobs:
                          'launch_attempt': saw_attempt, 'spawn_observed': saw_spawn,
                          'launch_completed': saw_launch_ok, 'last_forward_api': last_forward_api,
                          'last_failed_api': last_failed_api, 'last_ui_phase': last_ui_phase,
-                         'failed_ui_phase': failed_ui_phase, 'returned_identity_matches': matched, 'gates': gates}
+                         'failed_ui_phase': failed_ui_phase, 'move_failure': move_failure,
+                         'returned_identity_matches': matched, 'gates': gates}
               print(json.dumps(receipt, separators=(',', ':')))
               return 0 if code == 0 else 1
 
