@@ -23,6 +23,55 @@ export function selectSkipSounds(steps,playedKeys=new Set()){
   .sort((a,b)=>soundPriority(a.step.payload.cue)-soundPriority(b.step.payload.cue)||a.index-b.index).slice(0,2)
   .map(({step},index)=>({...copy(step),atMs:index*120}));
 }
+// Snapshot plain JSON using data descriptors only; no caller getters are invoked.
+function ownJSON(value,seen=new Set()){
+ if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+ if(typeof value==='number'&&Number.isFinite(value))return value;
+ if(!value||typeof value!=='object'||seen.has(value))throw TypeError('invalid JSON');
+ const array=Array.isArray(value),proto=Object.getPrototypeOf(value);
+ if(!array&&proto!==null&&Object.getPrototypeOf(proto)!==null)throw TypeError('nonplain JSON');
+ const ds=Object.getOwnPropertyDescriptors(value),ks=Reflect.ownKeys(ds);
+ if(ks.some(k=>typeof k!=='string'||(!array||k!=='length')&&(!ds[k].enumerable||!Object.hasOwn(ds[k],'value'))))throw TypeError('accessor JSON');
+ if(array&&(ks.length!==value.length+1||Array.from({length:value.length},(_,i)=>String(i)).some(k=>!Object.hasOwn(ds,k))))throw TypeError('sparse JSON');
+ seen.add(value);const out=array?[]:{};
+ for(const k of ks){if(array&&k==='length')continue;Object.defineProperty(out,k,{value:ownJSON(ds[k].value,seen),enumerable:true,writable:true,configurable:true})}
+ seen.delete(value);return out;
+}
+// Records originate only from the app's validated successful-act receipt.
+function validRecordCues(cues,key=null){try{
+ cues=ownJSON(cues);
+ if(!Array.isArray(cues)||cues.length>2)return [];
+ const keys=new Set();
+ for(let i=0;i<cues.length;i++){
+  if(!Object.hasOwn(cues,i))return [];
+  const c=cues[i];if(!c||typeof c!=='object'||Array.isArray(c)||Object.keys(c).length!==2||!['best','new.entry'].includes(c.cue)||typeof c.key!=='string'||keys.has(c.key))return [];
+  const suffix=`:meta:${c.cue}`,prefix=c.key.endsWith(suffix)?c.key.slice(0,-suffix.length):'';
+  if(!/^.+:[0-9]+$/.test(prefix)||(key!==null&&prefix!==key))return [];
+  keys.add(c.key);
+ }
+ if(Object.keys(cues).length!==cues.length)return [];
+ return cues.map(c=>({key:c.key,cue:c.cue}));
+ }catch{return []}
+}
+/** Add receipt sounds to the existing owner, without engine effects or new timers. */
+export function addCommittedRecordCues(plan,cues){
+ if(!plan||!Array.isArray(plan.steps)||!Number.isFinite(plan.durationMs)||plan.durationMs<0)return plan;
+ const v=plan.finalView;if(!v||typeof v.runId!=='string'||!Number.isSafeInteger(v.revision))return plan;
+ const records=validRecordCues(cues,`${v.runId}:${v.revision}`);
+ if(!records.length||records.some(c=>plan.steps.some(s=>s.key===c.key)))return plan;
+ const next=copy(plan);
+ for(const c of records)next.steps.push({kind:'sound',key:c.key,atMs:plan.durationMs,payload:{role:'committed',cue:c.cue,recordCue:true}});
+ return freeze(next);
+}
+// A shadow represents the dedicated castle audio owner's bell for skip selection.
+// Normal playback is owned by castle.arrive's real quiet timer; app ignores skipOnly.
+export function addOwnedCastleBell(plan){
+ if(!plan||!Array.isArray(plan.steps)||!Number.isFinite(plan.durationMs)||plan.durationMs<0||!plan.steps.some(s=>s.kind==='display'&&s.payload?.stage==='castle.arrive'))return plan;
+ const v=plan.finalView;if(!v||typeof v.runId!=='string'||!Number.isSafeInteger(v.revision))return plan;
+ const key=`${v.runId}:${v.revision}:presentation:castle-bell-owned`;
+ if(plan.steps.some(s=>s.key===key))return plan;
+ const next=copy(plan);next.steps.push({kind:'sound',key,atMs:plan.durationMs,payload:{role:'committed',cue:'bell',skipOnly:true}});return freeze(next);
+}
 // One completed, surviving, single-hit normal attack only. Read authoritative payloads;
 // never derive damage/mitigation from attack, defense, die or the next telegraph.
 function normalAttackTurn(before,after,effects){
