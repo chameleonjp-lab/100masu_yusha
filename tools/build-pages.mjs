@@ -427,7 +427,7 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "61bd1dfbf6c3f09487920a5f83e5974b382d6d1134c7dd1e3b3c62269dfea41d",
-  "src/ui/app.js": "60a5067cb5206249addea8cdab85b15b41e59b3578e39ed4f03b4ad6f511b8ea",
+  "src/ui/app.js": "bee6fb1459d678678564e4fe5147791fbc5a84b8724c6663fd30e6cd2ec30ba4",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
   "src/ui/audio.js": "b1dd4274421b93184d85a4cf622403e4df9c4f6b02c5048f0bb4e08850d3519f",
   "src/ui/castle-arrival-ui.js": "b04df4be2ccfbe91a7a0a3ab6b06d15140617fbc290a35a78aed50cbf2afc940",
@@ -447,7 +447,7 @@ const PAGE_POLICY = {
   "src/ui/spell-effect-consumer.js": "19da6b373b5da818ddfd05f11f3423277a7dec1b1cda23aa00b1539d5c3594bb",
   "src/ui/stage.js": "6e743be2f09a5bfaa80f10fb292a0ef5e5042653e7c716132c94f4d78e7b4260",
   "src/ui/normal-guard-plan.js": "333358f781a42b572ef055de259022179abcd9ee4dbd7e844e582a4b617ee1cb",
-  "src/ui/normal-flee-plan.js": "44c34e7f50611a6fe100e4c811b1f1cdad01a4cb7fa652c192d8d399d4959a9b",
+  "src/ui/normal-flee-plan.js": "19532a84692b0d96661dd912a4e8778545e2c851d87a730f90dbe01af7845b4d",
   "src/ui/result-route-light.js": "01989712b6cfa8f64b2ace517972096e6fe0698548bc7f8149b399396c11283e",
   "src/ui/saved-result-receipt.js": "4801f794092f2b7d281ef372d301eaa310cb0d313e4cd7272515fa1f6d3283a6"
 };

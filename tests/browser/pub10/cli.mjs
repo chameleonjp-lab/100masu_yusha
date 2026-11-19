@@ -1,0 +1,22 @@
+// Candidate manual entry point. Creating/importing this file does not start providers.
+import fs from'node:fs';import path from'node:path';import{fileURLToPath}from'node:url';import{createRequire}from'node:module';import assert from'node:assert/strict';
+import{verifyPins,readVerifiedPin}from'./pins.mjs';import{fixedSnapshot,readPinned}from'./loader.mjs';import{createProviders}from'./providers.mjs';import{runPrepared}from'./wiring.mjs';import{combinedGates}from'./combined-gates.mjs';import{validateSource}from'../../../tools/build-pages.mjs';import{runPublicationGate}from'../pages-smoke.mjs';
+const here=path.dirname(fileURLToPath(import.meta.url)),helperRoot=path.resolve(here,'../../..');
+const helperFiles=['cli.mjs','pins.mjs','loader.mjs','helpers.mjs','providers.mjs','wiring.mjs','combined-gates.mjs','./battle-probe.mjs'];
+export async function cli(args){
+ if(args.length!==2||args[0]!=='--run-permitted')return{status:'blocked',reason:'Explicit --run-permitted CONFIG required only on an already authorized runtime',browserAcceptance:false};
+ try{
+ const file=path.resolve(args[1]),c=JSON.parse(readPinned(path.dirname(file),path.basename(file)));
+ assert.equal(typeof c.sourceRoot,'string');const fixedSource=path.resolve(c.sourceRoot);assert.ok(fixedSource!==helperRoot&&!fixedSource.startsWith(helperRoot+path.sep)&&!helperRoot.startsWith(fixedSource+path.sep),'Keep clean game source separate from trusted helper checkout');assert.match(c.gameCommit,/^[a-f0-9]{40}$/);assert.match(c.treeSha,/^[a-f0-9]{40}$/);assert.match(c.manifestPin,/^[a-f0-9]{64}$/);
+ const metadata=[{path:c.commitMetadata,expectedSha256:c.commitMetadataSha256},{path:c.treeMetadata,expectedSha256:c.treeMetadataSha256}];const metadataBytes=metadata.map(readVerifiedPin);
+ for(const name of helperFiles)verifyPins([{path:path.resolve(here,name),expectedSha256:c.helperPins?.[name]}]);
+ const [commit,tree]=metadataBytes.map(bytes=>JSON.parse(bytes));assert.equal(commit.sha,c.gameCommit);assert.equal(commit.tree.sha,c.treeSha);assert.equal(tree.sha,c.treeSha);assert.equal(tree.truncated,false);const checked=validateSource({source:fixedSource,expectedTree:tree,verifyExact:true});assert.equal(checked.ok,true,JSON.stringify(checked.diagnostics));
+ assert.ok(Array.isArray(c.baseURLs)&&c.baseURLs.length===2);assert.deepEqual(c.baseURLs.map(v=>new URL(v).pathname).sort(),['/','/100masu_yusha/']);
+ const snapshots=c.baseURLs.map(baseURL=>{const s=fixedSnapshot({root:c.artifact,baseURL,expectedPin:c.manifestPin});assert.equal(s.sourceSha,c.gameCommit);assert.equal(s.treeSha,c.treeSha);assert.equal(s.evidence.commitObjectSha256,c.commitMetadataSha256);assert.equal(s.evidence.treeObjectSha256,c.treeMetadataSha256);return s;});
+ assert.ok(path.isAbsolute(c.playwrightModule),'Existing absolute Playwright module path required');assert.ok(path.isAbsolute(c.chromiumPath),'Existing absolute Chromium path required');fs.accessSync(c.chromiumPath,fs.constants.X_OK);
+ const require=createRequire(import.meta.url),{chromium}=require(c.playwrightModule);const providers=createProviders({chromium,executablePath:c.chromiumPath});const results=[];
+ for(const snapshot of snapshots){results.push(await combinedGates({identity:{gameCommit:c.gameCommit,treeSha:c.treeSha,manifestPin:c.manifestPin,baseURL:snapshot.baseURL},unseeded:async()=>{let server;try{const base=new URL(snapshot.baseURL);server=await providers.startServer({host:'127.0.0.1',port:Number(base.port),handler:snapshot.handler});const addr=server.address();assert.equal(addr.address,'127.0.0.1');assert.equal(addr.port,Number(base.port));return await runPublicationGate({baseURL:snapshot.baseURL,artifact:c.artifact,expectedManifestSha256:c.manifestPin,chromium:{launch:()=>providers.launchBrowser()},executablePath:c.chromiumPath});}finally{if(server)await server.close();}},seeded:()=>runPrepared({snapshot,providers})}));if(results.at(-1).status!=='passed')break;}
+ return{status:results.length===2&&results.every(r=>r.status==='passed')?'passed':'failed',results,browserAcceptance:false,deployment:false};
+ }catch(error){return{status:'blocked',code:'CLI_PREFLIGHT_OR_EXECUTION_BLOCKED',reason:'Required fixed inputs, provider availability or execution checks failed',browserAcceptance:false,deployment:false};}
+}
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){const result=await cli(process.argv.slice(2));console.log(JSON.stringify(result,null,2));process.exitCode=result.status==='passed'?0:1;}
