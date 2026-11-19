@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="402" height="330" viewBox="0 0 402 330" aria-hidden="true">
+<defs><linearGradient id="throne" x2="0" y2="1"><stop stop-color="#3A2D4E"/><stop offset="1" stop-color="#5A4470"/></linearGradient></defs>
+<path fill="url(#throne)" d="M0 0h402v330H0z"/>
+<g fill="#4A3B60" stroke="#8A759A" stroke-width="2"><rect x="14" y="0" width="34" height="330" rx="4"/><rect x="354" y="0" width="34" height="330" rx="4"/></g>
+<path d="M0 280h402v50H0z" fill="#3B2F4A"/>
+<g fill="none" stroke="#655172" stroke-width="1" opacity=".6"><path d="M0 304h402M96 280l-26 50M306 280l26 50"/></g>
+<path d="M150 330l40-190h40l40 190Z" fill="#8E2A3A" opacity=".8"/>
+<path d="M157 330l37-186m72 186-39-186" fill="none" stroke="#B48A62" stroke-width="1.5" opacity=".6"/>
+</svg>

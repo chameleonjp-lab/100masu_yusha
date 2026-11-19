@@ -13,10 +13,14 @@ import {createIndexedDbStore} from '../save/index.js';
 import {createAudio} from './audio.js';
 import {createSession} from './session.js';
 import {createStage,project} from './stage.js';
+import {mountCastleBackground} from './castle-background-dom.js';
+import {createCastleImageCache} from './castle-background-cache.js';
 import {actionLabel,telegraphText,parseInput,effectText,companionSummary,comparisonText,mapTiles,puzzleHintText} from './presentation.js';
 const CANONICAL_URL=null; // Requires owner-confirmed official URL; never infer from localhost.
 const sound=createAudio();
 const root=document.querySelector('#app');let content,session,stage,screen='home',tab='main',notice='',error='',lastAction='',timer=0;
+const castleImages=createCastleImageCache({createImage:()=>document.createElement('img'),isHidden:()=>document.hidden});
+document.addEventListener('visibilitychange',()=>castleImages.prefetch(session?.view,{home:screen!=='game',committed:!!session&&!presentation.running}));
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
 const add=(p,...xs)=>{xs.filter(Boolean).forEach(x=>p.append(x));return p};
@@ -390,7 +394,8 @@ function playCommittedPresentation(before,after,effects,audio,recordCues=[]){
  if(kingTurnVisual||kingVictoryVisual)lastKingTurnKey=`${after.runId}:${after.revision}`;
  if(castleVisual&&recordCues.length)plan=addOwnedCastleBell(plan);
  if(recordCues.length){if(typeof sound.recordCue!=='function'||typeof sound.discardRecordCues!=='function'||typeof sound.prepareCommittedSkip!=='function')return false;plan=addCommittedRecordCues(plan,recordCues);}
- const resultNotice=fleeVisual?fleeTranslation.text:kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(kingVisual||resultRouteVisual?after:before);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
+ const renderedStageView=kingVisual||resultRouteVisual?after:before;
+ const resultNotice=fleeVisual?fleeTranslation.text:kingVictoryVisual?`${victoryText.text} · ${notice}`:notice;lastAction='';notice='';if(kingVisual&&audio)sound.king({type:'start',key:`${after.runId}:${after.revision}`,view:after});render(renderedStageView);if(kingVictoryVisual&&audio)try{sound.kingVictory({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{}if(kingTurnVisual&&audio)try{sound.kingTurn({type:'start',key:`${after.runId}:${after.revision}`,view:before})}catch{/* audio failure must not relabel a committed save */}
  if(spellVisual&&audio)try{sound.spell({type:'start',key:`${after.runId}:${after.revision}`,spellId})}catch{}
  const context={before,after,effects,audio,recordCues,resultRouteVisual,resultMap:resultRouteVisual?root.querySelector('.result-route-map'):null,fleeVisual,fleeText:fleeTranslation?.text,guardVisual,spellVisual,spellId,spellResults:[],supportOwners:new Map(),supportRestorers:[],kingVictoryVisual,victoryLabel:victoryText?.text,crownLabels:crownLabels&&{break:crownLabels.break.text,next:crownLabels.next.text},kingTurnVisual,kingVisual,castleVisual,castleKey:`${after.runId}:${after.revision}`,beforeDie:before.rolled?.die,battleVisual:plan.steps.some(s=>s.kind==='display'&&s.payload.stage.startsWith('battle.')),notice:resultNotice,controls:[...root.querySelectorAll('.actions input,.actions select,.actions button')].map(control=>[control,control.disabled]),animations:[],regionTimers:[]};
  if(resultRouteVisual){if(!context.resultMap)return false;context.controls.push(...[...root.querySelectorAll('.result button')].filter(c=>!context.controls.some(([x])=>x===c)).map(c=>[c,c.disabled]));lightResultRoute(context.resultMap,0);}
@@ -402,7 +407,7 @@ function playCommittedPresentation(before,after,effects,audio,recordCues=[]){
  }
 
  const skip=el('button','quiet',actionLabel({type:'skip'}));skip.type='button';skip.addEventListener('click',()=>presentation.skip());root.append(skip);context.skip=skip;
- activeRecordCues=recordCues;presentationContext=context;stage?.update({band:before.board?.band?.id||1,pos:before.pos,die:before.rolled?.die},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.guardVisual&&!context.fleeVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
+ activeRecordCues=recordCues;presentationContext=context;stage?.update({band:renderedStageView.board?.band?.id||1,pos:renderedStageView.pos,die:renderedStageView.rolled?.die,phase:renderedStageView.phase,battleKind:renderedStageView.battle?.kind,battleStage:renderedStageView.battle?.stage,enemyId:renderedStageView.battle?.enemy?.id},false);presentation.play(plan);if(context.audio&&context.battleVisual&&!context.guardVisual&&!context.fleeVisual&&!context.kingTurnVisual&&!context.kingVictoryVisual)scheduleCommittedSound(effects,`${after.runId}:${after.revision}`,after.runId,after.revision);return true;
 }
 // END committed presentation bridge
 function paragraph(text,cls=''){return el('p',cls,text)}
@@ -425,8 +430,9 @@ function scene(v,home=false){
  if(v?.battle){const b=v.battle,kind=b.telegraph.kind;const pose=/big|大/.test(kind)?'big':/guard|守/.test(kind)?'guard':/open|隙/.test(kind)?'open':'attack';const id=b.enemy.id.toLowerCase();const en=art(id,id==='dk01'?`p${b.phase.index>0?2:1}-${pose}`:pose,'enemy');const p=project(2,.1,.3);en.style.left=p.x+'%';en.style.top=p.y+'%';wrap.append(en);}
  if(v?.rolled)wrap.append(el('strong','die-value',msg("ui.app.scene.f51ade3b85",{p0:(v.rolled.die)})));
  const ribbon=el('div','scene-ribbon',home?msg("ui.app.scene.term.828b8feda9"):tr(`ui.region.bands.${v?.board.band?.id||1}.name`));wrap.append(ribbon);
- const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))});
- stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die,phase:v?.phase,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion},lastAction==='roll'&&animated())});return wrap;
+ const background=mountCastleBackground({host:wrap,canvas,sky,document,imageCache:castleImages});
+ const currentStage=createStage(canvas,(status)=>{if(status==='restored'){wrap.classList.remove('no-3d');wrap.querySelector('.render-warning')?.remove();return}wrap.classList.add('no-3d');if(!wrap.querySelector('.render-warning'))wrap.append(paragraph(msg("ui.app.scene.literal.7baa586810"),'render-warning'))},background);
+ stage=currentStage;requestAnimationFrame(()=>{if(stage===currentStage&&!presentation.running)currentStage.update({band:v?.board.band?.id||1,pos:v?.pos,die:v?.rolled?.die,phase:v?.phase,home,battleKind:v?.battle?.kind,battleStage:v?.battle?.stage,enemyId:v?.battle?.enemy?.id,reducedMotion:reduced.matches||session.meta.settings?.reducedMotion},lastAction==='roll'&&animated())});return wrap;
 }
 // BEGIN castle preparation
 function renderCastleHealing(body,v){
@@ -445,6 +451,7 @@ function render(presentationView=null,options={}){
  const castleContext=options.castleContext,keepCastle=!!castleContext&&castleContext===presentationContext&&castleContext.castleVisual&&presentationView===castleContext.after&&presentationView.phase==='gate';
  if(!keepCastle)cancelPresentation();
  invalidateCommittedSound();
+ castleImages.prefetch(session?.view,{home:screen!=='game',committed:presentationView===null&&!presentation.running});
  setMessageLocale(locale());document.documentElement.lang=locale();
  const hadFocus=root.contains(document.activeElement);if(hadFocus)requestAnimationFrame(()=>{const focus=root.querySelector('.notice')||root.querySelector('h1')||root.querySelector('button');if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true})}});stage?.dispose();clearTimeout(timer);root.replaceChildren();root.dataset.motion=animated()?'full':'reduced';
  const header=el('header','masthead');add(header,button(msg("ui.app.render.literal.624fe166e6"),()=>{screen='home';lastAction='';render()},'brand'),button(tr('ui.settings'),settings,'quiet'));root.append(header);if(locale()!=='ja')root.append(paragraph(tr('ui.translationPending'),'translation-notice'));
