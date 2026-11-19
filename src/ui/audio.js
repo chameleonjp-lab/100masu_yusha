@@ -32,8 +32,39 @@ export function scoreStep(mode,index,band=1,phase=0){
  }
  return {step,voices};
 }
+// Snapshot plain JSON using data descriptors only; no caller getters are invoked.
+function ownJSON(value,seen=new Set()){
+ if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+ if(typeof value==='number'&&Number.isFinite(value))return value;
+ if(!value||typeof value!=='object'||seen.has(value))throw TypeError('invalid JSON');
+ const array=Array.isArray(value),proto=Object.getPrototypeOf(value);
+ if(!array&&proto!==null&&Object.getPrototypeOf(proto)!==null)throw TypeError('nonplain JSON');
+ const ds=Object.getOwnPropertyDescriptors(value),ks=Reflect.ownKeys(ds);
+ if(ks.some(k=>typeof k!=='string'||(!array||k!=='length')&&(!ds[k].enumerable||!Object.hasOwn(ds[k],'value'))))throw TypeError('accessor JSON');
+ if(array&&(ks.length!==value.length+1||Array.from({length:value.length},(_,i)=>String(i)).some(k=>!Object.hasOwn(ds,k))))throw TypeError('sparse JSON');
+ seen.add(value);const out=array?[]:{};
+ for(const k of ks){if(array&&k==='length')continue;Object.defineProperty(out,k,{value:ownJSON(ds[k].value,seen),enumerable:true,writable:true,configurable:true})}
+ seen.delete(value);return out;
+}
+// Records originate only from the app's validated successful-act receipt.
+function validRecordCues(cues,key=null){try{
+ cues=ownJSON(cues);
+ if(!Array.isArray(cues)||cues.length>2)return [];
+ const keys=new Set();
+ for(let i=0;i<cues.length;i++){
+  if(!Object.hasOwn(cues,i))return [];
+  const c=cues[i];if(!c||typeof c!=='object'||Array.isArray(c)||Object.keys(c).length!==2||!['best','new.entry'].includes(c.cue)||typeof c.key!=='string'||keys.has(c.key))return [];
+  const suffix=`:meta:${c.cue}`,prefix=c.key.endsWith(suffix)?c.key.slice(0,-suffix.length):'';
+  if(!/^.+:[0-9]+$/.test(prefix)||(key!==null&&prefix!==key))return [];
+  keys.add(c.key);
+ }
+ if(Object.keys(cues).length!==cues.length)return [];
+ return cues.map(c=>({key:c.key,cue:c.cue}));
+ }catch{return []}
+}
 export function createAudio(){
  let ctx,music,se,master,compressor,noise,settings={},timer=0,index=0,mode='road',band=1,phase=0,pendingPhase=0,nextTime=0,duckedUntil=0,menu=false;
+ const recordSeen=new Set(),recordNodes=new Map(),skipKeys=new Set(),skipHandles=new Set();
  const seen=new Set(),nodes=new Set(),castleKeys=new Set();let castleState=null,castleTimer=0;let kingState=null;const kingKeys=new Set();let kingTurnState=null;const kingTurnKeys=new Set();let victoryState=null;const victoryKeys=new Set();let spellState=null;const spellKeys=new Set();
  function volume(){if(!ctx)return;master.gain.setTargetAtTime(settings.mute?0:(settings.masterVolume??.8),ctx.currentTime,.03);se.gain.setTargetAtTime(settings.seVolume??.8,ctx.currentTime,.02);if(!kingState&&!kingTurnState?.paused&&(!castleState||castleState.arrived||castleState.cancelled))music.gain.setTargetAtTime(castleState?0:(settings.bgmVolume??.5)*(menu?.5:1),ctx.currentTime,.08)}
  function voice(v,when,bus=se){if(!ctx||!Number.isFinite(v.f)||!v.f)return;const t=Math.max(when,ctx.currentTime),a=(v.a??3)/1000,h=(v.h??0)/1000,d=(v.d??100)/1000,end=t+a+h+d;
@@ -45,7 +76,8 @@ export function createAudio(){
  }
  function stop(which){clearTimeout(timer);timer=0;for(const record of nodes)if(!which||record.bus===which){try{record.source.stop()}catch{}nodes.delete(record)}}
  function schedule(){if(!ctx||ctx.state!=='running'||document.hidden||mode==='silence'){timer=0;return}while(nextTime<ctx.currentTime+.1){if(index%8===0)phase=pendingPhase;const s=scoreStep(mode,index,band,phase);if(nextTime>=duckedUntil)for(const v of s.voices)voice(v,nextTime,music);nextTime+=s.step;index++}timer=setTimeout(schedule,25)}
- function play(name,delay=0,options={}){if(spellState&&name==='cast'&&(options.spellKey!==spellState.key||spellState.closed||spellState.played.has('cast')))return;if(victoryState&&name==='victory'&&(options.victoryKey!==victoryState.key||victoryState.cancelled||victoryState.played))return;if(castleState&&(castleState.arrived||castleState.cancelled)){if(['step','step.first','land'].includes(name))return;if(name==='bell'&&(options.castleKey!==castleState.key||castleState.quietEnded||castleState.cancelled))return;if(!castleState.quietEnded&&name!=='bell')return;}if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;let recipe=SFX[name];const t=ctx.currentTime+.01+delay;
+ function play(name,delay=0,options={}){if(spellState&&name==='cast'&&(options.spellKey!==spellState.key||spellState.closed||spellState.played.has('cast')))return;if(victoryState&&name==='victory'&&(options.victoryKey!==victoryState.key||victoryState.cancelled||victoryState.played))return;if(castleState&&(castleState.arrived||castleState.cancelled)){if(['step','step.first','land'].includes(name))return;if(name==='bell'&&(options.castleKey!==castleState.key||castleState.quietEnded||castleState.cancelled))return;if(!castleState.quietEnded&&name!=='bell')return;}playRecipe(name,delay,options);}
+ function playRecipe(name,delay=0,options={}){if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;let recipe=SFX[name];const t=ctx.currentTime+.01+delay;
   if(name==='coin.pay')recipe=SFX['coin.in'].map(v=>({...v,t:v.t===0?90:0}));
   if(name==='step.first')recipe=SFX.step.map(v=>({...v,v:typeof v.v==='number'?v.v*1.25:v.v,det:100}));
   if(name==='bell')recipe=[{...recipe.strike,t:0},...recipe.partials.map(p=>({t:0,o:recipe.o,f:recipe.f0*p.r,a:recipe.a,d:p.d,v:p.v}))];
@@ -163,14 +195,65 @@ export function createAudio(){
   spellState.played.add(cue);for(const record of nodes)if(!previous.has(record))spellState.nodes.add(record);
  }
  Object.defineProperty(spell,'supportedIds',{value:supportedSpellIds});
- const api={castle,king,kingTurn,kingVictory,spell,async unlock(){try{if(!ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;ctx=new C();if(globalThis.navigator?.audioSession)navigator.audioSession.type='ambient';music=ctx.createGain();se=ctx.createGain();master=ctx.createGain();compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-10;compressor.ratio.value=4;compressor.attack.value=.003;compressor.release.value=.12;music.connect(master);se.connect(master);master.connect(compressor);compressor.connect(ctx.destination);noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const a=noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;volume()}await ctx.resume();if(!timer){nextTime=ctx.currentTime+.03;schedule()}}catch{/* sound failures never affect saving */}},configure(next){if(!settings.mute&&next?.mute){cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();for(const record of nodes)if(record.bus===se){try{record.source.stop()}catch{}nodes.delete(record)}}settings=next||{};volume()},scene(v){if(victoryState){if(v?.battle?.kind==='king'){if(victoryState.stopped||victoryState.cancelled){stop(music);mode='silence';}volume();return;}cancelVictory();victoryState=null;}if(kingTurnState){if(v?.battle?.kind==='king'){volume();return}cancelKingTurn()}if(kingState){if(v?.battle?.kind==='king'){volume();return}cancelKing()}if(castleState){if(!v||v.phase==='gate'){if(v?.phase==='gate'&&castleState.cancelled)castleState.quietEnded=true;volume();return}cancelCastle();castleState=null}const next=v?.phase==='gate'||v?.phase==='finished'||v?.battle?.kind==='king'&&v.battle.stage==='won'?'silence':v?.battle?(v.battle.kind==='king'?'king':'battle'):'road';band=v?.board.band?.id||1;pendingPhase=v?.battle?.phase.index||0;menu=v?.phase==='inn';if(next!==mode){stop(music);mode=next;index=0;phase=pendingPhase;if(ctx){nextTime=ctx.currentTime+.03;schedule()}}volume()},menu(open){menu=open;volume()},play,
- effects(fx,key){if(spellState&&key!==spellState.key){cancelSpell();spellState=null;}if(!ctx||ctx.state!=='running'||document.hidden)return;const unique=fx.filter((f,i)=>!seen.has(`${key}:${i}`));const all=effectCues(fx,key,seen);void all;const terminalLoss=unique.some(f=>f.t==='runFinished'&&f.result?.defeated===false);const events=unique;
+ function prepareCommittedSkip(key,steps){
+  const noop={play(){return false},cancel(){}};
+  try{steps=ownJSON(steps)}catch{return noop}
+  if(typeof key!=='string'||!/^.+:[0-9]+$/.test(key)||skipKeys.has(key)||!Array.isArray(steps)||steps.length>2)return noop;
+  const ids=new Set(),metadata=[];
+  const allowed=new Set(['victory','defeat','win.battle','levelup','crown.crack','tell.big','shield','slash','hit.party','heal','heal.full','coin.in','coin.pay','bag','sheath','buckle','bell','door.bell','cast','cast.sp01','cast.sp02','cast.sp03','cast.sp04','flee','item.use','join.call','join.answer','job.change','learn','rest','chest.open','bag.full','charm','encounter','tell.attack','tell.guard','tell.open','support','dice.lock']);
+  for(let i=0;i<steps.length;i++){
+   const step=steps[i],p=step?.payload;
+   if(!step||step.kind!=='sound'||step.atMs!==i*120||typeof step.key!=='string'||!step.key.startsWith(key+':')||ids.has(step.key)||p?.role!=='committed')return noop;
+   if(p.options!==undefined){const o=p.options;if(!o||typeof o!=='object'||Array.isArray(o)||Object.keys(o).some(k=>!['role','pan','det'].includes(k))||('role' in o&&!['shield','medic','thrower','lantern','archer'].includes(o.role))||('pan' in o&&(typeof o.pan!=='number'||Math.abs(o.pan)>1))||('det' in o&&(typeof o.det!=='number'||Math.abs(o.det)>1200)))return noop;}
+   if(p.recordCue){const c={key:step.key,cue:p.cue};if(!validRecordCues([c],key).length)return noop;metadata.push(c)}
+   else if(!allowed.has(p.cue))return noop;
+   ids.add(step.key);
+  }
+  skipKeys.add(key);
+  const bellAlreadyHanded=castleState?.key===key&&!!(castleState.quietEnded||castleState.cancelled);
+  const selected=steps.map(step=>({key:step.key,cue:step.payload.cue,recordCue:!!step.payload.recordCue,options:{...(step.payload.options||{})}}));
+  const eligible=new Set(takeRecordCues(metadata,key).map(c=>c.key));
+  const consumed=new Set(),owned=new Set();let closed=!ctx||ctx.state!=='running'||document.hidden||!!settings.mute;
+  if(closed)discardRecordCues(metadata);
+  const handle={
+   play(stepKey){
+    const item=selected.find(x=>x.key===stepKey);if(!item||consumed.has(stepKey))return false;consumed.add(stepKey);
+    if(closed||!ctx||ctx.state!=='running'||document.hidden||settings.mute){closed=true;discardRecordCues(metadata);if(item.recordCue)discardRecordCues([{key:item.key,cue:item.cue}]);return false;}
+    if(item.cue==='bell'&&bellAlreadyHanded)return false;
+    const previous=new Set(nodes);
+    if(item.recordCue){if(eligible.has(item.key))emitRecordCue({key:item.key,cue:item.cue});}
+    else if(item.cue==='cast.sp01')voice({o:'noise',ft:'highpass',f:4000,a:5,d:200,v:.06,spark:true},ctx.currentTime+.01);
+    else if(item.cue==='cast.sp02')playRecipe('heal');
+    else if(item.cue==='cast.sp03')voice({o:'sine',f:1250,a:1,d:320,v:.06},ctx.currentTime+.01);
+    else if(item.cue==='cast.sp04')for(const v of SFX.slash)voice(v.f2===5000?{...v,f2:8000}:v,ctx.currentTime+.01+(v.t||0)/1000);
+    else playRecipe(item.cue,0,item.options);
+    if(['crown.crack','tell.big'].includes(item.cue)){duckedUntil=ctx.currentTime+1;for(const n of nodes)if(n.bus===music){try{n.source.stop()}catch{}nodes.delete(n)}}
+    for(const n of nodes)if(!previous.has(n))owned.add(n);
+    return true;
+   },
+   cancel(){closed=true;for(const n of owned){try{n.source.stop()}catch{}nodes.delete(n)}owned.clear();discardRecordCues(metadata);skipHandles.delete(handle);}
+  };skipHandles.add(handle);return handle;
+ }
+ function cancelCommittedSkips(){for(const h of [...skipHandles])h.cancel()}
+ function discardRecordCues(cues){for(const c of validRecordCues(cues)){recordSeen.add(c.key);const owned=recordNodes.get(c.key);if(owned)for(const n of owned){try{n.source.stop()}catch{}nodes.delete(n)}recordNodes.delete(c.key)}}
+ function takeRecordCues(cues,key=null){return validRecordCues(cues,key).filter(c=>{if(recordSeen.has(c.key))return false;recordSeen.add(c.key);return true})}
+ function emitRecordCue(c){
+  if(!ctx||ctx.state!=='running'||document.hidden||settings.mute)return;
+  const previous=new Set(nodes);
+  // Only two fixed metadata recipes; never a bypass for battle/castle/spell cues.
+  for(const v of SFX[c.cue])voice(v,ctx.currentTime+.01+(v.t||0)/1000);
+  recordNodes.set(c.key,new Set([...nodes].filter(n=>!previous.has(n))));
+ }
+ function recordCue(c){for(const item of takeRecordCues([c]))emitRecordCue(item)}
+ const api={prepareCommittedSkip,recordCue,discardRecordCues,castle,king,kingTurn,kingVictory,spell,async unlock(){try{if(!ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;ctx=new C();if(globalThis.navigator?.audioSession)navigator.audioSession.type='ambient';music=ctx.createGain();se=ctx.createGain();master=ctx.createGain();compressor=ctx.createDynamicsCompressor();compressor.threshold.value=-10;compressor.ratio.value=4;compressor.attack.value=.003;compressor.release.value=.12;music.connect(master);se.connect(master);master.connect(compressor);compressor.connect(ctx.destination);noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);const a=noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;volume()}await ctx.resume();if(!timer){nextTime=ctx.currentTime+.03;schedule()}}catch{/* sound failures never affect saving */}},configure(next){if(!settings.mute&&next?.mute){cancelCommittedSkips();cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();for(const record of nodes)if(record.bus===se){try{record.source.stop()}catch{}nodes.delete(record)}}settings=next||{};volume()},scene(v){if(victoryState){if(v?.battle?.kind==='king'){if(victoryState.stopped||victoryState.cancelled){stop(music);mode='silence';}volume();return;}cancelVictory();victoryState=null;}if(kingTurnState){if(v?.battle?.kind==='king'){volume();return}cancelKingTurn()}if(kingState){if(v?.battle?.kind==='king'){volume();return}cancelKing()}if(castleState){if(!v||v.phase==='gate'){if(v?.phase==='gate'&&castleState.cancelled)castleState.quietEnded=true;volume();return}cancelCastle();castleState=null}const next=v?.phase==='gate'||v?.phase==='finished'||v?.battle?.kind==='king'&&v.battle.stage==='won'?'silence':v?.battle?(v.battle.kind==='king'?'king':'battle'):'road';band=v?.board.band?.id||1;pendingPhase=v?.battle?.phase.index||0;menu=v?.phase==='inn';if(next!==mode){stop(music);mode=next;index=0;phase=pendingPhase;if(ctx){nextTime=ctx.currentTime+.03;schedule()}}volume()},menu(open){menu=open;volume()},play,
+ effects(fx,key,{committedCues=[]}={}){const records=takeRecordCues(committedCues,key);if(spellState&&key!==spellState.key){cancelSpell();spellState=null;}if(!ctx||ctx.state!=='running'||document.hidden)return;const unique=fx.filter((f,i)=>!seen.has(`${key}:${i}`));const all=effectCues(fx,key,seen);void all;const terminalLoss=unique.some(f=>f.t==='runFinished'&&f.result?.defeated===false);const events=unique;
+  for(const c of records)emitRecordCue(c);
   let delay=0;for(const f of events){if(terminalLoss&&f.t==='defeat')continue;if(f.t==='castleReached'){if(castleKeys.has(key))continue;castleKeys.add(key)}let cue=({guard:'shield',castleReached:'bell',phaseChange:'crown.crack',victory:'win.battle',levelUp:'levelup',rested:'rest',jobChanged:'job.change',companionJoined:'join.call',companionSwapped:'join.call',itemGained:'bag',itemUsed:'item.use',bagFull:'bag.full',spellLearned:'learn',spellCast:'cast',fled:'flee',innArrived:'door.bell',chestOpened:'chest.open',trapAvoided:'charm',battleStart:'encounter',defeat:'defeat'}[f.t]);if(f.t==='runFinished')cue=f.result?.defeated?'victory':'defeat';if(f.t==='gold')cue=f.delta>0?'coin.in':f.delta<0?'coin.pay':null;if(f.t==='hit')cue=f.target==='hero'?'hit.party':'slash';if(f.t==='hp'&&f.delta>0)cue='heal';if(f.t==='enemyTell')cue=/大/.test(f.kind)?'tell.big':/守/.test(f.kind)?'tell.guard':/隙/.test(f.kind)?'tell.open':'tell.attack';if(f.t==='equipped')cue=f.slot==='armor'?'buckle':'sheath';
    if(f.t==='dieRolled'){play('dice.rattle',delay);play('dice.lock',delay+(settings.animation==='short'?.2:.65));continue}if(f.t==='moved'){for(let n=0;n<Math.min(f.steps,6);n++)play(n?'step':'step.first',delay+n*.12,{pan:n%2?.15:-.15,det:n%2?40:-40});if(f.stop!=='castle')play('land',delay+Math.min(f.steps,6)*.12);continue}
    if(f.t==='castleReached'){stop(music);duckedUntil=ctx.currentTime+4.6;delay=Math.max(delay,.45)}if(f.t==='phaseChange'||(f.t==='enemyTell'&&/大/.test(f.kind))){duckedUntil=ctx.currentTime+1;for(const n of nodes)if(n.bus===music){try{n.source.stop()}catch{}nodes.delete(n)}}if(f.t==='companion')play('support',delay,{role:f.role});
    if(cue){play(cue,delay);delay+=.06}if(f.t==='companionJoined'||f.t==='companionSwapped')play('join.answer',delay,{role:optionsRole(f.id||f.in)});
   }
- },stop(){cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop()}};
+ },stop(){cancelCommittedSkips();cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop()}};
  function optionsRole(id){return {CP01:'shield',CP02:'medic',CP03:'thrower',CP04:'lantern'}[id]||'shield'}
- document.addEventListener('visibilitychange',()=>{cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop();if(document.hidden)ctx?.suspend()});return api;
+ document.addEventListener('visibilitychange',()=>{cancelCommittedSkips();cancelSpell();cancelVictory();cancelKingTurn();cancelKing();cancelCastle();stop();if(document.hidden)ctx?.suspend()});return api;
 }
