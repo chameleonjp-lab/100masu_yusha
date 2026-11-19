@@ -78,7 +78,7 @@ jobs:
           assert.equal(result.publicationReady, false);
           console.log('Fixed preview reproduced: 265 files. Browser not yet checked.');
           NODE
-      - name: Run existing guarded browser probes only if the runtime is present
+      - name: Run existing guarded browser probes
         shell: bash
         run: |
           set -euo pipefail
@@ -86,19 +86,67 @@ jobs:
           cd "$YUSHA_VERIFY_ROOT"
           node_bin=$(command -v node)
           browser=$(command -v google-chrome || command -v chromium || true)
+          if test -z "$browser"; then
+            echo '::error::Guarded native verification blocked: the runner has no existing Chromium. No browser installed.'
+            exit 1
+          fi
           global_root=$(npm root -g)
           module=
-          for package in playwright playwright-core; do
-            candidate="$global_root/$package"
-            if test -f "$candidate/index.js" && \
-              grep -Eq 'routeWebSocket\(' "$candidate/types/types.d.ts" "$global_root/playwright-core/types/types.d.ts" 2>/dev/null; then
+          for candidate in "$global_root/playwright-core" "$global_root/playwright/node_modules/playwright-core"; do
+            if test -f "$candidate/index.js" &&
+              grep -Eq 'routeWebSocket\(' "$candidate/types/types.d.ts" 2>/dev/null; then
               module="$candidate"
               break
             fi
           done
-          if test -z "$browser" || test -z "$module"; then
-            echo '::error::Guarded native verification blocked: this runner lacks an existing Chromium or compatible Playwright. No packages installed and no browser check completed.'
-            exit 1
+          if test -z "$module"; then
+            # Install nothing: fetch one integrity-pinned npm tarball, with no
+            # credentials or redirect, then expose only its temporary module.
+            fetch_dir=$(mktemp -d "$YUSHA_VERIFY_ROOT/playwright-core.XXXXXX")
+            archive="$fetch_dir/playwright-core.tgz"
+            status=$(curl --disable --silent --show-error --fail --proto '=https' \
+              --max-time 45 --max-filesize 8388608 --output "$archive" --write-out '%{http_code}' \
+              'https://registry.npmjs.org/playwright-core/-/playwright-core-1.62.1.tgz')
+            test "$status" = 200
+            python3 - "$archive" "$fetch_dir" <<'PYTHON'
+          import base64, hashlib, hmac, io, json, pathlib, shutil, sys, tarfile
+
+          archive = pathlib.Path(sys.argv[1])
+          root = pathlib.Path(sys.argv[2])
+          with archive.open('rb') as stream:
+              payload = stream.read(8388609)
+          if not (0 < len(payload) <= 8388608):
+              raise SystemExit('playwright-core archive byte limit exceeded')
+          pinned = 'wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw=='
+          if not hmac.compare_digest(base64.b64encode(hashlib.sha512(payload).digest()).decode(), pinned):
+              raise SystemExit('playwright-core archive integrity mismatch')
+
+          seen, total = set(), 0
+          with tarfile.open(fileobj=io.BytesIO(payload), mode='r:gz') as package:
+              for member in package:
+                  parts = member.name.split('/')
+                  if (parts[0] != 'package' or any(part in ('', '.', '..') or '\\' in part for part in parts)
+                      or member.name in seen or not (member.isdir() or member.isfile())
+                      or len(seen) >= 3000 or getattr(member, 'sparse', None)):
+                      raise SystemExit('unsafe playwright-core archive entry')
+                  seen.add(member.name)
+                  target = root.joinpath(*parts)
+                  if member.isdir():
+                      target.mkdir(parents=True, exist_ok=True)
+                      continue
+                  total += member.size
+                  if total > 33554432:
+                      raise SystemExit('playwright-core extraction limit exceeded')
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with package.extractfile(member) as data, target.open('xb') as out:
+                      shutil.copyfileobj(data, out)
+          metadata = json.loads((root / 'package/package.json').read_text(encoding='utf-8'))
+          if metadata.get('name') != 'playwright-core' or metadata.get('version') != '1.62.1':
+              raise SystemExit('unexpected playwright-core package identity')
+          PYTHON
+            module="$fetch_dir/package"
+            test -f "$module/index.js"
+            grep -Eq 'routeWebSocket\(' "$module/types/types.d.ts"
           fi
           export YUSHA_BROWSER="$browser" YUSHA_PLAYWRIGHT="$module"
           node --input-type=module <<'NODE'
