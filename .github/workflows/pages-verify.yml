@@ -39,6 +39,15 @@ jobs:
           git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/source"
           git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/helpers"
 
+          # Update only the pinned browser test helper; never the preview source.
+          helper=tests/browser/pages-settings.mjs
+          test -f "$work/helpers/$helper"
+          test ! -L "$work/helpers/$helper"
+          git show "$GITHUB_SHA:$helper" > "$work/pages-settings.candidate.mjs"
+          printf '%s  %s\n' '97b69974637c8a43e6e82efcb1e189c554f5edcd12966ae6630f30659bd4b852' "$work/pages-settings.candidate.mjs" | sha256sum --check --status
+          mv -- "$work/pages-settings.candidate.mjs" "$work/helpers/$helper"
+          printf '%s  %s\n' '97b69974637c8a43e6e82efcb1e189c554f5edcd12966ae6630f30659bd4b852' "$work/helpers/$helper" | sha256sum --check --status
+
           # Public fixed GitHub metadata only; no application endpoints, token, or redirect.
           api=https://api.github.com/repos/chameleonjp-lab/100masu_yusha/git
           for pair in "commit:$api/commits/$SOURCE_SHA" "tree:$api/trees/$TREE_SHA?recursive=1"; do
@@ -206,6 +215,10 @@ jobs:
               b'locator.click': 'interact',
               b'locator.press': 'interact',
               b'locator.fill': 'interact',
+              b'locator.count': 'settings-control-match',
+              b'locator.evaluate': 'settings-control-check',
+              b'locator.inputvalue': 'settings-value-read',
+              b'locator.selectoption': 'settings-value-change',
               b'page.reload': 'reload',
           }
 
