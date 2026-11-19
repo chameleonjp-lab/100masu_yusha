@@ -1,6 +1,6 @@
 import {msg} from './i18n.js';
 
-export function actionLabel(a,c){
+export function actionLabel(a,c={}){
  const labels={roll:msg("ui.presentation.actionLabel.term.15a29a11fb"),attack:msg("ui.presentation.actionLabel.term.0c72a412ed"),guard:msg("ui.presentation.actionLabel.term.265884f569"),continue:msg("ui.presentation.actionLabel.term.6842a05a7d"),challenge:msg("ui.presentation.actionLabel.term.7c23ed85b4"),skip:msg("ui.presentation.actionLabel.term.c898ab0b08"),challengeKing:msg("ui.presentation.actionLabel.term.5654451e02"),rest:msg("ui.presentation.actionLabel.term.b72518fa3a"),leaveInn:msg("ui.presentation.actionLabel.term.1f19864a58"),flee:msg("ui.presentation.actionLabel.term.0b6b5dd89d"),retry:msg("ui.presentation.actionLabel.term.5a0363134a"),declineRetry:msg("ui.presentation.actionLabel.term.318895d26d"),resumeBattle:msg("ui.presentation.actionLabel.term.844aef5157"),skipChest:msg("ui.presentation.actionLabel.term.7029b6cd0f"),bagDecline:msg("ui.presentation.actionLabel.term.f2484b15f4"),setSpells:msg("ui.presentation.actionLabel.term.9e28794262"),skipUnscripted:msg("ui.presentation.actionLabel.term.e492104f82")};
  const name=a.name||c.items?.[a.itemId||a.id]?.name||c.gear?.[a.id]?.name||c.jobs?.[a.jobId]?.name||c.companions?.[a.companionId]?.name||c.spells?.[a.spellId]?.name||'';
  if(a.type==='move')return msg("ui.presentation.actionLabel.6761a80589",{p0:(a.adjust?msg("ui.presentation.actionLabel.term.46be5c3f4e"):msg("ui.presentation.actionLabel.term.2d686d9ec4")),p1:(a.preview?.to),p2:(a.preview?.steps)});
