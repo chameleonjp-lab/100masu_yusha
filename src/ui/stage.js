@@ -53,11 +53,11 @@ export function createCastleArrival({now,request,cancel,onFrame}){
   return {cancel(){if(!disposed&&id===generation&&key===next&&!done.has(type)&&jobs.has(type))settle()}};
  },setFinal(reducedMotion=false){if(disposed)return;clear();key=null;reduced=!!reducedMotion;state={cameraY:reduced?0:.55,windowLight:1};emit()},finish(){if(!disposed&&key)settle()},reset(){if(disposed)return;clear();key=null;done.clear();state={cameraY:0,windowLight:0};emit()},dispose(){if(disposed)return;clear();disposed=true}};return api;
 }
-export function createStage(canvas,onUnavailable=()=>{}){
+export function createStage(canvas,onUnavailable=()=>{},background=null){
  let gl,program,buffer,raf=0,disposed=false,scene={band:1},generation=0;
  let targets=null,mixProgram=null,mixBuffer=null,fadeUnavailable=false;
- let arrivalFrame={cameraY:0,windowLight:0};
- const arrival=createCastleArrival({now:()=>performance.now(),request:f=>requestAnimationFrame(f),cancel:id=>cancelAnimationFrame(id),onFrame:frame=>{arrivalFrame=frame;draw()}});
+ let arrivalFrame={cameraY:0,windowLight:0},backgroundToken=null;
+ const arrival=createCastleArrival({now:()=>performance.now(),request:f=>requestAnimationFrame(f),cancel:id=>cancelAnimationFrame(id),onFrame:frame=>{arrivalFrame=frame;background?.frame(frame,backgroundToken);draw()}});
  let region=null,regionRaf=0,regionGeneration=0,visual=regionFrame(1,1,1);
  const vs='uniform float cameraY;attribute vec3 p;attribute vec3 c;varying vec3 color;void main(){float x=p.x*.85-p.z*.53;float z=p.x*.53+p.z*.85;gl_Position=vec4(x/7.,(p.y*.85-z*.5-.5-cameraY)/5.,-(z*.85+p.y*.5)/30.,1.);color=c;}';
  const fs='precision mediump float;varying vec3 color;void main(){gl_FragColor=vec4(color,1.);}';
@@ -168,10 +168,10 @@ export function createStage(canvas,onUnavailable=()=>{}){
   return {cancel(){if(region&&id===regionGeneration)cancelTransition()}};
  }
  function stop(){cancelAnimationFrame(raf);generation++}
- function visibility(){arrival.finish();stop();cancelTransition();if(!document.hidden)draw()}
+ function visibility(){arrival.finish();stop();cancelTransition();if(document.hidden){background?.suspend();backgroundToken=null}else{backgroundToken=background?.scene(scene);background?.frame(arrivalFrame,backgroundToken);draw()}}
  function lost(e){e.preventDefault();arrival.finish();stop();cancelTransition();releaseMix();releaseBase();onUnavailable('lost')}
  function restored(){if(disposed)return;fadeUnavailable=false;try{if(init()){onUnavailable('restored');draw()}else onUnavailable()}catch{onUnavailable()}}
  canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('webglcontextrestored',restored);document.addEventListener('visibilitychange',visibility);
  const observer=new ResizeObserver(()=>draw());observer.observe(canvas);try{init()}catch{onUnavailable()}
- return {arrivalVisual:options=>{if(document.hidden){arrival.command(options);arrival.finish();return {cancel(){}}}return arrival.command(options)},transitionRegion,cancelTransition,update(next,animate=false){if(disposed)return;if(next.phase==='gate'&&next.pos===100)arrival.setFinal(next.reducedMotion);else arrival.reset();stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){if(disposed)return;arrival.dispose();stop();cancelAnimationFrame(regionRaf);regionGeneration++;region=null;disposed=true;releaseMix();observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl)releaseBase()}};
+ return {arrivalVisual:options=>{if(document.hidden){arrival.command(options);arrival.finish();return {cancel(){}}}return arrival.command(options)},transitionRegion,cancelTransition,update(next,animate=false){if(disposed)return;if(document.hidden){background?.suspend();backgroundToken=null}else backgroundToken=background?.scene(next);if(next.phase==='gate'&&next.pos===100)arrival.setFinal(next.reducedMotion);else arrival.reset();stop();if(region&&regionBand(next.band)!==region.to)cancelTransition();scene=next;if(!region)paintRegion();draw();if(animate&&next.die){const start=performance.now(),id=generation;const tick=t=>{if(disposed||document.hidden||generation!==id)return;const f=Math.min(1,(t-start)/650);draw((1-f)*Math.PI*4);if(f<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}},dispose(){if(disposed)return;arrival.dispose();stop();cancelAnimationFrame(regionRaf);regionGeneration++;region=null;disposed=true;background?.dispose();backgroundToken=null;releaseMix();observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('webglcontextrestored',restored);if(gl)releaseBase()}};
 }

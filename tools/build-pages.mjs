@@ -191,6 +191,12 @@ export function validateSource(options = {}) {
 
 // Release-scoped, reviewed static resource policy. No caller override or test mode.
 const PAGE_POLICY = {
+  "assets/img/bg/gate.svg": "bff37eb354505a242e164596065f11e13dbf758222f9adec490d74e7f441a95b",
+  "assets/img/bg/throne.svg": "a9a09c8cd61ad5775ea05109a220425b817235dafab14b1def709d3c52dcf208",
+  "src/ui/castle-background.js": "e59728fedcf5cc79e8083c7057bd28afb2262f88276156f07d7a8e193d5bf946",
+  "src/ui/castle-background-dom.js": "70f23f920f92f92453f982937071d7ead748f060bbc7ec9841872c05ce301523",
+  "src/ui/castle-background-cache.js": "1e6200753d41959308b9a75a123147e38dfd6486eb084f19f26db4dc64abd511",
+
   "assets/characters/comp-lantern-idle.svg": "6d7802dc8c9e859ed9399f1944cb501594bdf2892deea6f6799bc55126af15eb",
   "assets/characters/comp-lantern-support.svg": "958eb02e2b42ef4e652a89d27bbbd14ac95d6f534d944ea7bee603ee79698421",
   "assets/characters/comp-medic-idle.svg": "33f5ea5b2d978c179e2b2c62562f177f1f2f13159103a4f13403271f67c97083",
@@ -427,7 +433,7 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "61bd1dfbf6c3f09487920a5f83e5974b382d6d1134c7dd1e3b3c62269dfea41d",
-  "src/ui/app.js": "bee6fb1459d678678564e4fe5147791fbc5a84b8724c6663fd30e6cd2ec30ba4",
+  "src/ui/app.js": "3aae46528e9e5650869d3dd2286306a3bbde45f9d4ca4d1fe317e3542afdbdd3",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
   "src/ui/audio.js": "b1dd4274421b93184d85a4cf622403e4df9c4f6b02c5048f0bb4e08850d3519f",
   "src/ui/castle-arrival-ui.js": "b04df4be2ccfbe91a7a0a3ab6b06d15140617fbc290a35a78aed50cbf2afc940",
@@ -445,7 +451,7 @@ const PAGE_POLICY = {
   "src/ui/ranking.js": "f42a0225fb7aa59aa002215b216e871c8873b34ad2faa06d5116532b1591edf3",
   "src/ui/session.js": "d28175201e2200fe1f855f8997d93d21e18bbb750bf2eff4f7a8b989d07c955a",
   "src/ui/spell-effect-consumer.js": "19da6b373b5da818ddfd05f11f3423277a7dec1b1cda23aa00b1539d5c3594bb",
-  "src/ui/stage.js": "6e743be2f09a5bfaa80f10fb292a0ef5e5042653e7c716132c94f4d78e7b4260",
+  "src/ui/stage.js": "38913a849e9b1f7cb20c560cf585172c7f1746ecc7a89448d5bab92a5b72dbac",
   "src/ui/normal-guard-plan.js": "333358f781a42b572ef055de259022179abcd9ee4dbd7e844e582a4b617ee1cb",
   "src/ui/normal-flee-plan.js": "19532a84692b0d96661dd912a4e8778545e2c851d87a730f90dbe01af7845b4d",
   "src/ui/result-route-light.js": "01989712b6cfa8f64b2ace517972096e6fe0698548bc7f8149b399396c11283e",
