@@ -1,0 +1,133 @@
+name: Pages preview verification (no deployment)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'chameleonjp-lab/100masu_yusha' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      SOURCE_SHA: fc7fad2a8f706d92279f2b3d63cefbdbdc76674d
+      TREE_SHA: 3048dcd0dcc75a0975a78a877ae5838850c26f46
+      COMMIT_PIN: 1be06b0442ed862ce082235f040ef31646dc939ad1e978e620995aa6473a88f9
+      TREE_PIN: a856d08a2b44dbb9d4d9adbffa01d140296efc00208af6f21f3a0f3e32dbc7be
+      MANIFEST_PIN: aea273400006f460b5ab833156c009bf8cc28d33e68dc413f0bdb8dd6690a9d4
+    steps:
+      - name: Checkout main history for ancestry verification
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          fetch-tags: false
+          persist-credentials: false
+      - name: Prepare fixed, offline-verifiable preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor "$SOURCE_SHA" "$GITHUB_SHA"
+          test "$(git rev-parse "$SOURCE_SHA^{tree}")" = "$TREE_SHA"
+          work=$(mktemp -d "$RUNNER_TEMP/yusha-pages-verify.XXXXXX")
+          printf 'YUSHA_VERIFY_ROOT=%s\n' "$work" >> "$GITHUB_ENV"
+          mkdir "$work/source" "$work/helpers" "$work/home"
+          git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/source"
+          git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/helpers"
+
+          # Public fixed GitHub metadata only; no application endpoints, token, or redirect.
+          api=https://api.github.com/repos/chameleonjp-lab/100masu_yusha/git
+          for pair in "commit:$api/commits/$SOURCE_SHA" "tree:$api/trees/$TREE_SHA?recursive=1"; do
+            name=${pair%%:*}
+            url=${pair#*:}
+            status=$(curl --disable --silent --show-error --fail --proto '=https' --max-time 30 \
+              -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' \
+              --output "$work/$name.raw.json" --write-out '%{http_code}' "$url")
+            test "$status" = 200
+          done
+
+          cd "$work"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
+          import { buildPages } from './helpers/tools/build-pages.mjs';
+          const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+          const { SOURCE_SHA, TREE_SHA, COMMIT_PIN, TREE_PIN, MANIFEST_PIN } = process.env;
+          const metadata = {};
+          for (const [name, pin] of [['commit', COMMIT_PIN], ['tree', TREE_PIN]]) {
+            const object = JSON.parse(fs.readFileSync(name + '.raw.json', 'utf8'));
+            const bytes = Buffer.from(JSON.stringify(object));
+            assert.equal(hash(bytes), pin, name + ' metadata differs from reviewed bytes');
+            fs.writeFileSync(name + '.compact.json', bytes, { flag: 'wx' });
+            metadata[name] = object;
+          }
+          assert.equal(metadata.commit.sha, SOURCE_SHA);
+          assert.equal(metadata.commit.tree.sha, TREE_SHA);
+          assert.equal(metadata.tree.sha, TREE_SHA);
+          assert.equal(metadata.tree.truncated, false);
+          const result = buildPages({source: 'source', expectedTree: metadata.tree,
+            commit: metadata.commit, sourceSha: SOURCE_SHA, out: 'preview'});
+          assert.ok(result.ok, JSON.stringify(result.diagnostics));
+          assert.equal(result.artifact.manifestSha256, MANIFEST_PIN);
+          assert.equal(result.artifact.files, 265);
+          assert.equal(result.publicationReady, false);
+          console.log('Fixed preview reproduced: 265 files. Browser not yet checked.');
+          NODE
+      - name: Run existing guarded browser probes only if the runtime is present
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          cd "$YUSHA_VERIFY_ROOT"
+          node_bin=$(command -v node)
+          browser=$(command -v google-chrome || command -v chromium || true)
+          global_root=$(npm root -g)
+          module=
+          for package in playwright playwright-core; do
+            candidate="$global_root/$package"
+            if test -f "$candidate/index.js" && \
+              grep -Eq 'routeWebSocket\(' "$candidate/types/types.d.ts" "$global_root/playwright-core/types/types.d.ts" 2>/dev/null; then
+              module="$candidate"
+              break
+            fi
+          done
+          if test -z "$browser" || test -z "$module"; then
+            echo '::error::Guarded native verification blocked: this runner lacks an existing Chromium or compatible Playwright. No packages installed and no browser check completed.'
+            exit 1
+          fi
+          export YUSHA_BROWSER="$browser" YUSHA_PLAYWRIGHT="$module"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const root = process.cwd();
+          const { SOURCE_SHA, TREE_SHA, COMMIT_PIN, TREE_PIN, MANIFEST_PIN,
+            YUSHA_BROWSER, YUSHA_PLAYWRIGHT } = process.env;
+          const helperPins = {
+            'cli.mjs': 'c2b482e11ab26361c32407a3dfdc4c60a2a8b1a3e12d4af33ff4ffbaf3923670',
+            'pins.mjs': '6ebf90c23503b0e48b6ae6ac8da0cdf87dd955388033d5f8dda61f55c97ac825',
+            'loader.mjs': '6c817a30931299c0fcc583b1399c05b585fc57b568414a567257844aa6e3bd7c',
+            'helpers.mjs': 'b8e6cb1d904f6483072a90c39c65c6243dc446ce8d49604abaaaaf82c37d81f8',
+            'providers.mjs': 'bea92e1af2c3c60fc8e2d4ea1a3a90dd20cba0d8ef4dfefe39a746f31ec27072',
+            'wiring.mjs': '689c175a6ef2c66d4e23a55389a2921924d3a6003c88299f36011603d68d67d9',
+            'combined-gates.mjs': '6380834c0127890fd17dbdc996e9b9c83610a1bf1227ce1660f6c951568df512',
+            './battle-probe.mjs': '2372664f0c7f4a672f7f41c55dcb507f5716c2487ed266da23fa1ee753ff60c4',
+          };
+          const config = {
+            sourceRoot: path.join(root, 'source'),
+            artifact: path.join(root, 'preview'),
+            gameCommit: SOURCE_SHA, treeSha: TREE_SHA, manifestPin: MANIFEST_PIN,
+            commitMetadata: path.join(root, 'commit.compact.json'), commitMetadataSha256: COMMIT_PIN,
+            treeMetadata: path.join(root, 'tree.compact.json'), treeMetadataSha256: TREE_PIN,
+            helperPins, chromiumPath: YUSHA_BROWSER, playwrightModule: YUSHA_PLAYWRIGHT,
+            baseURLs: ['http://127.0.0.1:41973/', 'http://127.0.0.1:41974/100masu_yusha/'],
+          };
+          fs.writeFileSync('config.json', JSON.stringify(config), { flag: 'wx' });
+          NODE
+          env -i PATH="$PATH" HOME="$YUSHA_VERIFY_ROOT/home" LANG=C.UTF-8 \
+            "$node_bin" helpers/tests/browser/pub10/cli.mjs --run-permitted config.json
+          echo 'Existing PUB-10 browser probes passed; independent Q3 review and deployment are not part of this job.'
