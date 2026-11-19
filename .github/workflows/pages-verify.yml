@@ -176,6 +176,131 @@ jobs:
           };
           fs.writeFileSync('config.json', JSON.stringify(config), { flag: 'wx' });
           NODE
+          # Observe the existing test once, from the same browser process.
+          # Discard all raw stdout/stderr; emit only fixed diagnostic codes.
           env -i PATH="$PATH" HOME="$YUSHA_VERIFY_ROOT/home" LANG=C.UTF-8 \
-            "$node_bin" helpers/tests/browser/pub10/cli.mjs --run-permitted config.json
+            DEBUG=pw:browser,pw:api DEBUG_COLORS=0 \
+            python3 - "$node_bin" helpers/tests/browser/pub10/cli.mjs --run-permitted config.json <<'SAFE_DIAGNOSTIC'
+          import json
+          import re
+          import subprocess
+          import sys
+          import threading
+
+          SOURCE = 'fc7fad2a8f706d92279f2b3d63cefbdbdc76674d'
+          TREE = '3048dcd0dcc75a0975a78a877ae5838850c26f46'
+          MANIFEST = 'aea273400006f460b5ab833156c009bf8cc28d33e68dc413f0bdb8dd6690a9d4'
+          MOUNTS = ('root', 'subpath')
+          BASES = ('http://127.0.0.1:41973/', 'http://127.0.0.1:41974/100masu_yusha/')
+          PREFIX = rb'^(?:\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?Z )?'
+          API_RE = re.compile(PREFIX + rb'pw:api (?:=>|<=) ([a-zA-Z0-9.]+) (started|succeeded|failed)\r?\n$')
+          BROWSER_RE = re.compile(PREFIX + rb'pw:browser <(launching|launched)> ')
+          STAGES = {
+              b'browsertype.launch': 'launch',
+              b'chromium.launch': 'launch',
+              b'browser.newcontext': 'context',
+              b'browsercontext.newpage': 'page',
+              b'page.goto': 'navigate',
+              b'page.evaluate': 'evaluate',
+              b'locator.waitfor': 'wait-ui',
+              b'locator.click': 'interact',
+              b'locator.press': 'interact',
+              b'locator.fill': 'interact',
+              b'page.reload': 'reload',
+          }
+
+          def observation():
+              output = bytearray()
+              output_invalid = []
+              saw_attempt = saw_spawn = saw_launch_ok = False
+              last_forward_api = last_failed_api = None
+              with subprocess.Popen(sys.argv[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as child:
+                  def drain_stdout():
+                      try:
+                          for chunk in iter(lambda: child.stdout.read(8192), b''):
+                              if len(output) + len(chunk) <= 2097152 and not output_invalid:
+                                  output.extend(chunk)
+                              elif not output_invalid:
+                                  output_invalid.append(True)
+                      except Exception:
+                          output_invalid.append(True)
+                  thread = threading.Thread(target=drain_stdout)
+                  thread.start()
+                  truncated_line = False
+                  try:
+                      for line in iter(lambda: child.stderr.readline(8193), b''):
+                          if not line.endswith(b'\n'):
+                              truncated_line = True
+                              continue
+                          if truncated_line or len(line) > 8192:
+                              truncated_line = False
+                              continue
+                          browser = BROWSER_RE.match(line)
+                          if browser:
+                              saw_attempt |= browser[1] == b'launching'
+                              saw_spawn |= browser[1] == b'launched'
+                          m = API_RE.match(line)
+                          stage = STAGES.get(m[1].lower()) if m else None
+                          if stage:
+                              status = m[2].decode('ascii')
+                              last_forward_api = [stage, status]
+                              if status == 'failed':
+                                  last_failed_api = stage
+                              saw_launch_ok |= stage == 'launch' and status == 'succeeded'
+                  finally:
+                      thread.join()
+                  code = child.wait()
+
+              if output_invalid:
+                  raise ValueError('diagnostic output invalid')
+              record = json.loads(output)
+              outcomes = record.get('results')
+              if not isinstance(outcomes, list) or len(outcomes) > len(MOUNTS):
+                  outcomes = []
+              matched = []
+              gates = []
+              for index, mount in enumerate(MOUNTS):
+                  result = outcomes[index] if index < len(outcomes) else None
+                  identity = result.get('identity') if isinstance(result, dict) else None
+                  matched.append(identity == dict(gameCommit=SOURCE, treeSha=TREE, manifestPin=MANIFEST, baseURL=BASES[index]))
+                  group = result.get('gates', {}) if isinstance(result, dict) else {}
+                  summary = {'mount': mount}
+                  for gate in ('unseeded', 'seeded'):
+                      state = group.get(gate)
+                      if state is None:
+                          safe = 'not-run'
+                      elif state.get('status') == 'passed':
+                          safe = 'passed'
+                      elif state.get('status') == 'failed' and state.get('code') == 'GATE_REJECTED':
+                          safe = 'gate-rejected'
+                      else:
+                          safe = 'unclassified'
+                      summary[gate] = safe
+                  gates.append(summary)
+              if code == 0:
+                  if (record.get('status') != 'passed' or record.get('browserAcceptance') is not False
+                          or record.get('deployment') is not False or not all(matched)
+                          or any(item[g] != 'passed' for item in gates for g in ('unseeded', 'seeded'))):
+                      raise ValueError('passing test did not produce fixed evidence')
+                  status = 'passed'
+              elif record.get('code') == 'CLI_PREFLIGHT_OR_EXECUTION_BLOCKED':
+                  status = 'preflight-or-execution-blocked'
+              elif record.get('status') == 'failed':
+                  status = 'gate-failed'
+              else:
+                  status = 'unclassified-failure'
+              receipt = {'status': status, 'source_sha': SOURCE, 'manifest_sha256': MANIFEST,
+                         'launch_attempt': saw_attempt, 'spawn_observed': saw_spawn,
+                         'launch_completed': saw_launch_ok, 'last_forward_api': last_forward_api,
+                         'last_failed_api': last_failed_api, 'returned_identity_matches': matched, 'gates': gates}
+              print(json.dumps(receipt, separators=(',', ':')))
+              return 0 if code == 0 else 1
+
+          try:
+              result = observation()
+          except Exception:
+              print('{"status":"diagnostic-filter-failed"}')
+              result = 1
+          sys.exit(result)
+          SAFE_DIAGNOSTIC
           echo 'Existing PUB-10 browser probes passed; independent Q3 review and deployment are not part of this job.'
