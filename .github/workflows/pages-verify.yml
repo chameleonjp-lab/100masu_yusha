@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
-      SOURCE_SHA: fc7fad2a8f706d92279f2b3d63cefbdbdc76674d
-      TREE_SHA: 3048dcd0dcc75a0975a78a877ae5838850c26f46
-      COMMIT_PIN: 1be06b0442ed862ce082235f040ef31646dc939ad1e978e620995aa6473a88f9
-      TREE_PIN: a856d08a2b44dbb9d4d9adbffa01d140296efc00208af6f21f3a0f3e32dbc7be
-      MANIFEST_PIN: aea273400006f460b5ab833156c009bf8cc28d33e68dc413f0bdb8dd6690a9d4
+      SOURCE_SHA: 6c8d3206355a84046b6443eb0103bdd510c4a398
+      TREE_SHA: 22bb8e575399a05d63c4afdac3240114dc319df1
+      COMMIT_PIN: 09044715d1125a23bd7ef8d46a3946eae0b88c666ca27a05373f4690f307a753
+      TREE_PIN: 9561ad0def08558b631c3110ecf8ebb0b8252d638361a00c6543312e65b8bbcb
+      MANIFEST_PIN: e0449100e31bca6bbe713c676446835523e0aa1bd8525ffe23d6b578fe66c179
     steps:
       - name: Checkout main history for ancestry verification
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
@@ -203,9 +203,9 @@ jobs:
           import sys
           import threading
 
-          SOURCE = 'fc7fad2a8f706d92279f2b3d63cefbdbdc76674d'
-          TREE = '3048dcd0dcc75a0975a78a877ae5838850c26f46'
-          MANIFEST = 'aea273400006f460b5ab833156c009bf8cc28d33e68dc413f0bdb8dd6690a9d4'
+          SOURCE = '6c8d3206355a84046b6443eb0103bdd510c4a398'
+          TREE = '22bb8e575399a05d63c4afdac3240114dc319df1'
+          MANIFEST = 'e0449100e31bca6bbe713c676446835523e0aa1bd8525ffe23d6b578fe66c179'
           MOUNTS = ('root', 'subpath')
           BASES = ('http://127.0.0.1:41973/', 'http://127.0.0.1:41974/100masu_yusha/')
           PREFIX = rb'^(?:\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?Z )?'
