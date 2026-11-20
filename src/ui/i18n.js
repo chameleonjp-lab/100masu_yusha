@@ -15,7 +15,18 @@ export function contentKeys(content){const out=[];const walk=(v,path)=>{if(typeo
 export function shareDraft({locale='en',url,result=null}){let ready=false;try{const u=new URL(url);ready=u.protocol==='https:'&&!['localhost','127.0.0.1','::1'].includes(u.hostname)}catch{}const key=result?'share.result':'share.home';const text=translate(locale,key,{pos:result?.pos??0,rolls:result?.rolls??0,outcome:result?.defeated?translate(locale,'share.defeated').text:translate(locale,'share.reached').text}).text;return {ready,text:text+(ready?'\n'+url:''),reason:ready?null:'canonical_url_unconfirmed'};}
 let sourceIndex=new Map();
 export function installMessages(locale,messages){catalogs[locale]={...catalogs[locale],...messages};if(locale==='ja')sourceIndex=new Map(Object.entries(catalogs.ja).map(([key,text])=>[text,key]));}
-export async function loadMessages(locale,fetcher=fetch){for(const code of [...new Set(['ja','en',locale])]){const response=await fetcher(new URL(`../locales/messages/${code}.json`,import.meta.url));if(!response.ok)throw Error(`locale_load_${code}`);installMessages(code,await response.json());}}
+export async function loadMessages(locale,fetcher=fetch){
+ for(const code of [...new Set(['ja','en',locale])]){
+  try{
+   const response=await fetcher(new URL(`../locales/messages/${code}.json`,import.meta.url));
+   if(!response.ok)throw Error(`locale_load_${code}`);
+   installMessages(code,await response.json());
+  }catch(error){
+   // English is a supplemental fallback, except when selected.
+   if(code!=='en'||locale==='en')throw error;
+  }
+ }
+}
 export function displayText(locale,text){if(typeof text!=='string')return text;const key=sourceIndex.get(text);return key?translate(locale,key).text:text;}
 export function missingMessages(locale){const required=Object.keys(catalogs.ja).filter(key=>typeof catalogs.ja[key]==='string'&&catalogs.ja[key].trim());return auditCatalog(locale,required);}
 const DISPLAY_FIELDS=new Set(['name','scene','action','result','effect','timing','limit','text','tell','response','summary','tradeoff','triggerText','line','label','title','prompt','description','reasonText']);
