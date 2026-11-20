@@ -433,7 +433,7 @@ const PAGE_POLICY = {
   "src/save/indexeddb.js": "8cc6add85bc2312c1e04e3029ea053fdf5d75bec10e9df38a62ad875cca734cb",
   "src/save/memory.js": "47539e1e0935a5676ca27a07230badcdf00d26a7663249727ef43cfc8248643d",
   "src/style.css": "61bd1dfbf6c3f09487920a5f83e5974b382d6d1134c7dd1e3b3c62269dfea41d",
-  "src/ui/app.js": "c4a1fd8eaeeeaff79b26f0240649e3e1d0779a6e0cfd3c4488df391ad70840d7",
+  "src/ui/app.js": "a42f60ca01752f4ad221b5305a2802401239e62ad04f208f270d7af7ab20e0cd",
   "src/ui/audio-recipes.js": "ffe217d57e2c1a0cb17985e312230c07d1775206824e14675d302169b492a329",
   "src/ui/audio.js": "bf59a18dfbf3c42b0014723f7f87fc1a526699b4d62597252076a6eb7d8e49c2",
   "src/ui/castle-arrival-ui.js": "b04df4be2ccfbe91a7a0a3ab6b06d15140617fbc290a35a78aed50cbf2afc940",
