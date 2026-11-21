@@ -1,0 +1,230 @@
+name: Publish 100マス勇者 (production)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      release_commit:
+        description: 'Exact reviewed main commit (40 lowercase hex characters)'
+        required: true
+        type: string
+      publish:
+        description: 'Deploy the verified game to the public production URL; leave false to verify without publishing'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yusha100-production-pages-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'release' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.repository == 'chameleonjp-lab/100masu_yusha' &&
+      ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' &&
+        inputs.release_commit == github.sha) ||
+       (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' &&
+        github.event.pull_request.base.sha == 'b58d94987ed90b6d8f8a4dbdafed5ae9b5150848' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.head.ref == 'dot-100masu-production-pages'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      BASELINE: b58d94987ed90b6d8f8a4dbdafed5ae9b5150848
+      SOURCE_SHA: e26df449255237a0c5118fd0165a142ad3626d01
+      TREE_SHA: 302983177e16aea0640139125b77a8987abcb3ec
+      COMMIT_PIN: 730dd1c745ca81c9d625e3b9f77b92980c3ad2eb834c0fb579afa13e71539c86
+      TREE_PIN: ac5a41907792c551908985715babfcee963eb1e3f9fd3423c69afe308dcfd754
+      RELEASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.release_commit }}
+    steps:
+      - name: Checkout the exact reviewed commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.RELEASE_SHA }}
+          fetch-depth: 0
+          fetch-tags: false
+          persist-credentials: false
+      - name: Build sealed production candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          [[ "$RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            test "$(git rev-parse refs/remotes/origin/main)" = "$BASELINE"
+          else
+            test "$(git rev-parse refs/remotes/origin/main)" = "$RELEASE_SHA"
+          fi
+          git merge-base --is-ancestor "$BASELINE" "$RELEASE_SHA"
+          git merge-base --is-ancestor "$SOURCE_SHA" "$BASELINE"
+          test "$(git rev-parse "$SOURCE_SHA^{tree}")" = "$TREE_SHA"
+          # Fail closed on any other change. Future releases must review a new game source.
+          diff -u <(printf '%s\n' $'A\t.github/workflows/pages-publish.yml' \
+            $'A\ttests/browser/pages-production.mjs' $'A\ttools/build-pages-production.mjs') \
+            <(git diff --name-status --no-renames "$BASELINE" "$RELEASE_SHA")
+          work=$(mktemp -d "$RUNNER_TEMP/yusha-production.XXXXXX")
+          printf 'YUSHA_PUBLISH_ROOT=%s\n' "$work" >> "$GITHUB_ENV"
+          mkdir "$work/source" "$work/home"
+          git archive --format=tar "$SOURCE_SHA" | tar -xf - -C "$work/source"
+
+          api=https://api.github.com/repos/chameleonjp-lab/100masu_yusha/git
+          for pair in "commit:$api/commits/$SOURCE_SHA" "tree:$api/trees/$TREE_SHA?recursive=1"; do
+            name=${pair%%:*}
+            url=${pair#*:}
+            status=$(curl --disable --silent --show-error --fail --proto '=https' --max-time 30 \
+              --max-filesize 1048576 -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' --output "$work/$name.raw.json" \
+              --write-out '%{http_code}' "$url")
+            test "$status" = 200
+          done
+          node --input-type=module - "$work" <<'NODE'
+          import fs from 'node:fs';
+          import { join } from 'node:path';
+          import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
+          const root = process.argv[2], { SOURCE_SHA, TREE_SHA, COMMIT_PIN, TREE_PIN } = process.env;
+          for (const [name, pin] of [['commit', COMMIT_PIN], ['tree', TREE_PIN]]) {
+            const data = JSON.parse(fs.readFileSync(join(root, name + '.raw.json'), 'utf8'));
+            const bytes = JSON.stringify(data);
+            assert.equal(createHash('sha256').update(bytes).digest('hex'), pin);
+            if (name === 'commit') { assert.equal(data.sha, SOURCE_SHA); assert.equal(data.tree.sha, TREE_SHA); }
+            else { assert.equal(data.sha, TREE_SHA); assert.equal(data.truncated, false); }
+            fs.writeFileSync(join(root, name + '.json'), bytes, { flag: 'wx' });
+          }
+          NODE
+          node tools/build-pages-production.mjs --source "$work/source" --expected-tree "$work/tree.json" \
+            --commit "$work/commit.json" --source-sha "$SOURCE_SHA" --out "$work/site" > "$work/build.json"
+          hash=$(sha256sum "$work/site/publication.json" | cut -d ' ' -f 1)
+          MANIFEST_SHA="$hash" node --input-type=module - "$work/build.json" <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const result = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          assert.equal(result.ok, true);
+          assert.equal(result.artifact.files, 266);
+          assert.equal(result.artifact.manifestSha256, process.env.MANIFEST_SHA);
+          NODE
+          printf 'YUSHA_MANIFEST_SHA=%s\n' "$hash" >> "$GITHUB_ENV"
+      - name: Guarded production browser verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          browser=$(command -v google-chrome || command -v chromium || true)
+          if test -z "$browser"; then
+            echo '::error::Guarded native verification blocked: the runner has no existing Chromium. No browser installed.'
+            exit 1
+          fi
+          global_root=$(npm root -g)
+          module=
+          for candidate in "$global_root/playwright-core" "$global_root/playwright/node_modules/playwright-core"; do
+            if test -f "$candidate/index.js" &&
+              grep -Eq 'routeWebSocket\(' "$candidate/types/types.d.ts" 2>/dev/null; then
+              module="$candidate"
+              break
+            fi
+          done
+          if test -z "$module"; then
+            # Install nothing: fetch one integrity-pinned npm tarball, with no
+            # credentials or redirect, then expose only its temporary module.
+            fetch_dir=$(mktemp -d "$YUSHA_PUBLISH_ROOT/playwright-core.XXXXXX")
+            archive="$fetch_dir/playwright-core.tgz"
+            status=$(curl --disable --silent --show-error --fail --proto '=https' \
+              --max-time 45 --max-filesize 8388608 --output "$archive" --write-out '%{http_code}' \
+              'https://registry.npmjs.org/playwright-core/-/playwright-core-1.62.1.tgz')
+            test "$status" = 200
+            python3 - "$archive" "$fetch_dir" <<'PYTHON'
+          import base64, hashlib, hmac, io, json, pathlib, shutil, sys, tarfile
+
+          archive = pathlib.Path(sys.argv[1])
+          root = pathlib.Path(sys.argv[2])
+          with archive.open('rb') as stream:
+              payload = stream.read(8388609)
+          if not (0 < len(payload) <= 8388608):
+              raise SystemExit('playwright-core archive byte limit exceeded')
+          pinned = 'wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw=='
+          if not hmac.compare_digest(base64.b64encode(hashlib.sha512(payload).digest()).decode(), pinned):
+              raise SystemExit('playwright-core archive integrity mismatch')
+
+          seen, total = set(), 0
+          with tarfile.open(fileobj=io.BytesIO(payload), mode='r:gz') as package:
+              for member in package:
+                  parts = member.name.split('/')
+                  if (parts[0] != 'package' or any(part in ('', '.', '..') or '\\' in part for part in parts)
+                      or member.name in seen or not (member.isdir() or member.isfile())
+                      or len(seen) >= 3000 or getattr(member, 'sparse', None)):
+                      raise SystemExit('unsafe playwright-core archive entry')
+                  seen.add(member.name)
+                  target = root.joinpath(*parts)
+                  if member.isdir():
+                      target.mkdir(parents=True, exist_ok=True)
+                      continue
+                  total += member.size
+                  if total > 33554432:
+                      raise SystemExit('playwright-core extraction limit exceeded')
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with package.extractfile(member) as data, target.open('xb') as out:
+                      shutil.copyfileobj(data, out)
+          metadata = json.loads((root / 'package/package.json').read_text(encoding='utf-8'))
+          if metadata.get('name') != 'playwright-core' or metadata.get('version') != '1.62.1':
+              raise SystemExit('unexpected playwright-core package identity')
+          PYTHON
+            module="$fetch_dir/package"
+            test -f "$module/index.js"
+            grep -Eq 'routeWebSocket\(' "$module/types/types.d.ts"
+          fi
+          env -i PATH="$PATH" HOME="$YUSHA_PUBLISH_ROOT/home" LANG=C.UTF-8 \
+            YUSHA_BROWSER="$browser" YUSHA_PLAYWRIGHT="$module" \
+            node tests/browser/pages-production.mjs --artifact "$YUSHA_PUBLISH_ROOT/site" \
+            --source-sha "$SOURCE_SHA" --manifest-sha256 "$YUSHA_MANIFEST_SHA"
+      - name: Verify the archive is the tested production candidate
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root="$YUSHA_PUBLISH_ROOT"
+          node tools/build-pages-production.mjs --verify --out "$root/site" \
+            --source-sha "$SOURCE_SHA" --manifest-sha256 "$YUSHA_MANIFEST_SHA"
+          # Match the Pages single-tar artifact format, including the checked .nojekyll.
+          tar -C "$root/site" -cf "$root/artifact.tar" .
+          mkdir "$root/readback"
+          tar -xf "$root/artifact.tar" -C "$root/readback"
+          node tools/build-pages-production.mjs --verify --out "$root/readback" \
+            --source-sha "$SOURCE_SHA" --manifest-sha256 "$YUSHA_MANIFEST_SHA"
+          printf 'Reviewed main: %s\nGame source: %s\nManifest SHA-256: %s\n' \
+            "$RELEASE_SHA" "$SOURCE_SHA" "$YUSHA_MANIFEST_SHA"
+          sha256sum "$root/artifact.tar"
+      - name: Upload exactly the verified Pages tar
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: github-pages
+          path: ${{ env.YUSHA_PUBLISH_ROOT }}/artifact.tar
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish && github.repository == 'chameleonjp-lab/100masu_yusha' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.release.outputs.page_url }}
+    steps:
+      - name: Deploy the verified production artifact
+        id: release
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+        with:
+          artifact_name: github-pages
+          preview: false
